@@ -1,0 +1,2 @@
+
+{"items":[{"name":"Getting Started","href":"getting-started.html","topicHref":"getting-started.html"},{"name":"Configuration","href":"configuration.html","topicHref":"configuration.html"},{"name":"File Rollover & Retention","href":"rollover-and-retention.html","topicHref":"rollover-and-retention.html"},{"name":"Buffered vs. Direct Writing","href":"buffering.html","topicHref":"buffering.html"},{"name":"Log Output Format","href":"log-format.html","topicHref":"log-format.html"}]}

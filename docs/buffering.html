@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Buffered vs. Direct Writing | Invex.Extensions.Logging </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Buffered vs. Direct Writing | Invex.Extensions.Logging ">
+      
+      
+      <link rel="icon" href="../favicon.ico">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/Invex-Games/logging-extensions/blob/main/docs/buffering.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../logo.svg" alt="Invex.Extensions.Logging">
+            Invex.Extensions.Logging
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="buffered-vs-direct-writing">Buffered vs. Direct Writing</h1>
+
+<p><code>AddFile</code> accepts a <code>buffered</code> flag that selects between two write strategies:</p>
+<pre><code class="lang-csharp">builder.Logging.AddFile();                 // buffered (default)
+builder.Logging.AddFile(buffered: false);  // direct
+</code></pre>
+<h2 id="buffered-mode-default">Buffered mode (default)</h2>
+<p>In buffered mode, calling a log method only enqueues the formatted entry onto an in-memory channel — a fast,
+non-blocking operation. A dedicated background thread drains the channel in small batches (up to 10 entries
+per iteration), groups entries by level (to resolve per-level file names), and performs the actual file I/O:
+rollover checks, purging, and appending.</p>
+<p><strong>Characteristics:</strong></p>
+<ul>
+<li>✅ Minimal overhead on application threads — file I/O never blocks your code.</li>
+<li>✅ Batching reduces the number of file opens/writes under load.</li>
+<li>✅ Slow disks or transient I/O errors don't stall the application.</li>
+<li>⚠️ Entries queued but not yet written are lost if the process crashes or is killed.</li>
+<li>⚠️ The in-memory queue is unbounded; if the disk cannot keep up with sustained extreme log volume, memory
+usage grows.</li>
+</ul>
+<p><strong>Shutdown:</strong> disposing the logging infrastructure (which hosts do automatically on graceful shutdown)
+signals the background thread to stop and blocks until every queued entry has been drained to disk. Make
+sure your application shuts down gracefully — entries are only lost if the process crashes or is killed
+before disposal runs.</p>
+<h2 id="direct-mode">Direct mode</h2>
+<p>In direct mode, every log call performs the full write synchronously on the calling thread: the rollover and
+purge checks run, and the entry is appended and flushed to disk before the call returns.</p>
+<p><strong>Characteristics:</strong></p>
+<ul>
+<li>✅ Every entry is durably on disk when the log call returns — nothing is lost on abrupt termination.</li>
+<li>✅ No background thread, no in-memory queue.</li>
+<li>⚠️ Each log call pays the cost of file I/O, on the calling thread.</li>
+<li>⚠️ Higher contention under heavily concurrent logging.</li>
+</ul>
+<h2 id="which-should-i-use">Which should I use?</h2>
+<table>
+<thead>
+<tr>
+<th>Scenario</th>
+<th>Recommendation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Web apps, services, anything long-running</td>
+<td><strong>Buffered</strong></td>
+</tr>
+<tr>
+<td>High-throughput logging</td>
+<td><strong>Buffered</strong></td>
+</tr>
+<tr>
+<td>Short-lived CLI tools that may exit immediately after logging</td>
+<td><strong>Direct</strong></td>
+</tr>
+<tr>
+<td>Crash diagnostics where the last entries matter most</td>
+<td><strong>Direct</strong></td>
+</tr>
+<tr>
+<td>Audit-style logs that must be durable per call</td>
+<td><strong>Direct</strong></td>
+</tr>
+</tbody>
+</table>
+<h2 id="error-handling">Error handling</h2>
+<p>Both modes are designed to never take the application down due to logging failures:</p>
+<ul>
+<li>Failed file writes are retried up to five times; the exception is echoed to the console and debug output.</li>
+<li>In buffered mode, if a batch repeatedly fails to write, it is skipped and the writer moves on.</li>
+<li>In direct mode, if an entry repeatedly fails to write, it is dropped.</li>
+</ul>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/Invex-Games/logging-extensions/blob/main/docs/buffering.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Useful utilities for Microsoft.Extensions.Logging
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

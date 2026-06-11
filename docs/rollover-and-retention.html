@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>File Rollover &amp; Retention | Invex.Extensions.Logging </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="File Rollover &amp; Retention | Invex.Extensions.Logging ">
+      
+      
+      <link rel="icon" href="../favicon.ico">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/Invex-Games/logging-extensions/blob/main/docs/rollover-and-retention.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../logo.svg" alt="Invex.Extensions.Logging">
+            Invex.Extensions.Logging
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="file-rollover--retention">File Rollover &amp; Retention</h1>
+
+<p>Log files are rolled over (renamed and replaced with a fresh file) based on <strong>size</strong> and <strong>time</strong>, and old
+files are purged once the total disk usage hits a configurable cap.</p>
+<h2 id="file-naming">File naming</h2>
+<table>
+<thead>
+<tr>
+<th>File</th>
+<th>Name</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Active log file</td>
+<td><code>{LogName}.log</code></td>
+</tr>
+<tr>
+<td>Rolled-over log file</td>
+<td><code>{LogName}_{yyMMdd-HHmmss}.log</code></td>
+</tr>
+<tr>
+<td>Rolled-over (name collision)</td>
+<td><code>{LogName}_{yyMMdd-HHmmss}_{n}.log</code></td>
+</tr>
+</tbody>
+</table>
+<p>The timestamp is the <strong>local time at the moment of rollover</strong>. If a file with that name already exists
+(e.g. two rollovers within the same second), a numeric suffix <code>_1</code>, <code>_2</code>, … is appended.</p>
+<p>Example:</p>
+<pre><code class="lang-text">Logs/
+    my-app.log                    &lt;- active
+    my-app_260610-000001.log
+    my-app_260611-093015.log
+    my-app_260611-093015_1.log    &lt;- second rollover in the same second
+</code></pre>
+<h2 id="size-based-rollover">Size-based rollover</h2>
+<p>Before each write, the provider checks whether the active file's size plus the size of the pending entries
+would reach <code>FileSizeLimitBytes</code> (default <strong>100 MiB</strong>). If so, the active file is renamed using the scheme
+above and a new active file is started.</p>
+<div class="NOTE">
+<h5>Note</h5>
+<p>The check is performed <em>before</em> the write, so an individual file may finish slightly under the limit, and a
+single very large batch is never split across files.</p>
+</div>
+<h2 id="time-based-rollover">Time-based rollover</h2>
+<p>Before each write, the provider also compares the active file's <strong>creation time</strong> against
+<code>RolloverInterval</code> (default <strong><code>Day</code></strong>). If the elapsed time meets or exceeds the interval, the file is
+rolled over.</p>
+<table>
+<thead>
+<tr>
+<th><code>FileRolloverInterval</code></th>
+<th>Rolls over after</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Infinite</code></td>
+<td>Never (size-based rollover still applies)</td>
+</tr>
+<tr>
+<td><code>Year</code></td>
+<td>365 days</td>
+</tr>
+<tr>
+<td><code>Month</code></td>
+<td>30 days</td>
+</tr>
+<tr>
+<td><code>Day</code></td>
+<td>1 day</td>
+</tr>
+<tr>
+<td><code>Hour</code></td>
+<td>1 hour</td>
+</tr>
+<tr>
+<td><code>Minute</code></td>
+<td>1 minute</td>
+</tr>
+</tbody>
+</table>
+<div class="IMPORTANT">
+<h5>Important</h5>
+<p>Intervals are <strong>elapsed durations from file creation</strong>, not calendar boundaries. A file created at 14:30
+with <code>Day</code> rollover rolls at ~14:30 the next day, not at midnight. Similarly, <code>Month</code> means 30 days and
+<code>Year</code> means 365 days.</p>
+</div>
+<p>Rollover checks only happen when an entry is written — an idle application will not roll files until the
+next log entry arrives.</p>
+<h2 id="retention-purging">Retention (purging)</h2>
+<p>Whenever a rollover occurs (or a brand-new log file is created), the provider sums the sizes of all
+rolled-over files matching <code>{LogName}_*.log</code> in the log directory. If the total meets or exceeds
+<code>MaxTotalSizeBytes</code> (default <strong>10 GiB</strong>), the <strong>oldest</strong> rolled-over file (by creation time) is deleted.</p>
+<div class="NOTE">
+<h5>Note</h5>
+<ul>
+<li>The active <code>{LogName}.log</code> file is never purged.</li>
+<li>One file is deleted per rollover. Because purging runs on every rollover, disk usage stays bounded over
+time; however, if you drastically lower <code>MaxTotalSizeBytes</code> on an existing large directory, it will take
+several rollovers to converge to the new cap.</li>
+<li>When using <code>PerLevelLogName</code>, each base name is rolled and purged independently — <code>MaxTotalSizeBytes</code>
+applies per name, not across all files.</li>
+</ul>
+</div>
+<h2 id="choosing-limits">Choosing limits</h2>
+<p>A quick rule of thumb for worst-case disk usage per log name:</p>
+<pre><code class="lang-text">worst case ≈ MaxTotalSizeBytes + FileSizeLimitBytes
+</code></pre>
+<p>(the cap on rolled-over files, plus one full active file).</p>
+<p>Common setups:</p>
+<table>
+<thead>
+<tr>
+<th>Scenario</th>
+<th>Suggested settings</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Long-running service</td>
+<td><code>RolloverInterval = Day</code>, defaults otherwise</td>
+</tr>
+<tr>
+<td>High-volume service</td>
+<td><code>RolloverInterval = Hour</code>, <code>FileSizeLimitBytes = 50 MiB</code></td>
+</tr>
+<tr>
+<td>Disk-constrained device</td>
+<td><code>MaxTotalSizeBytes = 512 MiB</code>, <code>FileSizeLimitBytes = 10 MiB</code></td>
+</tr>
+<tr>
+<td>Short-lived CLI tool</td>
+<td><code>RolloverInterval = Infinite</code>, small <code>MaxTotalSizeBytes</code></td>
+</tr>
+</tbody>
+</table>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/Invex-Games/logging-extensions/blob/main/docs/rollover-and-retention.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Useful utilities for Microsoft.Extensions.Logging
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

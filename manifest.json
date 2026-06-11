@@ -1,0 +1,228 @@
+{
+  "source_base_path": "/home/runner/work/logging-extensions/logging-extensions",
+  "xrefmap": "xrefmap.yml",
+  "files": [
+    {
+      "type": "Resource",
+      "output": {
+        "resource": {
+          "relative_path": "index.json"
+        }
+      }
+    },
+    {
+      "type": "Resource",
+      "source_relative_path": "LICENSE.txt",
+      "output": {
+        "resource": {
+          "relative_path": "LICENSE.txt"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "README.md",
+      "output": {
+        ".html": {
+          "relative_path": "README.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Invex.Extensions.Logging.File.Configuration.FileLoggerConfiguration.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Invex.Extensions.Logging.File.Configuration.FileLoggerConfiguration.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Invex.Extensions.Logging.File.Configuration.FileLoggerConfiguration",
+      "Summary": "<p sourcefile=\"api/Invex.Extensions.Logging.File.Configuration.FileLoggerConfiguration.yml\" sourcestartlinenumber=\"1\">Configuration options for the file logger. Bound from the <code>Logging:File</code> configuration section\nwhen registered via\n<xref href=\"Invex.Extensions.Logging.File.FileLoggerExtension.AddFile(Microsoft.Extensions.Logging.ILoggingBuilder%2cSystem.Boolean)\" data-throw-if-not-resolved=\"false\"></xref>,\nand can also be set programmatically via the\n<xref href=\"Invex.Extensions.Logging.File.FileLoggerExtension.AddFile(Microsoft.Extensions.Logging.ILoggingBuilder%2cSystem.Action%7bInvex.Extensions.Logging.File.Configuration.FileLoggerConfiguration%7d%2cSystem.Boolean)\" data-throw-if-not-resolved=\"false\"></xref>\noverload.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Invex.Extensions.Logging.File.Configuration.FileRolloverInterval.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Invex.Extensions.Logging.File.Configuration.FileRolloverInterval.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Invex.Extensions.Logging.File.Configuration.FileRolloverInterval",
+      "Summary": "<p sourcefile=\"api/Invex.Extensions.Logging.File.Configuration.FileRolloverInterval.yml\" sourcestartlinenumber=\"1\">Specifies how frequently the active log file is rolled over to a new file, based on the elapsed time\nsince the file was created.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Invex.Extensions.Logging.File.Configuration.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Invex.Extensions.Logging.File.Configuration.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Invex.Extensions.Logging.File.Configuration",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Invex.Extensions.Logging.File.FileLoggerExtension.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Invex.Extensions.Logging.File.FileLoggerExtension.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Invex.Extensions.Logging.File.FileLoggerExtension",
+      "Summary": "<p sourcefile=\"api/Invex.Extensions.Logging.File.FileLoggerExtension.yml\" sourcestartlinenumber=\"1\">Provides extension methods for registering the file logger with an <xref href=\"Microsoft.Extensions.Logging.ILoggingBuilder\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Invex.Extensions.Logging.File.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Invex.Extensions.Logging.File.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Invex.Extensions.Logging.File",
+      "Summary": null
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "api/index.md",
+      "output": {
+        ".html": {
+          "relative_path": "api/index.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Toc",
+      "source_relative_path": "api/toc.yml",
+      "output": {
+        ".json": {
+          "relative_path": "api/toc.json"
+        },
+        ".html": {
+          "relative_path": "api/toc.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "docs/buffering.md",
+      "output": {
+        ".html": {
+          "relative_path": "docs/buffering.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "docs/configuration.md",
+      "output": {
+        ".html": {
+          "relative_path": "docs/configuration.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "docs/getting-started.md",
+      "output": {
+        ".html": {
+          "relative_path": "docs/getting-started.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "docs/log-format.md",
+      "output": {
+        ".html": {
+          "relative_path": "docs/log-format.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "docs/rollover-and-retention.md",
+      "output": {
+        ".html": {
+          "relative_path": "docs/rollover-and-retention.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Toc",
+      "source_relative_path": "docs/toc.yml",
+      "output": {
+        ".json": {
+          "relative_path": "docs/toc.json"
+        },
+        ".html": {
+          "relative_path": "docs/toc.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Resource",
+      "source_relative_path": "images/icon.png",
+      "output": {
+        "resource": {
+          "relative_path": "images/icon.png"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "index.md",
+      "output": {
+        ".html": {
+          "relative_path": "index.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Toc",
+      "source_relative_path": "toc.yml",
+      "output": {
+        ".json": {
+          "relative_path": "toc.json"
+        },
+        ".html": {
+          "relative_path": "toc.html"
+        }
+      },
+      "version": ""
+    }
+  ],
+  "groups": [
+    {
+      "xrefmap": "xrefmap.yml"
+    }
+  ]
+}

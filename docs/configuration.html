@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Configuration | Invex.Extensions.Logging </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Configuration | Invex.Extensions.Logging ">
+      
+      
+      <link rel="icon" href="../favicon.ico">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/Invex-Games/logging-extensions/blob/main/docs/configuration.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../logo.svg" alt="Invex.Extensions.Logging">
+            Invex.Extensions.Logging
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="configuration">Configuration</h1>
+
+<p>The file logger is configured via the <code>FileLoggerConfiguration</code> options class. Options can be supplied from
+configuration (the <code>Logging:File</code> section), from code, or both — values set in code override bound values.</p>
+<h2 id="options-reference">Options reference</h2>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>LogDirectory</code></td>
+<td><code>string</code></td>
+<td><code>&quot;Logs&quot;</code></td>
+<td>Directory for log files. Absolute, or relative to the current working directory. Created automatically.</td>
+</tr>
+<tr>
+<td><code>LogName</code></td>
+<td><code>string?</code></td>
+<td><code>null</code></td>
+<td>Base file name (no extension). <code>null</code> uses the application's name (<code>AppDomain.CurrentDomain.FriendlyName</code>).</td>
+</tr>
+<tr>
+<td><code>PerLevelLogName</code></td>
+<td><code>Dictionary&lt;LogLevel, string?&gt;</code></td>
+<td>empty</td>
+<td>Per-level overrides of the file name, routing specific levels to separate files.</td>
+</tr>
+<tr>
+<td><code>FileSizeLimitBytes</code></td>
+<td><code>long</code></td>
+<td><code>104857600</code> (100 MiB)</td>
+<td>Maximum size of a single log file before it is rolled over.</td>
+</tr>
+<tr>
+<td><code>RolloverInterval</code></td>
+<td><code>FileRolloverInterval</code></td>
+<td><code>Day</code></td>
+<td>Time-based rollover interval: <code>Infinite</code>, <code>Year</code>, <code>Month</code>, <code>Day</code>, <code>Hour</code>, or <code>Minute</code>.</td>
+</tr>
+<tr>
+<td><code>MaxTotalSizeBytes</code></td>
+<td><code>long</code></td>
+<td><code>10737418240</code> (10 GiB)</td>
+<td>Maximum combined size of rolled-over files before the oldest is deleted.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="configuring-via-appsettingsjson">Configuring via appsettings.json</h2>
+<p>The provider registers under the alias <code>File</code>, so it binds to the <code>Logging:File</code> section:</p>
+<pre><code class="lang-json">{
+  &quot;Logging&quot;: {
+    &quot;File&quot;: {
+      &quot;LogDirectory&quot;: &quot;C:/logs/my-app&quot;,
+      &quot;LogName&quot;: &quot;my-app&quot;,
+      &quot;FileSizeLimitBytes&quot;: 52428800,
+      &quot;RolloverInterval&quot;: &quot;Hour&quot;,
+      &quot;MaxTotalSizeBytes&quot;: 1073741824,
+      &quot;PerLevelLogName&quot;: {
+        &quot;Error&quot;: &quot;my-app-errors&quot;,
+        &quot;Critical&quot;: &quot;my-app-errors&quot;
+      }
+    }
+  }
+}
+</code></pre>
+<div class="NOTE">
+<h5>Note</h5>
+<p><code>RolloverInterval</code> accepts the enum names: <code>Infinite</code>, <code>Year</code>, <code>Month</code>, <code>Day</code>, <code>Hour</code>, <code>Minute</code>.</p>
+</div>
+<h2 id="configuring-in-code">Configuring in code</h2>
+<pre><code class="lang-csharp">using Invex.Extensions.Logging.File;
+using Invex.Extensions.Logging.File.Configuration;
+
+builder.Logging.AddFile(options =&gt;
+{
+    options.LogDirectory = &quot;Logs&quot;;
+    options.LogName = &quot;my-app&quot;;
+    options.FileSizeLimitBytes = 50L * 1024 * 1024; // 50 MiB
+    options.RolloverInterval = FileRolloverInterval.Hour;
+    options.MaxTotalSizeBytes = 1L * 1024 * 1024 * 1024; // 1 GiB
+
+    options.PerLevelLogName[LogLevel.Error] = &quot;my-app-errors&quot;;
+    options.PerLevelLogName[LogLevel.Critical] = &quot;my-app-errors&quot;;
+});
+</code></pre>
+<h2 id="routing-levels-to-separate-files">Routing levels to separate files</h2>
+<p><code>PerLevelLogName</code> maps a <code>LogLevel</code> to an alternative base file name. Levels present in the dictionary write
+to <code>{name}.log</code> instead of the default file; levels not present continue to use <code>LogName</code>.</p>
+<pre><code class="lang-csharp">builder.Logging.AddFile(options =&gt;
+{
+    options.LogName = &quot;app&quot;;
+
+    // Errors and critical entries go to their own file
+    options.PerLevelLogName[LogLevel.Error] = &quot;app-errors&quot;;
+    options.PerLevelLogName[LogLevel.Critical] = &quot;app-errors&quot;;
+
+    // Trace entries go to a separate diagnostic file
+    options.PerLevelLogName[LogLevel.Trace] = &quot;app-trace&quot;;
+});
+</code></pre>
+<p>Produces:</p>
+<pre><code class="lang-text">Logs/
+    app.log          &lt;- Debug, Information, Warning
+    app-errors.log   &lt;- Error, Critical
+    app-trace.log    &lt;- Trace
+</code></pre>
+<p>Each file rolls over and is purged independently, using the same <code>FileSizeLimitBytes</code>, <code>RolloverInterval</code>,
+and <code>MaxTotalSizeBytes</code> settings.</p>
+<div class="TIP">
+<h5>Tip</h5>
+<p>A <code>null</code> value in <code>PerLevelLogName</code> is valid and falls back to the application's name for that level —
+useful if <code>LogName</code> is customized but you want certain levels in the default-named file.</p>
+</div>
+<h2 id="runtime-configuration-changes">Runtime configuration changes</h2>
+<p>The provider monitors its options with <code>IOptionsMonitor&lt;T&gt;</code>. Changes to the <code>Logging:File</code> section in
+<code>appsettings.json</code> (or any reloadable configuration source) are picked up automatically and applied to
+subsequent log writes — no restart required.</p>
+<h2 id="default-constants">Default constants</h2>
+<p>All defaults are exposed as public constants on <code>FileLoggerConfiguration</code> for use in your own code:</p>
+<ul>
+<li><code>FileLoggerConfiguration.DefaultLogDirectory</code></li>
+<li><code>FileLoggerConfiguration.DefaultLogName</code></li>
+<li><code>FileLoggerConfiguration.DefaultFileSizeLimitBytes</code></li>
+<li><code>FileLoggerConfiguration.DefaultRollingInterval</code></li>
+<li><code>FileLoggerConfiguration.DefaultMaxTotalSizeBytes</code></li>
+</ul>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/Invex-Games/logging-extensions/blob/main/docs/configuration.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Useful utilities for Microsoft.Extensions.Logging
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>
