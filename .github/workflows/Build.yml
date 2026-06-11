@@ -59,7 +59,7 @@ jobs:
           path: '${{ github.workspace }}/.github/publish/Invex.Extensions.Logging.File'
 
   TestProjects:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.job-runs-on }}
     strategy:
       matrix:
         test-framework: [ net8.0, net9.0, net10.0 ]

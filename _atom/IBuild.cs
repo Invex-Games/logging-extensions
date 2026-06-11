@@ -100,7 +100,6 @@ internal interface IBuild : IWorkflowBuildDefinition,
     Target TestFxProjects =>
         t => t
             .DescribedAs("Tests the projects")
-            .RequiresParam(nameof(TestFramework))
             .ProducesArtifacts(ProjectsToTestFx)
             .Executes(async cancellationToken =>
             {
@@ -252,6 +251,7 @@ internal interface IBuild : IWorkflowBuildDefinition,
                         BuildOptions.Target.SuppressArtifactPublishing,
                         BuildOptions.Steps.SetupDotnet.Dotnet80X(),
                         BuildOptions.Steps.SetupDotnet.Dotnet90X(),
+                        BuildOptions.Github.RunsOn.SetByMatrix,
                     ],
                 },
                 new(nameof(TestFxProjects))
@@ -318,7 +318,12 @@ internal interface IBuild : IWorkflowBuildDefinition,
                             Values = TestPlatforms,
                         },
                     ],
-                    Options = [BuildOptions.Steps.SetupDotnet.Dotnet80X(), BuildOptions.Steps.SetupDotnet.Dotnet90X()],
+                    Options =
+                    [
+                        BuildOptions.Steps.SetupDotnet.Dotnet80X(),
+                        BuildOptions.Steps.SetupDotnet.Dotnet90X(),
+                        BuildOptions.Github.RunsOn.SetByMatrix,
+                    ],
                 },
                 new(nameof(TestFxProjects))
                 {
