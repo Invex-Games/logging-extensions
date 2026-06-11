@@ -1,0 +1,11 @@
+- name: Getting Started
+  href: getting-started.md
+- name: Configuration
+  href: configuration.md
+- name: File Rollover & Retention
+  href: rollover-and-retention.md
+- name: Buffered vs. Direct Writing
+  href: buffering.md
+- name: Log Output Format
+  href: log-format.md
+

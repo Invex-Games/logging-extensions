@@ -1,0 +1,73 @@
+{
+  "$schema": "https://raw.githubusercontent.com/dotnet/docfx/main/schemas/docfx.schema.json",
+  "metadata": [
+    {
+      "src": [
+        {
+          "files": [
+            "src/**/*.csproj"
+          ]
+        }
+      ],
+      "dest": "api",
+      "properties": {
+        "TargetFramework": "net10.0"
+      }
+    }
+  ],
+  "build": {
+    "content": [
+      {
+        "files": [
+          "toc.yml",
+          "index.md",
+          "README.md"
+        ]
+      },
+      {
+        "files": [
+          "api/**/*.yml",
+          "api/**/*.md"
+        ]
+      },
+      {
+        "files": [
+          "docs/toc.yml",
+          "docs/**/*.md"
+        ]
+      }
+    ],
+    "resource": [
+      {
+        "files": [
+          "images/**",
+          "LICENSE.txt"
+        ]
+      }
+    ],
+    "output": "_site",
+    "globalMetadataFiles": [],
+    "fileMetadataFiles": [],
+    "globalMetadata": {
+      "_appTitle": "Invex.Extensions.Logging",
+      "_appName": "Invex.Extensions.Logging",
+      "_appFooter": "Useful utilities for Microsoft.Extensions.Logging",
+      "_enableSearch": true,
+      "_disableContribution": false,
+      "_disableToc": false,
+      "_gitContribute": {
+        "repo": "https://github.com/Invex-Games/logging-extensions",
+        "branch": "main"
+      }
+    },
+    "template": [
+      "default",
+      "modern"
+    ],
+    "postProcessors": [],
+    "keepFileLink": false,
+    "disableGitFeatures": false
+  }
+}
+
+

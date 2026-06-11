@@ -1,0 +1,7 @@
+- name: Home
+  href: README.md
+- name: Docs
+  href: docs/
+- name: API Reference
+  href: api/
+

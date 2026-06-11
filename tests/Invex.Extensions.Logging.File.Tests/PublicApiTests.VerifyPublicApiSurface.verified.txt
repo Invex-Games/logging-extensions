@@ -1,0 +1,77 @@
+﻿[
+  {
+    Name: Invex.Extensions.Logging.File.Configuration.FileLoggerConfiguration,
+    Members: [
+      {
+        Name: DefaultFileSizeLimitBytes
+      },
+      {
+        Name: DefaultLogDirectory
+      },
+      {
+        Name: DefaultLogName
+      },
+      {
+        Name: DefaultMaxTotalSizeBytes
+      },
+      {
+        Name: DefaultRollingInterval
+      },
+      {
+        Name: FileSizeLimitBytes
+      },
+      {
+        Name: LogDirectory
+      },
+      {
+        Name: LogName
+      },
+      {
+        Name: MaxTotalSizeBytes
+      },
+      {
+        Name: PerLevelLogName
+      },
+      {
+        Name: RolloverInterval
+      }
+    ]
+  },
+  {
+    Name: Invex.Extensions.Logging.File.Configuration.FileRolloverInterval,
+    Members: [
+      {
+        Name: Day
+      },
+      {
+        Name: Hour
+      },
+      {
+        Name: Infinite
+      },
+      {
+        Name: Minute
+      },
+      {
+        Name: Month
+      },
+      {
+        Name: value__
+      },
+      {
+        Name: Year
+      }
+    ]
+  },
+  {
+    Name: Invex.Extensions.Logging.File.FileLoggerExtension,
+    Members: [
+      {
+        Name: AddFile
+      },
+      {
+        Name: AddFile
+      }
+    ]
+  }
+]
