@@ -16,7 +16,7 @@
     <PackageReference Include="Spectre.Console.Testing" Version="0.57.0" />
     <PackageReference Include="System.IO.Abstractions" Version="22.1.1" />
     <PackageReference Include="TestableIO.System.IO.Abstractions.TestingHelpers" Version="22.1.1" />
-    <PackageReference Include="Verify.NUnit" Version="31.19.1" />
+    <PackageReference Include="Verify.NUnit" Version="31.20.0" />
   </ItemGroup>
 
   <!--  .NET Core Packages-->
