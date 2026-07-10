@@ -7,7 +7,7 @@
   <!--  Packages-->
   <ItemGroup>
     <PackageReference Include="FakeItEasy" Version="9.0.1" />
-    <PackageReference Include="Invex.RepoUtils.TestUtils" Version="1.5.0" />
+    <PackageReference Include="Invex.RepoUtils.TestUtils" Version="1.6.0" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.9" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.7.0" />
     <PackageReference Include="NUnit" Version="4.6.1" />
@@ -16,7 +16,7 @@
     <PackageReference Include="Spectre.Console.Testing" Version="0.57.2" />
     <PackageReference Include="System.IO.Abstractions" Version="22.1.1" />
     <PackageReference Include="TestableIO.System.IO.Abstractions.TestingHelpers" Version="22.1.1" />
-    <PackageReference Include="Verify.NUnit" Version="31.20.0" />
+    <PackageReference Include="Verify.NUnit" Version="31.22.0" />
   </ItemGroup>
 
   <!--  .NET Core Packages-->
