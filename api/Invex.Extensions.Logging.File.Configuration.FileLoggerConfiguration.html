@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class FileLoggerConfiguration | Invex.Extensions.Logging </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class FileLoggerConfiguration | Invex.Extensions.Logging ">
+      
+      <meta name="description" content="Configuration options for the file logger. Bound from the Logging:File configuration section when registered via , and can also be set programmatically via the  overload.">
+      <link rel="icon" href="../favicon.ico">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/Invex-Games/logging-extensions/new/main/apiSpec/new?filename=Invex_Extensions_Logging_File_Configuration_FileLoggerConfiguration.md&amp;value=---%0Auid%3A%20Invex.Extensions.Logging.File.Configuration.FileLoggerConfiguration%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../logo.svg" alt="Invex.Extensions.Logging">
+            Invex.Extensions.Logging
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="Invex.Extensions.Logging.File.Configuration.FileLoggerConfiguration">
+
+
+
+  <h1 id="Invex_Extensions_Logging_File_Configuration_FileLoggerConfiguration" data-uid="Invex.Extensions.Logging.File.Configuration.FileLoggerConfiguration" class="text-break">
+Class FileLoggerConfiguration  <a class="header-action link-secondary" title="View source" href="https://github.com/Invex-Games/logging-extensions/blob/v0.2.0/src/Invex.Extensions.Logging.File/Configuration/FileLoggerConfiguration.cs/#L15"><i class="bi bi-code-slash"></i></a>
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="Invex.html">Invex</a>.<a class="xref" href="Invex.Extensions.html">Extensions</a>.<a class="xref" href="Invex.Extensions.Logging.html">Logging</a>.<a class="xref" href="Invex.Extensions.Logging.File.html">File</a>.<a class="xref" href="Invex.Extensions.Logging.File.Configuration.html">Configuration</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Invex.Extensions.Logging.File.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Configuration options for the file logger. Bound from the <code>Logging:File</code> configuration section
+when registered via
+<a class="xref" href="Invex.Extensions.Logging.File.FileLoggerExtension.html#Invex_Extensions_Logging_File_FileLoggerExtension_AddFile_Microsoft_Extensions_Logging_ILoggingBuilder_System_Boolean_">AddFile(ILoggingBuilder, bool)</a>,
+and can also be set programmatically via the
+<a class="xref" href="Invex.Extensions.Logging.File.FileLoggerExtension.html#Invex_Extensions_Logging_File_FileLoggerExtension_AddFile_Microsoft_Extensions_Logging_ILoggingBuilder_System_Action_Invex_Extensions_Logging_File_Configuration_FileLoggerConfiguration__System_Boolean_">AddFile(ILoggingBuilder, Action&lt;FileLoggerConfiguration&gt;, bool)</a>
+overload.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[PublicAPI]
+public sealed class FileLoggerConfiguration</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+      <div><span class="xref">FileLoggerConfiguration</span></div>
+    </dd>
+  </dl>
+
+
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gethashcode">object.GetHashCode()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
+    </div>
+  </dd></dl>
+
+
+
+
+  <h2 id="Invex_Extensions_Logging_File_Configuration_FileLoggerConfiguration_remarks">Remarks</h2>
+  <div class="markdown level0 remarks"><p>Changes made to the bound configuration at runtime (for example, by editing <code>appsettings.json</code>)
+are picked up automatically and applied to subsequent log writes.</p>
+</div>
+
+
+  <h2 class="section" id="fields">Fields
+</h2>
+
+
+
+  <h3 id="Invex_Extensions_Logging_File_Configuration_FileLoggerConfiguration_DefaultFileSizeLimitBytes" data-uid="Invex.Extensions.Logging.File.Configuration.FileLoggerConfiguration.DefaultFileSizeLimitBytes">
+  DefaultFileSizeLimitBytes
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Invex-Games/logging-extensions/blob/v0.2.0/src/Invex.Extensions.Logging.File/Configuration/FileLoggerConfiguration.cs/#L32"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The default value of <a class="xref" href="Invex.Extensions.Logging.File.Configuration.FileLoggerConfiguration.html#Invex_Extensions_Logging_File_Configuration_FileLoggerConfiguration_FileSizeLimitBytes">FileSizeLimitBytes</a>: 100 MiB.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const long DefaultFileSizeLimitBytes = 104857600</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int64">long</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="Invex_Extensions_Logging_File_Configuration_FileLoggerConfiguration_DefaultLogDirectory" data-uid="Invex.Extensions.Logging.File.Configuration.FileLoggerConfiguration.DefaultLogDirectory">
+  DefaultLogDirectory
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Invex-Games/logging-extensions/blob/v0.2.0/src/Invex.Extensions.Logging.File/Configuration/FileLoggerConfiguration.cs/#L21"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The default value of <a class="xref" href="Invex.Extensions.Logging.File.Configuration.FileLoggerConfiguration.html#Invex_Extensions_Logging_File_Configuration_FileLoggerConfiguration_LogDirectory">LogDirectory</a>: <code>&quot;Logs&quot;</code>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const string DefaultLogDirectory = &quot;Logs&quot;</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="Invex_Extensions_Logging_File_Configuration_FileLoggerConfiguration_DefaultLogName" data-uid="Invex.Extensions.Logging.File.Configuration.FileLoggerConfiguration.DefaultLogName">
+  DefaultLogName
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Invex-Games/logging-extensions/blob/v0.2.0/src/Invex.Extensions.Logging.File/Configuration/FileLoggerConfiguration.cs/#L27"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The default value of <a class="xref" href="Invex.Extensions.Logging.File.Configuration.FileLoggerConfiguration.html#Invex_Extensions_Logging_File_Configuration_FileLoggerConfiguration_LogName">LogName</a>: <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>, which means the
+current application's name (<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.appdomain.friendlyname">FriendlyName</a>) is used.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const string? DefaultLogName = null</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="Invex_Extensions_Logging_File_Configuration_FileLoggerConfiguration_DefaultMaxTotalSizeBytes" data-uid="Invex.Extensions.Logging.File.Configuration.FileLoggerConfiguration.DefaultMaxTotalSizeBytes">
+  DefaultMaxTotalSizeBytes
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Invex-Games/logging-extensions/blob/v0.2.0/src/Invex.Extensions.Logging.File/Configuration/FileLoggerConfiguration.cs/#L42"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The default value of <a class="xref" href="Invex.Extensions.Logging.File.Configuration.FileLoggerConfiguration.html#Invex_Extensions_Logging_File_Configuration_FileLoggerConfiguration_MaxTotalSizeBytes">MaxTotalSizeBytes</a>: 10 GiB.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const long DefaultMaxTotalSizeBytes = 10737418240</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int64">long</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="Invex_Extensions_Logging_File_Configuration_FileLoggerConfiguration_DefaultRollingInterval" data-uid="Invex.Extensions.Logging.File.Configuration.FileLoggerConfiguration.DefaultRollingInterval">
+  DefaultRollingInterval
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Invex-Games/logging-extensions/blob/v0.2.0/src/Invex.Extensions.Logging.File/Configuration/FileLoggerConfiguration.cs/#L37"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The default value of <a class="xref" href="Invex.Extensions.Logging.File.Configuration.FileLoggerConfiguration.html#Invex_Extensions_Logging_File_Configuration_FileLoggerConfiguration_RolloverInterval">RolloverInterval</a>: <a class="xref" href="Invex.Extensions.Logging.File.Configuration.FileRolloverInterval.html#Invex_Extensions_Logging_File_Configuration_FileRolloverInterval_Day">Day</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const FileRolloverInterval DefaultRollingInterval = Day</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Invex.Extensions.Logging.File.Configuration.FileRolloverInterval.html">FileRolloverInterval</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="Invex_Extensions_Logging_File_Configuration_FileLoggerConfiguration_FileSizeLimitBytes_" data-uid="Invex.Extensions.Logging.File.Configuration.FileLoggerConfiguration.FileSizeLimitBytes*"></a>
+
+  <h3 id="Invex_Extensions_Logging_File_Configuration_FileLoggerConfiguration_FileSizeLimitBytes" data-uid="Invex.Extensions.Logging.File.Configuration.FileLoggerConfiguration.FileSizeLimitBytes">
+  FileSizeLimitBytes
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Invex-Games/logging-extensions/blob/v0.2.0/src/Invex.Extensions.Logging.File/Configuration/FileLoggerConfiguration.cs/#L72"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets the maximum size, in bytes, of a single log file. When writing an entry would cause the
+active file to reach this limit, the file is rolled over (renamed with a timestamp suffix) and a new
+active file is started. Defaults to <a class="xref" href="Invex.Extensions.Logging.File.Configuration.FileLoggerConfiguration.html#Invex_Extensions_Logging_File_Configuration_FileLoggerConfiguration_DefaultFileSizeLimitBytes">DefaultFileSizeLimitBytes</a> (100 MiB).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public long FileSizeLimitBytes { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int64">long</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Invex_Extensions_Logging_File_Configuration_FileLoggerConfiguration_LogDirectory_" data-uid="Invex.Extensions.Logging.File.Configuration.FileLoggerConfiguration.LogDirectory*"></a>
+
+  <h3 id="Invex_Extensions_Logging_File_Configuration_FileLoggerConfiguration_LogDirectory" data-uid="Invex.Extensions.Logging.File.Configuration.FileLoggerConfiguration.LogDirectory">
+  LogDirectory
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Invex-Games/logging-extensions/blob/v0.2.0/src/Invex.Extensions.Logging.File/Configuration/FileLoggerConfiguration.cs/#L49"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets the directory where log files are written. May be an absolute path, or a path
+relative to the application's current working directory. The directory is created automatically
+if it does not exist. Defaults to <a class="xref" href="Invex.Extensions.Logging.File.Configuration.FileLoggerConfiguration.html#Invex_Extensions_Logging_File_Configuration_FileLoggerConfiguration_DefaultLogDirectory">DefaultLogDirectory</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string LogDirectory { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Invex_Extensions_Logging_File_Configuration_FileLoggerConfiguration_LogName_" data-uid="Invex.Extensions.Logging.File.Configuration.FileLoggerConfiguration.LogName*"></a>
+
+  <h3 id="Invex_Extensions_Logging_File_Configuration_FileLoggerConfiguration_LogName" data-uid="Invex.Extensions.Logging.File.Configuration.FileLoggerConfiguration.LogName">
+  LogName
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Invex-Games/logging-extensions/blob/v0.2.0/src/Invex.Extensions.Logging.File/Configuration/FileLoggerConfiguration.cs/#L57"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets the base file name (without extension) of the log file. The active log file is named
+<code>{LogName}.log</code>, and rolled-over files are named <code>{LogName}_{timestamp}.log</code>.
+When <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> (the default), the current application's name
+(<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.appdomain.friendlyname">FriendlyName</a>) is used.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string? LogName { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Invex_Extensions_Logging_File_Configuration_FileLoggerConfiguration_MaxTotalSizeBytes_" data-uid="Invex.Extensions.Logging.File.Configuration.FileLoggerConfiguration.MaxTotalSizeBytes*"></a>
+
+  <h3 id="Invex_Extensions_Logging_File_Configuration_FileLoggerConfiguration_MaxTotalSizeBytes" data-uid="Invex.Extensions.Logging.File.Configuration.FileLoggerConfiguration.MaxTotalSizeBytes">
+  MaxTotalSizeBytes
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Invex-Games/logging-extensions/blob/v0.2.0/src/Invex.Extensions.Logging.File/Configuration/FileLoggerConfiguration.cs/#L86"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets the maximum combined size, in bytes, of rolled-over log files sharing the same base name.
+When a rollover occurs and the total size of rolled-over files meets or exceeds this limit, the oldest
+rolled-over file is deleted. Defaults to <a class="xref" href="Invex.Extensions.Logging.File.Configuration.FileLoggerConfiguration.html#Invex_Extensions_Logging_File_Configuration_FileLoggerConfiguration_DefaultMaxTotalSizeBytes">DefaultMaxTotalSizeBytes</a> (10 GiB).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public long MaxTotalSizeBytes { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int64">long</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Invex_Extensions_Logging_File_Configuration_FileLoggerConfiguration_PerLevelLogName_" data-uid="Invex.Extensions.Logging.File.Configuration.FileLoggerConfiguration.PerLevelLogName*"></a>
+
+  <h3 id="Invex_Extensions_Logging_File_Configuration_FileLoggerConfiguration_PerLevelLogName" data-uid="Invex.Extensions.Logging.File.Configuration.FileLoggerConfiguration.PerLevelLogName">
+  PerLevelLogName
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Invex-Games/logging-extensions/blob/v0.2.0/src/Invex.Extensions.Logging.File/Configuration/FileLoggerConfiguration.cs/#L65"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets per-<a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.logging.loglevel">LogLevel</a> overrides of the log file name, allowing entries of specific
+levels to be routed to separate files. For levels present in this dictionary, the mapped name is used
+in place of <a class="xref" href="Invex.Extensions.Logging.File.Configuration.FileLoggerConfiguration.html#Invex_Extensions_Logging_File_Configuration_FileLoggerConfiguration_LogName">LogName</a>; a <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> value falls back to the application's
+name. Levels not present use <a class="xref" href="Invex.Extensions.Logging.File.Configuration.FileLoggerConfiguration.html#Invex_Extensions_Logging_File_Configuration_FileLoggerConfiguration_LogName">LogName</a>. Empty by default.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Dictionary&lt;LogLevel, string?&gt; PerLevelLogName { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.dictionary-2">Dictionary</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.logging.loglevel">LogLevel</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Invex_Extensions_Logging_File_Configuration_FileLoggerConfiguration_RolloverInterval_" data-uid="Invex.Extensions.Logging.File.Configuration.FileLoggerConfiguration.RolloverInterval*"></a>
+
+  <h3 id="Invex_Extensions_Logging_File_Configuration_FileLoggerConfiguration_RolloverInterval" data-uid="Invex.Extensions.Logging.File.Configuration.FileLoggerConfiguration.RolloverInterval">
+  RolloverInterval
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Invex-Games/logging-extensions/blob/v0.2.0/src/Invex.Extensions.Logging.File/Configuration/FileLoggerConfiguration.cs/#L79"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets the time interval after which the active log file is rolled over, based on the file's
+creation time. Use <a class="xref" href="Invex.Extensions.Logging.File.Configuration.FileRolloverInterval.html#Invex_Extensions_Logging_File_Configuration_FileRolloverInterval_Infinite">Infinite</a> to disable time-based rollover.
+Defaults to <a class="xref" href="Invex.Extensions.Logging.File.Configuration.FileLoggerConfiguration.html#Invex_Extensions_Logging_File_Configuration_FileLoggerConfiguration_DefaultRollingInterval">DefaultRollingInterval</a> (<a class="xref" href="Invex.Extensions.Logging.File.Configuration.FileRolloverInterval.html#Invex_Extensions_Logging_File_Configuration_FileRolloverInterval_Day">Day</a>).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public FileRolloverInterval RolloverInterval { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Invex.Extensions.Logging.File.Configuration.FileRolloverInterval.html">FileRolloverInterval</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/Invex-Games/logging-extensions/blob/v0.2.0/src/Invex.Extensions.Logging.File/Configuration/FileLoggerConfiguration.cs/#L15" class="edit-link">Edit this page</a>
+        </div>
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Useful utilities for Microsoft.Extensions.Logging
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>
