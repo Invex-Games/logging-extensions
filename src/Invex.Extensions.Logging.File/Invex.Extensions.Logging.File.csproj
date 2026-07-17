@@ -7,13 +7,13 @@
   <!--  Packages-->
   <ItemGroup>
     <PackageReference Include="JetBrains.Annotations" Version="2026.2.0" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Configuration" Version="10.0.9" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Configuration" Version="10.0.10" />
     <PackageReference Include="System.IO.Abstractions" Version="22.2.0" />
   </ItemGroup>
 
   <!--  .NET Framework Packages-->
   <ItemGroup Condition="'$(TargetFramework)' == 'net48' or '$(TargetFramework)' == 'netstandard2.0'">
-    <PackageReference Include="Polyfill" Version="10.11.2">
+    <PackageReference Include="Polyfill" Version="11.0.1">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
@@ -39,8 +39,8 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
-    <PackageReference Include="Microsoft.Bcl.TimeProvider" Version="10.0.9" />
-    <PackageReference Include="System.Threading.Channels" Version="10.0.9" />
+    <PackageReference Include="Microsoft.Bcl.TimeProvider" Version="10.0.10" />
+    <PackageReference Include="System.Threading.Channels" Version="10.0.10" />
   </ItemGroup>
 
 </Project>
