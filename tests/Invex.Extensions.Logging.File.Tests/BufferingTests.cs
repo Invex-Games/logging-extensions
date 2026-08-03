@@ -34,9 +34,7 @@ public sealed class BufferingTests : TestBase
         StopApp();
 
         // Assert
-        var lines = FileSystem
-            .File
-            .ReadAllLines(logPath);
+        var lines = FileSystem.File.ReadAllLines(logPath);
 
         lines.Length.ShouldBe(entryCount);
 
@@ -59,12 +57,10 @@ public sealed class BufferingTests : TestBase
 
         // Dispose immediately, without giving the background thread time to settle; disposal must
         // drain everything still queued on the channel before returning.
-        StopApp(waitBeforeDispose: false);
+        StopApp(false);
 
         // Assert
-        var lines = FileSystem
-            .File
-            .ReadAllLines(logPath);
+        var lines = FileSystem.File.ReadAllLines(logPath);
 
         lines.Length.ShouldBe(entryCount);
 
@@ -73,4 +69,3 @@ public sealed class BufferingTests : TestBase
                 .ShouldEndWith($"Message {i}");
     }
 }
-

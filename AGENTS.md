@@ -1,4 +1,4 @@
-# Copilot Instructions
+# Agent Instructions
 
 Guidance for AI agents working in **Invex Logging Extensions** — a small, focused set of utilities for
 `Microsoft.Extensions.Logging`, currently consisting of a file logger provider with size- and time-based
@@ -43,6 +43,26 @@ Build the docs site:
 ```shell
 docfx docfx.json          # add --serve to preview locally
 ```
+
+After C# changes, run ReSharper cleanup over the solution. Resolve the SDK selected by `global.json`
+and pass its `MSBuild.dll`; this avoids ReSharper selecting an incompatible Visual Studio MSBuild:
+
+```powershell
+$sdk = dotnet --version
+jb cleanupcode Invex.Extensions.Logging.slnx --include="**.cs" --toolset-path="C:\Program Files\dotnet\sdk\$sdk\MSBuild.dll"
+```
+
+If `jb` is unavailable, install it with `dotnet tool install -g JetBrains.ReSharper.GlobalTools`.
+Cleanup honors `.editorconfig` and repository/team-shared `*.DotSettings` automatically.
+
+## Repository layout
+
+- `src/Invex.Extensions.Logging.File/` contains the library and its public configuration surface.
+- `tests/Invex.Extensions.Logging.File.Tests/` contains NUnit tests, test doubles, and Verify snapshots.
+- `_atom/` contains the Atom build definition.
+- `docs/`, `README.md`, `index.md`, `toc.yml`, and `docfx.json` define the DocFX site.
+- `.github/workflows/` and `.github/dependabot.yml` are generated or maintained from the Atom definition
+  and should not be hand-edited when Atom owns the change.
 
 ## Architecture overview
 
@@ -120,6 +140,16 @@ A drift between `_atom/IBuild.cs` and the committed YAML should be treated as a 
 Note that CI tests run on a matrix of `net8.0`/`net9.0`/`net10.0` × Ubuntu/Windows, plus a
 Windows-only `net48` job (`TestFxProjects`) — keep all target frameworks green.
 
+## Checklist: making a change
+
+1. Follow existing patterns and make precise, focused changes.
+2. Keep the public API minimal; add XML documentation and `[PublicAPI]` to new public surface.
+3. Update both buffered and direct paths when changing write behavior, preferably in shared writer logic.
+4. Add or update tests, then run `dotnet build` and `dotnet test` for the solution.
+5. Run `jb cleanupcode` with the SDK `MSBuild.dll` as shown above.
+6. Update `README.md` and the relevant `docs/` page for consumer-facing behavior.
+7. If generated workflows or their inputs changed, run `atom gen` and commit the generated files.
+
 ## Conventions
 
 - Annotate every new public type with `[PublicAPI]` — the in-repo analyzer flags anything missing,
@@ -184,4 +214,3 @@ For anything beyond the above, prefer these over duplicating detail:
 - `docs/buffering.md` — buffered vs. direct trade-offs and error handling.
 - `docs/log-format.md` — the exact log line format and parsing guidance.
 - `api/index.md` — entry point to the generated API reference.
-

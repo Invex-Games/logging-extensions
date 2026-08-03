@@ -2,9 +2,9 @@
 
 public abstract class TestBase
 {
-    private IDisposable? _disposableApp;
     protected MockFileSystem FileSystem = null!;
     protected TestTimeProvider TimeProvider = null!;
+    private IDisposable? _disposableApp;
 
     protected string GetLogPath(string? timestamp = null, string? customName = null) =>
         FileSystem.Path.Combine(FileSystem.Directory.GetCurrentDirectory(),

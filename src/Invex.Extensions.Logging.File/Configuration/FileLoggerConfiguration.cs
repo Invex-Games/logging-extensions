@@ -5,7 +5,8 @@
 ///     when registered via
 ///     <see cref="FileLoggerExtension.AddFile(Microsoft.Extensions.Logging.ILoggingBuilder, bool)" />,
 ///     and can also be set programmatically via the
-///     <see cref="FileLoggerExtension.AddFile(Microsoft.Extensions.Logging.ILoggingBuilder, System.Action{FileLoggerConfiguration}, bool)" />
+///     <see
+///         cref="FileLoggerExtension.AddFile(Microsoft.Extensions.Logging.ILoggingBuilder, System.Action{FileLoggerConfiguration}, bool)" />
 ///     overload.
 /// </summary>
 /// <remarks>

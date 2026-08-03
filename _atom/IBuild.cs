@@ -21,18 +21,6 @@ internal interface IBuild : IWorkflowBuildDefinition,
     IDocFxHelper,
     IWaitForCopilotReview
 {
-    [ParamDefinition("test-framework", "Test framework to use for unit tests")]
-    string TestFramework => GetParam(() => TestFramework, "net10.0");
-
-    [ParamDefinition("nuget-push-feed", "The Nuget feed to push to.")]
-    string NugetFeed => GetParam(() => NugetFeed, "https://api.nuget.org/v3/index.json");
-
-    [SecretDefinition("nuget-push-api-key", "The API key to use to push to Nuget.")]
-    string NugetApiKey => GetParam(() => NugetApiKey)!;
-
-    [ParamDefinition("prerelease-cleanup-below-version", "Unlist all prerelease packages below this stable version.")]
-    string PrereleaseCleanupBelowVersion => GetParam(() => PrereleaseCleanupBelowVersion)!;
-
     static readonly string[] ProjectsToPack = [Projects.Invex_Extensions_Logging_File.Name];
     static readonly string[] ProjectsToTest = [Projects.Invex_Extensions_Logging_File_Tests.Name];
     static readonly string[] ProjectsToTestFx = [Projects.Invex_Extensions_Logging_File_Tests.Name];
@@ -49,18 +37,17 @@ internal interface IBuild : IWorkflowBuildDefinition,
         WorkflowLabels.Github.RunsOn.Ubuntu_Latest, WorkflowLabels.Github.RunsOn.Windows_Latest,
     ];
 
-    IEnumerable<RootedPath> ICheckPrForBreakingChanges.BreakingChangeFilesToCheck =>
-        RootedFileSystem
-            .Directory
-            .GetFiles(RootedFileSystem.AtomRootDirectory / "tests", "*.verified.txt", SearchOption.AllDirectories)
-            .Select(RootedFileSystem.CreateRootedPath);
+    [ParamDefinition("test-framework", "Test framework to use for unit tests")]
+    string TestFramework => GetParam(() => TestFramework, "net10.0");
 
-    IReadOnlyList<IBuildOption> IBuildDefinition.Options =>
-    [
-        BuildOptions.GitVersion.ProvideBuildId,
-        BuildOptions.GitVersion.ProvideBuildVersion,
-        BuildOptions.Steps.SetupDotnet.Dotnet100X(),
-    ];
+    [ParamDefinition("nuget-push-feed", "The Nuget feed to push to.")]
+    string NugetFeed => GetParam(() => NugetFeed, "https://api.nuget.org/v3/index.json");
+
+    [SecretDefinition("nuget-push-api-key", "The API key to use to push to Nuget.")]
+    string NugetApiKey => GetParam(() => NugetApiKey)!;
+
+    [ParamDefinition("prerelease-cleanup-below-version", "Unlist all prerelease packages below this stable version.")]
+    string PrereleaseCleanupBelowVersion => GetParam(() => PrereleaseCleanupBelowVersion)!;
 
     Target PackProjects =>
         t => t
@@ -221,6 +208,19 @@ internal interface IBuild : IWorkflowBuildDefinition,
             .Executes(cancellationToken =>
                 PublishDocFxDocsToGithub(GithubToken, GeneratedDocsArtifactName, cancellationToken));
 
+    IEnumerable<RootedPath> ICheckPrForBreakingChanges.BreakingChangeFilesToCheck =>
+        RootedFileSystem
+            .Directory
+            .GetFiles(RootedFileSystem.AtomRootDirectory / "tests", "*.verified.txt", SearchOption.AllDirectories)
+            .Select(RootedFileSystem.CreateRootedPath);
+
+    IReadOnlyList<IBuildOption> IBuildDefinition.Options =>
+    [
+        BuildOptions.GitVersion.ProvideBuildId,
+        BuildOptions.GitVersion.ProvideBuildVersion,
+        BuildOptions.Steps.SetupDotnet.Dotnet100X(),
+    ];
+
     IReadOnlyList<WorkflowDefinition> IWorkflowBuildDefinition.Workflows =>
     [
         new("Validate")
@@ -340,14 +340,14 @@ internal interface IBuild : IWorkflowBuildDefinition,
                         BuildOptions.Inject.Secret(nameof(GithubToken)),
                         new GithubTokenPermissionsOption(new Permissions.Exact(new()
                         {
-                            Contents = PermissionsLevel.Write
+                            Contents = PermissionsLevel.Write,
                         })),
                         BuildOptions.Target.RunIfWorkflowCondition(TextExpressions
                             .Target
                             .ParamOutput(this, nameof(SetupBuildInfo), nameof(BuildVersion))
                             .Contains("-")
-                            .EqualTo(false))
-                    ]
+                            .EqualTo(false)),
+                    ],
                 },
                 new(nameof(PublishDocs))
                 {
@@ -381,17 +381,17 @@ internal interface IBuild : IWorkflowBuildDefinition,
                         BuildOptions.Inject.Github.DependabotEnableAutoMergePat,
                         BuildOptions.Target.RunIfWorkflowCondition(
                             TextExpressions.Github.GithubActor.EqualToString("dependabot[bot]")),
-                    ]
-                }
+                    ],
+                },
             ],
-            Types = [WorkflowTypes.Github.Action]
+            Types = [WorkflowTypes.Github.Action],
         },
         new("Cleanup Prereleases")
         {
             Triggers =
             [
                 WorkflowTriggers.ManualWithInputs(
-                    ManualStringInput.ForParam(ParamDefinitions[nameof(PrereleaseCleanupBelowVersion)]))
+                    ManualStringInput.ForParam(ParamDefinitions[nameof(PrereleaseCleanupBelowVersion)])),
             ],
             Targets =
             [
@@ -400,7 +400,7 @@ internal interface IBuild : IWorkflowBuildDefinition,
                     Options =
                     [
                         BuildOptions.Target.SuppressArtifactPublishing,
-                        BuildOptions.Inject.Secret(nameof(NugetApiKey))
+                        BuildOptions.Inject.Secret(nameof(NugetApiKey)),
                     ],
                 },
             ],
