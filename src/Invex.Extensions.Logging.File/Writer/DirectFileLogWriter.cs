@@ -1,8 +1,8 @@
-﻿namespace Invex.Extensions.Logging.File.Writer;
+namespace Invex.Extensions.Logging.File.Writer;
 
 /// <summary>
 ///     An <see cref="IFileLogWriter" /> that writes each log entry to disk synchronously on the calling
-///     thread, guaranteeing the entry is persisted before <see cref="Log" /> returns.
+///     thread, guaranteeing the entry is persisted before <see cref="Log" /> returns when writing succeeds.
 /// </summary>
 /// <param name="fileSystem">The file system abstraction used for all file operations.</param>
 /// <param name="timeProvider">The time provider used for timestamps and rollover decisions.</param>
@@ -28,96 +28,31 @@ internal sealed class DirectFileLogWriter(
     }
 
     /// <summary>
-    ///     Writes the entry to its target file, performing size-based rollover, time-based rollover, and
-    ///     total-size purging as needed. Failures are logged to the console/debug output and retried up to
-    ///     five times before the entry is dropped.
+    ///     Resolves the captured group and severity, then writes the entry with rollover and retention.
+    ///     Failures are reported and retried up to five times before the entry is dropped.
     /// </summary>
     /// <inheritdoc />
-    public void Log(string log, LogLevel logLevel)
+    public void Log(string log, LogLevel logLevel, string? group)
     {
-        #if NET8_0_OR_GREATER
-        var config = getCurrentConfig();
-        #else
-        var config = getCurrentConfig()!;
-        #endif
+        FileLoggerConfiguration? config = null;
 
-        var logLengthBytes = Encoding.UTF8.GetByteCount(log);
-
-        var attempt = 0;
-
-        while (true)
+        FileLogWriterUtil.TryWrite(() =>
         {
-            try
-            {
-                var logsDirectoryName = config.LogDirectory;
+            #if NET8_0_OR_GREATER
+            config ??= getCurrentConfig();
+            #else
+            config ??= getCurrentConfig()!;
+            #endif
 
-                var logsDirectory = fileSystem.Path.IsPathRooted(logsDirectoryName)
-                    ? logsDirectoryName
-                    : fileSystem.Path.Combine(fileSystem.Directory.GetCurrentDirectory(), logsDirectoryName);
+            var logName = FileLogWriterUtil.ResolveLogName(config, logLevel, group);
 
-                if (!fileSystem.Directory.Exists(logsDirectory))
-                    fileSystem.Directory.CreateDirectory(logsDirectory);
-
-                var logName = config.PerLevelLogName.TryGetValue(logLevel, out var name)
-                    ? name ?? AppDomain.CurrentDomain.FriendlyName
-                    : config.LogName ?? AppDomain.CurrentDomain.FriendlyName;
-
-                var logFilePath = fileSystem.Path.Combine(logsDirectory, $"{logName}.log");
-
-                var fileInfo = fileSystem.FileInfo.New(logFilePath);
-                var newFileCreated = !fileInfo.Exists;
-
-                if (!newFileCreated && fileInfo.Length + logLengthBytes >= config.FileSizeLimitBytes)
-                {
-                    FileLogWriterUtil.RollOnFileSize(fileSystem, timeProvider, logsDirectory, logName, logFilePath);
-                    newFileCreated = true;
-                }
-
-                if (!newFileCreated && config.RolloverInterval is not FileRolloverInterval.Infinite)
-                    newFileCreated = FileLogWriterUtil.RollOnTimeInterval(fileSystem,
-                        timeProvider,
-                        config.RolloverInterval,
-                        fileInfo,
-                        logsDirectory,
-                        logName,
-                        logFilePath);
-
-                if (newFileCreated)
-                    FileLogWriterUtil.PurgeOnTotalSize(fileSystem, config.MaxTotalSizeBytes, logsDirectory, logName);
-
-                FileLogWriterUtil.WriteToFile(fileSystem, logFilePath, [log]);
-
-                // If we have rolled over the file or are writing for the first time, we want to ensure the
-                // file has the correct timestamps
-                if (newFileCreated)
-                {
-                    fileInfo.Refresh();
-
-                    fileInfo.CreationTimeUtc = fileInfo.LastWriteTimeUtc = fileInfo.LastAccessTimeUtc = timeProvider
-                        .GetUtcNow()
-                        .DateTime;
-                }
-
-                break;
-            }
-            catch (Exception ex)
-            {
-                try
-                {
-                    Console.WriteLine(ex);
-                    Debug.WriteLine(ex);
-                }
-                catch
-                {
-                    // Can't do anything more here, better to just continue
-                }
-
-                if (attempt >= 5)
-                    break;
-
-                attempt++;
-            }
-        }
+            FileLogWriterUtil.WriteLogEntries(fileSystem,
+                timeProvider,
+                config,
+                logName,
+                [log],
+                Encoding.UTF8.GetByteCount(log));
+        });
     }
 
     /// <summary>

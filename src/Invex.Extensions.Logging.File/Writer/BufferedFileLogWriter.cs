@@ -1,4 +1,4 @@
-﻿namespace Invex.Extensions.Logging.File.Writer;
+namespace Invex.Extensions.Logging.File.Writer;
 
 /// <summary>
 ///     An <see cref="IFileLogWriter" /> that enqueues log entries onto an unbounded in-memory channel and
@@ -11,10 +11,9 @@
 ///     that runtime configuration changes take effect without a restart.
 /// </param>
 /// <remarks>
-///     The background thread reads entries in batches (up to 10 per iteration), groups them by
-///     <see cref="LogLevel" /> to resolve the target file name, and applies size-based rollover, time-based
-///     rollover, and total-size purging before appending. Disposal signals the background thread to stop and
-///     blocks until it has drained all remaining queued entries to disk and exited.
+///     The background thread reads up to 10 entries per iteration and groups them by resolved file name
+///     and severity. Group identity is captured when logging; file names are resolved when writing.
+///     Disposal drains all remaining queued entries before the background thread exits.
 /// </remarks>
 internal sealed class BufferedFileLogWriter(
     IFileSystem fileSystem,
@@ -22,13 +21,18 @@ internal sealed class BufferedFileLogWriter(
     Func<FileLoggerConfiguration> getCurrentConfig
 ) : IFileLogWriter
 {
+    /// <summary>
+    ///     The queue shared by logging threads and the single background writer.
+    /// </summary>
     private readonly Channel<LogEvent> _logEntryChannel = Channel.CreateUnbounded<LogEvent>(new()
     {
         SingleReader = true,
         SingleWriter = false,
     });
 
-    private readonly CancellationTokenSource _writerCancelTokenSource = new();
+    /// <summary>
+    ///     The background writer thread, created when the provider starts.
+    /// </summary>
     private Thread? _writerThread;
 
     /// <inheritdoc />
@@ -45,40 +49,21 @@ internal sealed class BufferedFileLogWriter(
         _writerThread = new(() => RunBackgroundThread(_logEntryChannel.Reader,
             fileSystem,
             TimeProvider,
-            getCurrentConfig,
-            _writerCancelTokenSource.Token));
+            getCurrentConfig));
 
         _writerThread.Start();
     }
 
     /// <summary>
-    ///     Enqueues a log entry for the background thread to write. Retries up to five times on failure
-    ///     before rethrowing.
+    ///     Enqueues the entry and its captured group. Enqueue failures are reported and retried up to
+    ///     five times before the entry is dropped.
     /// </summary>
     /// <inheritdoc />
-    public void Log(string log, LogLevel logLevel)
-    {
-        var attempt = 0;
-
-        while (true)
+    public void Log(string log, LogLevel logLevel, string? group) =>
+        FileLogWriterUtil.TryWrite(() => _logEntryChannel.Writer.TryWrite(new(log, logLevel)
         {
-            try
-            {
-                _logEntryChannel.Writer.TryWrite(new(log, logLevel));
-
-                break;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex);
-
-                if (attempt >= 5)
-                    throw;
-
-                attempt++;
-            }
-        }
-    }
+            Group = group,
+        }));
 
     /// <summary>
     ///     Signals the background thread to stop and blocks until it has drained all remaining queued
@@ -87,162 +72,115 @@ internal sealed class BufferedFileLogWriter(
     public void Dispose()
     {
         _logEntryChannel.Writer.TryComplete();
-        _writerCancelTokenSource.Cancel();
         _writerThread?.Join();
         _writerThread = null;
     }
 
     /// <summary>
-    ///     The background thread's main loop: repeatedly drains up to 10 entries from the channel, groups
-    ///     them by <see cref="LogLevel" />, and writes each group to its target file, performing rollover
-    ///     and purging as needed. Per-group write failures are logged to the console/debug output and
-    ///     retried up to five times before the group is skipped.
+    ///     Drains up to 10 entries at a time and writes each resolved file/severity bucket. Routing and
+    ///     file-operation failures are retried without terminating the background worker.
     /// </summary>
     /// <param name="reader">The channel reader to drain log entries from.</param>
     /// <param name="fileSystem">The file system abstraction used for all file operations.</param>
     /// <param name="timeProvider">The time provider used for timestamps and rollover decisions.</param>
     /// <param name="getCurrentConfig">A delegate returning the current configuration.</param>
-    /// <param name="cancellationToken">
-    ///     A token that stops the loop once cancelled and the channel has been fully drained.
-    /// </param>
     private static void RunBackgroundThread(
         ChannelReader<LogEvent> reader,
         IFileSystem fileSystem,
         TimeProvider timeProvider,
-        Func<FileLoggerConfiguration> getCurrentConfig,
-        CancellationToken cancellationToken)
+        Func<FileLoggerConfiguration> getCurrentConfig)
     {
-        while (true)
+        // Channel completion ends the wait only after all queued entries have been read. Checking
+        // a separate stop signal after an empty read could miss an entry enqueued between the two.
+        while (reader
+               .WaitToReadAsync()
+               .AsTask()
+               .GetAwaiter()
+               .GetResult())
         {
-            var logsByLevel = new Dictionary<LogLevel, List<string>>();
-            var logsLengthBytesByLevel = new Dictionary<LogLevel, int>();
-
-            #if NET8_0_OR_GREATER
-            var config = getCurrentConfig();
-            #else
-            var config = getCurrentConfig()!;
-            #endif
-
-            var readCount = 0;
+            var entries = new List<LogEvent>();
             const int maxReadCount = 10;
 
-            while (readCount < maxReadCount && reader.TryRead(out var item))
-            {
-                logsByLevel.TryAdd(item.LogLevel, []);
+            while (entries.Count < maxReadCount && reader.TryRead(out var item))
+                entries.Add(item);
 
-                logsByLevel[item.LogLevel]
-                    .Add(item.Message);
+            FileLoggerConfiguration? config = null;
+            LogRouteComparer? routeComparer = null;
 
-                logsLengthBytesByLevel.TryAdd(item.LogLevel, 0);
-                logsLengthBytesByLevel[item.LogLevel] += Encoding.UTF8.GetByteCount(item.Message);
-
-                readCount++;
-            }
-
-            if (logsByLevel.Count == 0)
-            {
-                if (cancellationToken.IsCancellationRequested)
-                    break;
-
-                continue;
-            }
-
-            foreach (var logLevel in logsByLevel.Keys)
-            {
-                var logs = logsByLevel[logLevel];
-                var logsLengthBytes = logsLengthBytesByLevel[logLevel];
-
-                var logsDirectoryName = config.LogDirectory;
-
-                var logsDirectory = fileSystem.Path.IsPathRooted(logsDirectoryName)
-                    ? logsDirectoryName
-                    : fileSystem.Path.Combine(fileSystem.Directory.GetCurrentDirectory(), logsDirectoryName);
-
-                if (!fileSystem.Directory.Exists(logsDirectory))
-                    fileSystem.Directory.CreateDirectory(logsDirectory);
-
-                var logName = config.PerLevelLogName.TryGetValue(logLevel, out var name)
-                    ? name ?? AppDomain.CurrentDomain.FriendlyName
-                    : config.LogName ?? AppDomain.CurrentDomain.FriendlyName;
-
-                var logFilePath = fileSystem.Path.Combine(logsDirectory, $"{logName}.log");
-
-                var attempt = 0;
-
-                while (true)
+            if (!FileLogWriterUtil.TryWrite(() =>
                 {
-                    try
-                    {
-                        var fileInfo = fileSystem.FileInfo.New(logFilePath);
-                        var newFileCreated = !fileInfo.Exists;
+                    config = getCurrentConfig();
 
-                        if (!newFileCreated && fileInfo.Length + logsLengthBytes >= config.FileSizeLimitBytes)
-                        {
-                            FileLogWriterUtil.RollOnFileSize(fileSystem,
-                                timeProvider,
-                                logsDirectory,
-                                logName,
-                                logFilePath);
+                    routeComparer = new(new FilePathComparer(fileSystem));
+                }))
+                continue;
 
-                            newFileCreated = true;
-                        }
+            var logsByRoute =
+                new Dictionary<(string FilePath, LogLevel Level), (string LogName, List<string> Logs)>(routeComparer);
 
-                        if (!newFileCreated && config.RolloverInterval is not FileRolloverInterval.Infinite)
-                            newFileCreated = FileLogWriterUtil.RollOnTimeInterval(fileSystem,
-                                timeProvider,
-                                config.RolloverInterval,
-                                fileInfo,
-                                logsDirectory,
-                                logName,
-                                logFilePath);
+            var lengthsByRoute = new Dictionary<(string FilePath, LogLevel Level), int>(routeComparer);
 
-                        if (newFileCreated)
-                            FileLogWriterUtil.PurgeOnTotalSize(fileSystem,
-                                config.MaxTotalSizeBytes,
-                                logsDirectory,
-                                logName);
+            foreach (var entry in entries)
+                FileLogWriterUtil.TryWrite(() =>
+                {
+                    var logName = FileLogWriterUtil.ResolveLogName(config!, entry.LogLevel, entry.Group);
 
-                        FileLogWriterUtil.WriteToFile(fileSystem, logFilePath, logs);
+                    var filePath =
+                        fileSystem.Path.GetFullPath(fileSystem.Path.Combine(config!.LogDirectory, $"{logName}.log"));
 
-                        // If we have rolled over the file or are writing for the first time, we want to ensure the
-                        // file has the correct timestamps
-                        if (newFileCreated)
-                        {
-                            fileInfo.Refresh();
+                    // Case-only aliases must be compared on the destination filesystem, including
+                    // the first batch before any active file has been created.
+                    if (!fileSystem.Directory.Exists(config.LogDirectory))
+                        fileSystem.Directory.CreateDirectory(config.LogDirectory);
 
-                            fileInfo.CreationTimeUtc = fileInfo.LastWriteTimeUtc = fileInfo.LastAccessTimeUtc =
-                                timeProvider.GetUtcNow()
-                                    .DateTime;
-                        }
+                    var route = (filePath, entry.LogLevel);
+                    logsByRoute.TryAdd(route, (logName, []));
 
-                        break;
-                    }
-                    catch (Exception ex)
-                    {
-                        try
-                        {
-                            Console.WriteLine(ex);
-                            Debug.WriteLine(ex);
-                        }
-                        catch
-                        {
-                            // Can't do anything more here, better to just continue
-                        }
+                    logsByRoute[route]
+                        .Logs
+                        .Add(entry.Message);
 
-                        if (attempt >= 5)
-                            break;
+                    lengthsByRoute.TryAdd(route, 0);
+                    lengthsByRoute[route] += Encoding.UTF8.GetByteCount(entry.Message);
+                });
 
-                        attempt++;
-                    }
-                }
-            }
+            foreach (var route in logsByRoute.Keys)
+                FileLogWriterUtil.TryWrite(() => FileLogWriterUtil.WriteLogEntries(fileSystem,
+                    timeProvider,
+                    config!,
+                    logsByRoute[route].LogName,
+                    logsByRoute[route].Logs,
+                    lengthsByRoute[route]));
         }
     }
 
     /// <summary>
-    ///     A queued log entry pairing the formatted message with its severity.
+    ///     Compares batch routes using the destination filesystem's casing rules and exact severity,
+    ///     preserving entry order when normalized configured destinations select the same file.
+    /// </summary>
+    /// <param name="logNameComparer">The filename comparer for the writer's file system.</param>
+    private sealed class LogRouteComparer(IEqualityComparer<string> logNameComparer)
+        : IEqualityComparer<(string FilePath, LogLevel Level)>
+    {
+        /// <inheritdoc />
+        public bool Equals((string FilePath, LogLevel Level) x, (string FilePath, LogLevel Level) y) =>
+            x.Level == y.Level && logNameComparer.Equals(x.FilePath, y.FilePath);
+
+        /// <inheritdoc />
+        public int GetHashCode((string FilePath, LogLevel Level) obj) =>
+            unchecked((logNameComparer.GetHashCode(obj.FilePath) * 397) ^ (int)obj.Level);
+    }
+
+    /// <summary>
+    ///     A queued log entry containing its formatted message, severity, and captured scope group.
     /// </summary>
     /// <param name="Message">The fully formatted log entry, including the trailing newline.</param>
     /// <param name="LogLevel">The severity of the entry, used to resolve per-level file names.</param>
-    private sealed record LogEvent(string Message, LogLevel LogLevel);
+    private sealed record LogEvent(string Message, LogLevel LogLevel)
+    {
+        /// <summary>
+        ///     Gets the scope group captured on the logging thread.
+        /// </summary>
+        public string? Group { get; init; }
+    }
 }

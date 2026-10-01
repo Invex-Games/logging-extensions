@@ -3,6 +3,7 @@ global using System.Diagnostics;
 global using System.IO.Abstractions;
 global using System.Runtime.CompilerServices;
 global using System.Text;
+global using System.Text.RegularExpressions;
 global using System.Threading.Channels;
 global using Invex.Extensions.Logging.File.Configuration;
 global using Invex.Extensions.Logging.File.Provider;

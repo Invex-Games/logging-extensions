@@ -21,9 +21,22 @@ internal interface IBuild : IWorkflowBuildDefinition,
     IDocFxHelper,
     IWaitForCopilotReview
 {
-    static readonly string[] ProjectsToPack = [Projects.Invex_Extensions_Logging_File.Name];
-    static readonly string[] ProjectsToTest = [Projects.Invex_Extensions_Logging_File_Tests.Name];
-    static readonly string[] ProjectsToTestFx = [Projects.Invex_Extensions_Logging_File_Tests.Name];
+    static readonly string[] ProjectsToPack =
+    [
+        Projects.Invex_Extensions_Logging_FancyConsole.Name, Projects.Invex_Extensions_Logging_File.Name,
+    ];
+
+    static readonly string[] ProjectsToTest =
+    [
+        Projects.Invex_Extensions_Logging_FancyConsole_Tests.Name,
+        Projects.Invex_Extensions_Logging_File_Tests.Name,
+    ];
+
+    static readonly string[] ProjectsToTestFx =
+    [
+        Projects.Invex_Extensions_Logging_FancyConsole_Tests.Name,
+        Projects.Invex_Extensions_Logging_File_Tests.Name,
+    ];
 
     static readonly string[] TestFrameworkNames =
     [

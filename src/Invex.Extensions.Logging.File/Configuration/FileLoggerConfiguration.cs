@@ -51,19 +51,30 @@ public sealed class FileLoggerConfiguration
 
     /// <summary>
     ///     Gets or sets the base file name (without extension) of the log file. The active log file is named
-    ///     <c>{LogName}.log</c>, and rolled-over files are named <c>{LogName}_{timestamp}.log</c>.
+    ///     <c>{LogName}.log</c> before any configured group and level suffixes are appended. Rolled-over files
+    ///     append <c>_{timestamp}</c> to the complete name before the extension.
     ///     When <see langword="null" /> (the default), the current application's name
     ///     (<see cref="System.AppDomain.FriendlyName" />) is used.
     /// </summary>
     public string? LogName { get; set; } = DefaultLogName;
 
     /// <summary>
-    ///     Gets or sets per-<see cref="LogLevel" /> overrides of the log file name, allowing entries of specific
-    ///     levels to be routed to separate files. For levels present in this dictionary, the mapped name is used
-    ///     in place of <see cref="LogName" />; a <see langword="null" /> value falls back to the application's
-    ///     name. Levels not present use <see cref="LogName" />. Empty by default.
+    ///     Gets or sets per-<see cref="LogLevel" /> file name suffixes. A matching nonempty suffix is appended
+    ///     to <see cref="LogName" /> (or the application's name when null), separated by an underscore.
+    ///     When a group also matches <see cref="PerGroupLogName" />, its suffix precedes the level suffix:
+    ///     <c>{LogName}_{groupSuffix}_{levelSuffix}.log</c>. Missing levels and mapped null or empty values
+    ///     add no level suffix or separator. Empty by default.
     /// </summary>
     public Dictionary<LogLevel, string?> PerLevelLogName { get; set; } = [];
+
+    /// <summary>
+    ///     Gets or sets file name suffixes for groups supplied by a logging scope's <c>Group</c> property.
+    ///     A matching nonempty suffix is appended to <see cref="LogName" /> (or the application's name when
+    ///     null), separated by an underscore, before any <see cref="PerLevelLogName" /> suffix. Missing or
+    ///     unmapped groups and mapped null or empty values add no group suffix or separator. Empty by default,
+    ///     with case-sensitive group matching; a replacement dictionary's comparer is respected.
+    /// </summary>
+    public Dictionary<string, string?> PerGroupLogName { get; set; } = [];
 
     /// <summary>
     ///     Gets or sets the maximum size, in bytes, of a single log file. When writing an entry would cause the

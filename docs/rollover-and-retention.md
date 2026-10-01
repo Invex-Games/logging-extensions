@@ -5,14 +5,28 @@ files are purged once the total disk usage hits a configurable cap.
 
 ## File naming
 
+In the names below, `name` means `LogName` (or the application friendly name when null), followed by any
+nonempty group and level suffixes: `{baseName}[_{groupSuffix}][_{levelSuffix}]`. Omitted suffixes add no
+separator. See [group routing](configuration.md#routing-groups-to-separate-files) for the selection rules.
+
 | File                        | Name                                |
 |-----------------------------|--------------------------------------|
-| Active log file             | `{LogName}.log`                      |
-| Rolled-over log file        | `{LogName}_{yyMMdd-HHmmss}.log`      |
-| Rolled-over (name collision)| `{LogName}_{yyMMdd-HHmmss}_{n}.log`  |
+| Active log file             | `{name}.log`                      |
+| Rolled-over log file        | `{name}_{yyMMdd-HHmmss}.log`      |
+| Rolled-over (name collision)| `{name}_{yyMMdd-HHmmss}_{n}.log`  |
 
 The timestamp is the **local time at the moment of rollover**. If a file with that name already exists
-(e.g. two rollovers within the same second), a numeric suffix `_1`, `_2`, … is appended.
+(e.g. two rollovers within the same second), a numeric suffix `_1`, `_2`, … is appended. Configured active
+destinations are also skipped when choosing an archive name, even if their files do not yet exist.
+
+Case-only path aliases are checked against the destination filesystem for buffered routing, reserved
+active names, and archive retention. For example, `app_orders` and `app_ORDERS` share a destination on
+a case-insensitive directory and remain separate on a case-sensitive directory. Archive extensions
+follow the same rule, including `.LOG` when the directory ignores case.
+
+Ambiguous case-only comparisons create and delete a unique temporary `.tmp` file in the destination
+directory. Results are reused within the batch or rollover/retention operation. The directory must
+permit creating and deleting this file; failures follow the usual write retry and drop behavior.
 
 Example:
 
@@ -60,16 +74,20 @@ next log entry arrives.
 ## Retention (purging)
 
 Whenever a rollover occurs (or a brand-new log file is created), the provider sums the sizes of all
-rolled-over files matching `{LogName}_*.log` in the log directory. If the total meets or exceeds
+rolled-over files matching the exact base name followed by `_yyMMdd-HHmmss`, optionally a positive numeric
+collision suffix, and `.log` in the log directory. If the total meets or exceeds
 `MaxTotalSizeBytes` (default **10 GiB**), the **oldest** rolled-over file (by creation time) is deleted.
 
 > [!NOTE]
-> - The active `{LogName}.log` file is never purged.
+> - Active destinations from the current configuration are never purged, even if a configured name
+>   resembles another file's archive name.
 > - One file is deleted per rollover. Because purging runs on every rollover, disk usage stays bounded over
 >   time; however, if you drastically lower `MaxTotalSizeBytes` on an existing large directory, it will take
 >   several rollovers to converge to the new cap.
-> - When using `PerLevelLogName`, each base name is rolled and purged independently — `MaxTotalSizeBytes`
->   applies per name, not across all files.
+> - Names with group, level, or combined suffixes roll and purge independently — `MaxTotalSizeBytes`
+>   applies per resolved base name, not across all files. Routes that resolve to the same name share the limit.
+> - Archives for `app_orders_errors` do not count toward the limit for `app_orders`; similar prefixes alone do
+>   not make a file part of that route's archive set.
 
 ## Choosing limits
 

@@ -4,11 +4,16 @@
 ///     Base class for file logger providers. Caches one <see cref="FileLogger" /> per category name and
 ///     tracks the current <see cref="FileLoggerConfiguration" />, reacting to configuration changes at runtime.
 /// </summary>
-internal abstract class FileLoggerProvider
+internal abstract class FileLoggerProvider : ISupportExternalScope
 {
     private readonly ConcurrentDictionary<string, FileLogger> _loggers = new(StringComparer.OrdinalIgnoreCase);
     private readonly IDisposable? _onChangeToken;
     private FileLoggerConfiguration _currentConfig;
+
+    /// <summary>
+    ///     The scope provider shared by all categories, replaced when a logger factory supplies one.
+    /// </summary>
+    private IExternalScopeProvider _scopeProvider = new LoggerExternalScopeProvider();
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="FileLoggerProvider" /> class and subscribes to
@@ -26,6 +31,17 @@ internal abstract class FileLoggerProvider
     /// </summary>
     protected abstract IFileLogWriter LogWriter { get; }
 
+    /// <inheritdoc />
+    public void SetScopeProvider(IExternalScopeProvider scopeProvider) =>
+        _scopeProvider = scopeProvider;
+
+    /// <summary>
+    ///     Gets the current scope provider, including replacements made after a logger was created.
+    /// </summary>
+    /// <returns>The scope provider used for group routing.</returns>
+    private IExternalScopeProvider GetScopeProvider() =>
+        _scopeProvider;
+
     /// <summary>
     ///     Creates (or returns a cached) <see cref="FileLogger" /> for the given category, ensuring the
     ///     underlying <see cref="LogWriter" /> has been started. Category names are compared
@@ -38,9 +54,9 @@ internal abstract class FileLoggerProvider
         LogWriter.Start();
 
         #if NET8_0_OR_GREATER
-        return _loggers.GetOrAdd(categoryName, name => new(name, LogWriter));
+        return _loggers.GetOrAdd(categoryName, name => new(name, LogWriter, GetScopeProvider));
         #else
-        return _loggers.GetOrAdd(categoryName, name => new(name, LogWriter))!;
+        return _loggers.GetOrAdd(categoryName, name => new(name, LogWriter, GetScopeProvider))!;
         #endif
     }
 

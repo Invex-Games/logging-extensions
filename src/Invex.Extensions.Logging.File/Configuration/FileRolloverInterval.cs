@@ -12,20 +12,20 @@
 public enum FileRolloverInterval
 {
     /// <summary>Never roll over based on time. Files are still rolled over when they reach the size limit.</summary>
-    Infinite,
+    Infinite = 0,
 
     /// <summary>Roll over after 365 days.</summary>
-    Year,
+    Year = 1,
 
     /// <summary>Roll over after 30 days.</summary>
-    Month,
+    Month = 2,
 
     /// <summary>Roll over after one day.</summary>
-    Day,
+    Day = 3,
 
     /// <summary>Roll over after one hour.</summary>
-    Hour,
+    Hour = 4,
 
     /// <summary>Roll over after one minute.</summary>
-    Minute,
+    Minute = 5,
 }

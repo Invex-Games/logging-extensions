@@ -76,12 +76,12 @@ public sealed class BasicTests : TestBase
             {
                 config.PerLevelLogName = new()
                 {
-                    { LogLevel.Trace, $"{AppDomain.CurrentDomain.FriendlyName}_DBG" },
-                    { LogLevel.Debug, $"{AppDomain.CurrentDomain.FriendlyName}_DBG" },
-                    { LogLevel.Information, $"{AppDomain.CurrentDomain.FriendlyName}_DBG" },
-                    { LogLevel.Warning, $"{AppDomain.CurrentDomain.FriendlyName}_DBG" },
-                    { LogLevel.Error, $"{AppDomain.CurrentDomain.FriendlyName}_ERR" },
-                    { LogLevel.Critical, $"{AppDomain.CurrentDomain.FriendlyName}_ERR" },
+                    { LogLevel.Trace, "DBG" },
+                    { LogLevel.Debug, "DBG" },
+                    { LogLevel.Information, "DBG" },
+                    { LogLevel.Warning, "DBG" },
+                    { LogLevel.Error, "ERR" },
+                    { LogLevel.Critical, "ERR" },
                 };
             },
             buffered);

@@ -43,11 +43,16 @@ public sealed class BufferingTests : TestBase
                 .ShouldEndWith($"Message {i}");
     }
 
-    [Test]
-    public void Buffered_Logger_Flushes_Pending_Entries_On_Dispose()
+    /// <summary>
+    ///     Immediate disposal preserves both a single entry and multiple batches across repeated shutdowns.
+    /// </summary>
+    /// <param name="entryCount">The number of entries queued immediately before disposal.</param>
+    [TestCase(1)]
+    [TestCase(50)]
+    [Repeat(100)]
+    public void Buffered_Logger_Flushes_Pending_Entries_On_Dispose(int entryCount)
     {
         // Arrange
-        const int entryCount = 50;
         var logPath = GetLogPath();
         var logger = CreateBuilderWithLogger<BufferingTests>();
 
@@ -67,5 +72,18 @@ public sealed class BufferingTests : TestBase
         for (var i = 0; i < entryCount; i++)
             lines[i]
                 .ShouldEndWith($"Message {i}");
+    }
+
+    /// <summary>
+    ///     Disposing a started writer with no queued entries exits without creating a log file.
+    /// </summary>
+    [Test]
+    public void Buffered_Logger_Disposes_With_Empty_Queue()
+    {
+        CreateBuilderWithLogger<BufferingTests>();
+
+        StopApp(false);
+
+        FileSystem.AllFiles.ShouldBeEmpty();
     }
 }

@@ -1,0 +1,9 @@
+global using Invex.Extensions.Logging.FancyConsole.Configuration;
+global using Invex.RepoUtils.TestUtils;
+global using Microsoft.Extensions.Configuration;
+global using Microsoft.Extensions.DependencyInjection;
+global using Microsoft.Extensions.Hosting;
+global using Microsoft.Extensions.Logging;
+global using Shouldly;
+global using Spectre.Console;
+global using Spectre.Console.Testing;

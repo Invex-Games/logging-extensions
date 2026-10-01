@@ -1,11 +1,16 @@
 - name: Getting Started
   href: getting-started.md
-- name: Configuration
-  href: configuration.md
-- name: File Rollover & Retention
-  href: rollover-and-retention.md
-- name: Buffered vs. Direct Writing
-  href: buffering.md
-- name: Log Output Format
-  href: log-format.md
-
+- name: Fancy Console Logger
+  items:
+    - name: Fancy Console Guide
+      href: fancy-console.md
+- name: File Logger
+  items:
+    - name: Configuration
+      href: configuration.md
+    - name: File Rollover & Retention
+      href: rollover-and-retention.md
+    - name: Buffered vs. Direct Writing
+      href: buffering.md
+    - name: Log Output Format
+      href: log-format.md

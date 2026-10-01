@@ -30,6 +30,9 @@
         Name: MaxTotalSizeBytes
       },
       {
+        Name: PerGroupLogName
+      },
+      {
         Name: PerLevelLogName
       },
       {
@@ -71,6 +74,9 @@
       },
       {
         Name: AddFile
+      },
+      {
+        Name: BeginGroupScope
       }
     ]
   }

@@ -25,5 +25,6 @@ internal interface IFileLogWriter : IDisposable
     ///     The severity of the entry, used to resolve per-level file names via
     ///     <see cref="FileLoggerConfiguration.PerLevelLogName" />.
     /// </param>
-    void Log(string log, LogLevel logLevel);
+    /// <param name="group">The group captured from the logging scope when the entry was logged.</param>
+    void Log(string log, LogLevel logLevel, string? group);
 }
