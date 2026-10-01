@@ -39,8 +39,8 @@ Calling `AddFancyConsole` more than once registers the provider only once.
 
 ## Layouts
 
-Choose a layout with `Layout`. Level codes are `TRC`, `DBG`, `INF`, `WRN`, `ERR`, and `CRT`. Multi-line
-messages are indented to the message column in every layout.
+Choose a layout with `Layout`. Level codes are `TRC`, `DBG`, `INF`, `WRN`, `ERR`, and `CRT`. In Standard,
+Minimal, and Detailed, multi-line messages are indented to the message column; SingleLine replaces line breaks with spaces.
 
 ### Standard (default)
 

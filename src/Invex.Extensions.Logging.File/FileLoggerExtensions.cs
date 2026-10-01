@@ -21,7 +21,7 @@ public static class FileLoggerExtension
     ///     This creates a standard logging scope, so other providers that consume scopes can also see its
     ///     <c>Group</c> property. The file logger uses the property for routing without rendering it in log lines.
     /// </remarks>
-    public static IDisposable? BeginGroupScope(this ILogger logger, string groupName) =>
+    public static IDisposable? BeginGroupScope(this ILogger logger, string? groupName) =>
         logger is null
             ? throw new ArgumentNullException(nameof(logger))
             : logger.BeginScope(new KeyValuePair<string, object?>[] { new(FileLogger.GroupScopeKey, groupName) });

@@ -446,16 +446,22 @@ internal static class FancyConsoleFormatter
         if (!config.UseShortCategoryName || category.Length == 0)
             return category;
 
-        var genericStart = category.IndexOf('<');
+        var genericDepth = 0;
+        var lastDot = -1;
 
-        var searchStart = genericStart < 0
-            ? category.Length - 1
-            : genericStart - 1;
+        for (var index = category.Length - 1; index >= 0; index--)
+        {
+            if (category[index] == '>')
+                genericDepth++;
+            else if (category[index] == '<' && genericDepth > 0)
+                genericDepth--;
+            else if (category[index] == '.' && genericDepth == 0)
+            {
+                lastDot = index;
 
-        if (searchStart < 0)
-            return category;
-
-        var lastDot = category.LastIndexOf('.', searchStart);
+                break;
+            }
+        }
 
         return lastDot >= 0 && lastDot < category.Length - 1
             ? category.Substring(lastDot + 1)
