@@ -2,8 +2,8 @@
 
 Guidance for AI agents working in **Invex Logging Extensions** — a small, focused set of utilities for
 `Microsoft.Extensions.Logging`, currently consisting of a file logger provider with size- and time-based
-rollover, disk usage caps, and per-level log file routing. Keep changes focused and defer to the linked
-docs for detail.
+rollover, disk usage caps, and scoped group/level log file routing. Keep changes focused and defer to the
+linked docs for detail.
 
 ## What's in the repo
 
@@ -11,6 +11,8 @@ docs for detail.
 |---------|------|-------------------|
 | `Invex.Extensions.Logging.File` | The library: `FileLoggerExtension.AddFile`, `FileLoggerConfiguration`, `FileRolloverInterval`, plus internal providers/writers | `net10.0;net9.0;net8.0;netstandard2.0` |
 | `Invex.Extensions.Logging.File.Tests` | NUnit test suite, including a public API surface snapshot test | `net10.0;net9.0;net8.0;net48` |
+| `Invex.Extensions.Logging.FancyConsole` | Spectre.Console console provider: `AddFancyConsole`, `FancyConsoleLoggerConfiguration`, `FancyConsoleLayout`, `FancyConsoleExceptionFormat` | `net10.0;net9.0;net8.0;netstandard2.0` |
+| `Invex.Extensions.Logging.FancyConsole.Tests` | NUnit tests for layouts, styles, exceptions, provider behavior, and public API | `net10.0;net9.0;net8.0;net48` |
 | `_atom` | Atom build definition (`IBuild.cs`) that generates the GitHub Actions workflows | `net10.0` |
 
 Sources live under `src/`, tests under `tests/`, the Atom build definition under `_atom/`, and the
@@ -59,6 +61,8 @@ Cleanup honors `.editorconfig` and repository/team-shared `*.DotSettings` automa
 
 - `src/Invex.Extensions.Logging.File/` contains the library and its public configuration surface.
 - `tests/Invex.Extensions.Logging.File.Tests/` contains NUnit tests, test doubles, and Verify snapshots.
+- `src/Invex.Extensions.Logging.FancyConsole/` and `tests/Invex.Extensions.Logging.FancyConsole.Tests/`
+  contain the Spectre.Console console logger and its tests.
 - `_atom/` contains the Atom build definition.
 - `docs/`, `README.md`, `index.md`, `toc.yml`, and `docfx.json` define the DocFX site.
 - `.github/workflows/` and `.github/dependabot.yml` are generated or maintained from the Atom definition
@@ -70,16 +74,18 @@ The public surface is intentionally tiny — three types:
 
 - **`FileLoggerExtension`** (`Invex.Extensions.Logging.File`) — `AddFile(ILoggingBuilder, bool)` and
   `AddFile(ILoggingBuilder, Action<FileLoggerConfiguration>, bool)`. The `buffered` flag selects
-  which provider gets registered.
+  which provider gets registered. `BeginGroupScope(ILogger, string)` adds a standard scope containing
+  the `"Group"` property for routing.
 - **`FileLoggerConfiguration`** (`...File.Configuration`) — options class bound to the
-  `Logging:File` section (provider alias `File`), with `Default*` constants for every option.
+  `Logging:File` section (provider alias `File`), with `Default*` constants for scalar options.
+  `PerGroupLogName` and `PerLevelLogName` default to empty dictionaries without constants.
 - **`FileRolloverInterval`** (`...File.Configuration`) — time-based rollover enum.
 
 Everything else is `internal`:
 
 - **`FileLoggerProvider`** (abstract) caches one `FileLogger` per category and tracks config via
-  `IOptionsMonitor<T>`; **`BufferedFileLoggerProvider`** / **`DirectFileLoggerProvider`** supply the
-  writer. Both providers carry `[ProviderAlias("File")]` and expose static `FileSystem`
+  `IOptionsMonitor<T>` and implements `ISupportExternalScope`; **`BufferedFileLoggerProvider`** /
+  **`DirectFileLoggerProvider`** supply the writer. Both providers carry `[ProviderAlias("File")]` and expose static `FileSystem`
   (`System.IO.Abstractions.IFileSystem`) and `TimeProvider` hooks that tests replace.
 - **`FileLogger`** formats entries (`[{timestamp} {level-code} {category}] {message}`) and forwards
   to an **`IFileLogWriter`**.
@@ -92,28 +98,50 @@ Everything else is `internal`:
 - **Rollover**: size-based when the active file would reach `FileSizeLimitBytes`; time-based when
   elapsed time since file creation meets `RolloverInterval` (elapsed durations, **not** calendar
   boundaries — `Month` = 30 days, `Year` = 365 days). Rolled files are named
-  `{LogName}_{yyMMdd-HHmmss}.log` with `_{n}` collision suffixes.
-- **Retention**: on each rollover/new file, if rolled-over files matching `{LogName}_*.log` total
-  ≥ `MaxTotalSizeBytes`, the oldest one is deleted. The active file is never purged. Purging is
-  per base name.
-- **Per-level routing**: levels present in `PerLevelLogName` write to that file name; `null`
-  (whether the dictionary value or `LogName`) falls back to `AppDomain.CurrentDomain.FriendlyName`.
+  `{resolvedName}_{yyMMdd-HHmmss}.log` with `_{n}` collision suffixes; `resolvedName` includes any
+  group and level suffixes.
+- **Retention**: on each rollover/new file, if archives for the exact resolved base name total
+  ≥ `MaxTotalSizeBytes`, the oldest one is deleted. Archive names must end in `_yyMMdd-HHmmss`,
+  optionally a positive numeric collision suffix, and `.log`. Configured active destinations are
+  excluded from purging and rollover-name selection. Purging is per resolved base name.
+- **Per-level routing**: `PerLevelLogName` values are suffixes appended to `LogName` after any group
+  suffix, separated by underscores. Null `LogName` uses `AppDomain.CurrentDomain.FriendlyName`.
+  Missing, null, or empty mapped suffixes add no text or separator. This intentionally replaces the
+  earlier behavior where level mappings supplied replacement base names.
+- **Group routing**: `PerGroupLogName` maps the innermost nonempty string `"Group"` scope value.
+  Its nonempty mapped suffix follows the base name before the level suffix:
+  `{baseName}[_{groupSuffix}][_{levelSuffix}]`. Null or empty mapped suffixes are omitted. An unmapped
+  group uses level/default routing, even inside a mapped outer group. Capture the
+  group during `Log`, then resolve mappings from current configuration per write/batch.
 - **Logging never throws into the app**: file writes retry up to five times, echoing failures to
   console/debug output, then drop the batch/entry. Keep this resilience intact.
 - **No level filtering in the provider** (`IsEnabled` returns `true`); filtering belongs to the
-  framework. Scopes are unsupported (`BeginScope` returns `null`). Empty messages are skipped.
+  framework. Scopes support group routing but are not included in log lines. Empty messages are skipped.
 - **Runtime config reload** must keep working — config is re-read per write/batch via
   `IOptionsMonitor`.
 - Buffered and direct modes must remain behaviorally identical apart from threading/durability;
   if you change the write pipeline in one writer, mirror it in the other (and prefer pushing
   shared logic into `FileLogWriterUtil`).
 
+### FancyConsole library
+
+`Invex.Extensions.Logging.FancyConsole` is a Spectre.Console console provider. Public surface:
+`FancyConsoleLoggerExtensions.AddFancyConsole` (two overloads), `FancyConsoleLoggerConfiguration`
+(bound from `Logging:FancyConsole`, alias `FancyConsole`), `FancyConsoleLayout`, and
+`FancyConsoleExceptionFormat`. Internally, `FancyConsoleLoggerProvider` caches loggers, tracks config
+via `IOptionsMonitor`, captures scopes, and routes entries at/above `LogToStandardErrorThreshold` to
+stderr; `FancyConsoleLogger` builds a `FancyConsoleLogEntry` and never throws; `FancyConsoleFormatter`
+holds all layout/exception rendering. The provider's static `Console`, `ErrorConsole`, and
+`TimeProvider` hooks are replaced by tests. `Pretty` exceptions fall back to `Full` when Spectre cannot
+render them (e.g. unthrown exceptions on .NET Framework). See `docs/fancy-console.md` for exact output.
+
 ## Key design rules
 
 - Keep the public surface minimal; new functionality should usually be `internal` with public
   exposure only via `FileLoggerConfiguration` options or `AddFile` parameters.
 - New options belong on `FileLoggerConfiguration` as properties with a matching `Default*`
-  constant and a default that preserves existing behavior.
+  constant and a default that preserves existing behavior. Dictionary options use empty dictionaries
+  without constants, following `PerLevelLogName` and `PerGroupLogName`.
 - All file system access goes through `System.IO.Abstractions` (`IFileSystem`) and all time access
   through `TimeProvider` — never use `System.IO.File`/`DateTime.Now` directly (analyzers enforce
   this). This is what makes the test suite possible.
@@ -193,8 +221,8 @@ Windows-only `net48` job (`TestFxProjects`) — keep all target frameworks green
 
 ## Adding a new option to `FileLoggerConfiguration`
 
-1. Add the property plus a `Default*` constant, with a default that preserves current behavior,
-   and full XML docs.
+1. Add the property plus a `Default*` constant (except dictionary options), with a default that
+   preserves current behavior, and full XML docs.
 2. Honor it in **both** `BufferedFileLogWriter` and `DirectFileLogWriter` (or in
    `FileLogWriterUtil` if the logic is shared).
 3. Add unit tests covering both buffered and direct modes, using `MockFileSystem` /
@@ -209,8 +237,9 @@ For anything beyond the above, prefer these over duplicating detail:
 
 - `README.md` — package overview, quick start, and configuration examples.
 - `docs/getting-started.md` — installation, registration, defaults, level filtering.
-- `docs/configuration.md` — every option with defaults, JSON/code examples, per-level routing.
+- `docs/configuration.md` — every option with defaults, JSON/code examples, group/level routing.
 - `docs/rollover-and-retention.md` — file naming, rollover semantics, purging, sizing guidance.
 - `docs/buffering.md` — buffered vs. direct trade-offs and error handling.
 - `docs/log-format.md` — the exact log line format and parsing guidance.
+- `docs/fancy-console.md` — FancyConsole layouts, options, exceptions, and output behavior.
 - `api/index.md` — entry point to the generated API reference.

@@ -2,6 +2,17 @@
 
 Generated API reference for the Invex Logging Extensions packages.
 
+## Invex.Extensions.Logging.FancyConsole
+
+### Public types
+
+| Type | Description |
+|------|-------------|
+| [`FancyConsoleLoggerExtensions`](xref:Invex.Extensions.Logging.FancyConsole.FancyConsoleLoggerExtensions) | `AddFancyConsole` extension methods for registering the fancy console logger with an `ILoggingBuilder`. |
+| [`FancyConsoleLoggerConfiguration`](xref:Invex.Extensions.Logging.FancyConsole.Configuration.FancyConsoleLoggerConfiguration) | Options controlling the layout, timestamps, scopes, styles, exceptions, and standard-error routing. |
+| [`FancyConsoleLayout`](xref:Invex.Extensions.Logging.FancyConsole.Configuration.FancyConsoleLayout) | The layout used to render each log entry. |
+| [`FancyConsoleExceptionFormat`](xref:Invex.Extensions.Logging.FancyConsole.Configuration.FancyConsoleExceptionFormat) | How exceptions attached to log entries are rendered. |
+
 ## Invex.Extensions.Logging.File
 
 ### Public types

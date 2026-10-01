@@ -11,8 +11,13 @@ builder.Logging.AddFile(buffered: false);  // direct
 
 In buffered mode, calling a log method only enqueues the formatted entry onto an in-memory channel — a fast,
 non-blocking operation. A dedicated background thread drains the channel in small batches (up to 10 entries
-per iteration), groups entries by level (to resolve per-level file names), and performs the actual file I/O:
-rollover checks, purging, and appending.
+per iteration), groups entries by resolved file name and level, and performs the actual file I/O:
+rollover checks, purging, and appending. Entries at the same level that share a destination retain their
+queue order; batching does not guarantee ordering across levels.
+
+The group is captured when the log call occurs, so ending a group scope before the background write
+does not affect routing. Group and level mappings are resolved from the current configuration for each
+batch; a configuration reload can therefore change the destination of queued entries.
 
 **Characteristics:**
 

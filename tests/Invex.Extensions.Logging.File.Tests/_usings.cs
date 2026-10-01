@@ -1,5 +1,11 @@
 ﻿global using System.IO.Abstractions.TestingHelpers;
 global using Invex.Extensions.Logging.File.Configuration;
+global using System.IO.Abstractions;
+global using System.Text;
+global using FakeItEasy;
+global using Invex.Extensions.Logging.File.Writer;
+global using Microsoft.Extensions.Configuration;
+global using Microsoft.Extensions.Options;
 global using Invex.Extensions.Logging.File.Provider;
 global using Invex.RepoUtils.TestUtils;
 global using Microsoft.Extensions.DependencyInjection;

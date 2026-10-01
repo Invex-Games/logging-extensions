@@ -1,0 +1,115 @@
+﻿[
+  {
+    Name: Invex.Extensions.Logging.FancyConsole.Configuration.FancyConsoleExceptionFormat,
+    Members: [
+      {
+        Name: Full
+      },
+      {
+        Name: Hidden
+      },
+      {
+        Name: Pretty
+      },
+      {
+        Name: Summary
+      },
+      {
+        Name: value__
+      }
+    ]
+  },
+  {
+    Name: Invex.Extensions.Logging.FancyConsole.Configuration.FancyConsoleLayout,
+    Members: [
+      {
+        Name: Detailed
+      },
+      {
+        Name: Minimal
+      },
+      {
+        Name: SingleLine
+      },
+      {
+        Name: Standard
+      },
+      {
+        Name: value__
+      }
+    ]
+  },
+  {
+    Name: Invex.Extensions.Logging.FancyConsole.Configuration.FancyConsoleLoggerConfiguration,
+    Members: [
+      {
+        Name: DefaultExceptionFormat
+      },
+      {
+        Name: DefaultExceptionTextStyle
+      },
+      {
+        Name: DefaultIncludeScopes
+      },
+      {
+        Name: DefaultLayout
+      },
+      {
+        Name: DefaultLogToStandardErrorThreshold
+      },
+      {
+        Name: DefaultTimestampFormat
+      },
+      {
+        Name: DefaultUseColors
+      },
+      {
+        Name: DefaultUseShortCategoryName
+      },
+      {
+        Name: DefaultUseUtcTimestamp
+      },
+      {
+        Name: ExceptionFormat
+      },
+      {
+        Name: ExceptionTextStyle
+      },
+      {
+        Name: IncludeScopes
+      },
+      {
+        Name: Layout
+      },
+      {
+        Name: LevelStyles
+      },
+      {
+        Name: LogToStandardErrorThreshold
+      },
+      {
+        Name: TimestampFormat
+      },
+      {
+        Name: UseColors
+      },
+      {
+        Name: UseShortCategoryName
+      },
+      {
+        Name: UseUtcTimestamp
+      }
+    ]
+  },
+  {
+    Name: Invex.Extensions.Logging.FancyConsole.FancyConsoleLoggerExtensions,
+    Members: [
+      {
+        Name: AddFancyConsole
+      },
+      {
+        Name: AddFancyConsole
+      }
+    ]
+  }
+]

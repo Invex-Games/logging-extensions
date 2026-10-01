@@ -1,6 +1,6 @@
-# Log Output Format
+# File Log Output Format
 
-Each log entry is written as a single line (plus the platform newline) in a fixed, easily parseable format:
+Each file log entry is written as a single line (plus the platform newline) in a fixed, easily parseable format:
 
 ```text
 [{timestamp} {level} {category}] {message}
@@ -49,7 +49,9 @@ placeholders (`{OrderId}` etc.) already rendered into the string.
 - **Empty messages are skipped.** If the formatter produces a `null` or empty string, no line is written.
 - **Exceptions** are included only insofar as the standard formatter renders them; pass exceptions via the
   `ILogger` exception parameter and they will be formatted by the framework's default formatter.
-- **Scopes are not supported.** `BeginScope` is a no-op, and scope data does not appear in the output.
+- **Scopes support group routing.** `BeginGroupScope` or a structured scope's `"Group"` property selects
+  a configured file destination. Scope data is not printed; the line format stays the same. See
+  [group routing](configuration.md#routing-groups-to-separate-files).
 - **No level filtering happens in the provider.** Use the standard `Logging:File:LogLevel` configuration to
   filter (see [Getting started](getting-started.md#filtering-log-levels)).
 

@@ -1,8 +1,13 @@
 ﻿<Solution>
+  <Folder Name="/samples/">
+    <Project Path="samples/Invex.Extensions.Logging.Sample/Invex.Extensions.Logging.Sample.csproj" />
+  </Folder>
   <Folder Name="/src/">
+    <Project Path="src/Invex.Extensions.Logging.FancyConsole/Invex.Extensions.Logging.FancyConsole.csproj" />
     <Project Path="src/Invex.Extensions.Logging.File/Invex.Extensions.Logging.File.csproj" />
   </Folder>
   <Folder Name="/tests/">
+    <Project Path="tests/Invex.Extensions.Logging.FancyConsole.Tests/Invex.Extensions.Logging.FancyConsole.Tests.csproj" />
     <Project Path="tests/Invex.Extensions.Logging.File.Tests/Invex.Extensions.Logging.File.Tests.csproj" />
   </Folder>
   <Project Path="_atom/_atom.csproj" />
