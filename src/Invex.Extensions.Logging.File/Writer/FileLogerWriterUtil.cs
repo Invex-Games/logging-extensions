@@ -148,18 +148,17 @@ internal static class FileLogWriterUtil
     ///     Enumerates normalized active file paths so that retention and archive naming cannot claim
     ///     another route's file, even when that file has not yet been created.
     /// </summary>
-    /// <param name="fileSystem">The file system abstraction providing the platform's path separator.</param>
+    /// <param name="fileSystem">The file system abstraction used to normalize paths.</param>
     /// <param name="config">The configuration snapshot for the current entry or batch.</param>
     /// <param name="logsDirectory">The resolved directory containing the log files.</param>
-    /// <returns>The normalized active paths, compared using the platform's usual filename casing rules.</returns>
+    /// <returns>The normalized active paths; aliases are checked against each archive on its filesystem.</returns>
     private static HashSet<string> GetActiveLogPaths(
         IFileSystem fileSystem,
         FileLoggerConfiguration config,
         string logsDirectory)
     {
-        var names = new HashSet<string>(fileSystem.Path.DirectorySeparatorChar == '\\'
-            ? StringComparer.OrdinalIgnoreCase
-            : StringComparer.Ordinal);
+        // Enumerating inactive routes must not probe directories that may be absent or unwritable.
+        var names = new HashSet<string>(StringComparer.Ordinal);
 
         AddActiveLogPath(fileSystem, logsDirectory, names, ComposeLogName(config.LogName, null, null));
 
@@ -226,6 +225,7 @@ internal static class FileLogWriterUtil
         ISet<string>? activeLogNames)
     {
         string newLogFilePath;
+        var pathComparer = new FilePathComparer(fileSystem);
 
         for (var i = 0;; i++)
         {
@@ -237,7 +237,7 @@ internal static class FileLogWriterUtil
 
             newLogFilePath = fileSystem.Path.Combine(logsDirectory, $"{archiveName}.log");
 
-            if (activeLogNames?.Contains(fileSystem.Path.GetFullPath(newLogFilePath)) is true)
+            if (activeLogNames?.Any(path => pathComparer.Equals(newLogFilePath, path)) is true)
                 continue;
 
             if (!fileSystem.File.Exists(newLogFilePath))
@@ -321,21 +321,25 @@ internal static class FileLogWriterUtil
         ISet<string>? activeLogNames)
     {
         var prefix = $"{logName}_";
-
-        var comparison = fileSystem.Path.DirectorySeparatorChar == '\\'
-            ? StringComparison.OrdinalIgnoreCase
-            : StringComparison.Ordinal;
+        var pathComparer = new FilePathComparer(fileSystem);
 
         var allLogs = fileSystem
             .Directory
-            .GetFiles(logsDirectory, "*.log")
+            .GetFiles(logsDirectory, "*")
             .Where(file =>
             {
                 var name = fileSystem.Path.GetFileNameWithoutExtension(file);
 
-                return name.StartsWith(prefix, comparison) &&
-                       activeLogNames?.Contains(fileSystem.Path.GetFullPath(file)) is not true &&
-                       Regex.IsMatch(name[prefix.Length..], @"\A[0-9]{6}-[0-9]{6}(?:_[1-9][0-9]*)?\z");
+                if (!name.StartsWith(prefix, StringComparison.OrdinalIgnoreCase) ||
+                    !StringComparer.OrdinalIgnoreCase.Equals(fileSystem.Path.GetExtension(file), ".log") ||
+                    !Regex.IsMatch(name[prefix.Length..], @"\A[0-9]{6}-[0-9]{6}(?:_[1-9][0-9]*)?\z"))
+                    return false;
+
+                var archivePath = fileSystem.Path.GetFullPath(file);
+                var expectedPath = fileSystem.Path.Combine(logsDirectory, $"{prefix}{name[prefix.Length..]}.log");
+
+                return pathComparer.Equals(archivePath, expectedPath) &&
+                       activeLogNames?.Any(path => pathComparer.Equals(archivePath, path)) is not true;
             })
             .ToArray();
 

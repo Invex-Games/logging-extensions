@@ -237,7 +237,8 @@ Scope values affect routing without appearing in the file's log lines. See
 When rollover occurs, the active `{name}.log` is renamed to `{name}_{yyMMdd-HHmmss}.log`; collisions
 receive `_1`, `_2`, and later suffixes. Time rollover uses elapsed durations, not calendar boundaries, and
 checks occur only when an entry is written. Retention is evaluated independently for each base name and
-never deletes the active file. See [file rollover and retention](docs/rollover-and-retention.md).
+never deletes the active file. Case-only path aliases follow the destination filesystem's behavior for
+buffered routing, archive naming, and retention. See [file rollover and retention](docs/rollover-and-retention.md).
 
 Buffered mode queues entries for a dedicated background thread that writes batches of up to 10 entries.
 Use direct mode when an entry must be written before the log call returns:

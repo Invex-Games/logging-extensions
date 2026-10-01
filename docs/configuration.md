@@ -148,6 +148,10 @@ For example, a null group suffix with an `"errors"` level suffix produces `app_e
 suffixes produce `app.log`. Routes that resolve to the same name share a file and its rollover and
 retention limits.
 
+Case-only destination aliases follow the actual filesystem behavior in the destination directory,
+including when batching entries and protecting active files during rollover and retention. See
+[file naming](rollover-and-retention.md#file-naming) for the filesystem check used for these aliases.
+
 Groups are case-sensitive by default; a dictionary supplied in code uses its configured comparer. The
 scope property key must be exactly `"Group"`.
 

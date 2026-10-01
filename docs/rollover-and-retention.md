@@ -19,6 +19,15 @@ The timestamp is the **local time at the moment of rollover**. If a file with th
 (e.g. two rollovers within the same second), a numeric suffix `_1`, `_2`, … is appended. Configured active
 destinations are also skipped when choosing an archive name, even if their files do not yet exist.
 
+Case-only path aliases are checked against the destination filesystem for buffered routing, reserved
+active names, and archive retention. For example, `app_orders` and `app_ORDERS` share a destination on
+a case-insensitive directory and remain separate on a case-sensitive directory. Archive extensions
+follow the same rule, including `.LOG` when the directory ignores case.
+
+Ambiguous case-only comparisons create and delete a unique temporary `.tmp` file in the destination
+directory. Results are reused within the batch or rollover/retention operation. The directory must
+permit creating and deleting this file; failures follow the usual write retry and drop behavior.
+
 Example:
 
 ```text

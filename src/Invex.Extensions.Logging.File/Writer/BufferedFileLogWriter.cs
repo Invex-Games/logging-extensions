@@ -111,9 +111,7 @@ internal sealed class BufferedFileLogWriter(
                 {
                     config = getCurrentConfig();
 
-                    routeComparer = new(fileSystem.Path.DirectorySeparatorChar == '\\'
-                        ? StringComparer.OrdinalIgnoreCase
-                        : StringComparer.Ordinal);
+                    routeComparer = new(new FilePathComparer(fileSystem));
                 }))
                 continue;
 
@@ -129,6 +127,11 @@ internal sealed class BufferedFileLogWriter(
 
                     var filePath =
                         fileSystem.Path.GetFullPath(fileSystem.Path.Combine(config!.LogDirectory, $"{logName}.log"));
+
+                    // Case-only aliases must be compared on the destination filesystem, including
+                    // the first batch before any active file has been created.
+                    if (!fileSystem.Directory.Exists(config.LogDirectory))
+                        fileSystem.Directory.CreateDirectory(config.LogDirectory);
 
                     var route = (filePath, entry.LogLevel);
                     logsByRoute.TryAdd(route, (logName, []));
@@ -152,11 +155,11 @@ internal sealed class BufferedFileLogWriter(
     }
 
     /// <summary>
-    ///     Compares batch routes using the platform's usual filename casing rules and exact severity,
+    ///     Compares batch routes using the destination filesystem's casing rules and exact severity,
     ///     preserving entry order when normalized configured destinations select the same file.
     /// </summary>
     /// <param name="logNameComparer">The filename comparer for the writer's file system.</param>
-    private sealed class LogRouteComparer(StringComparer logNameComparer)
+    private sealed class LogRouteComparer(IEqualityComparer<string> logNameComparer)
         : IEqualityComparer<(string FilePath, LogLevel Level)>
     {
         /// <inheritdoc />

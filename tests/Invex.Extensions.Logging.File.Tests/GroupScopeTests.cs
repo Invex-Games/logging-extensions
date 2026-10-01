@@ -265,7 +265,7 @@ public sealed class GroupScopeTests
 
         var lines = fileSystem.File.ReadAllLines(GetLogPath(fileSystem, "app_shared"));
 
-        if (billingName == "shared" || fileSystem.Path.DirectorySeparatorChar == '\\')
+        if (fileSystem.StringOperations.Comparer.Equals(billingName, "shared"))
         {
             fileSystem
                 .AllFiles
