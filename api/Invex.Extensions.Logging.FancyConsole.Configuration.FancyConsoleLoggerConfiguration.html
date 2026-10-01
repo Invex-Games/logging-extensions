@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class FancyConsoleLoggerConfiguration | Invex.Extensions.Logging </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class FancyConsoleLoggerConfiguration | Invex.Extensions.Logging ">
+      
+      <meta name="description" content="Configuration options for the fancy console logger. Bound from the Logging:FancyConsole configuration section when registered via , and can also be set programmatically via the  overload.">
+      <link rel="icon" href="../favicon.ico">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/Invex-Games/logging-extensions/new/main/apiSpec/new?filename=Invex_Extensions_Logging_FancyConsole_Configuration_FancyConsoleLoggerConfiguration.md&amp;value=---%0Auid%3A%20Invex.Extensions.Logging.FancyConsole.Configuration.FancyConsoleLoggerConfiguration%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../logo.svg" alt="Invex.Extensions.Logging">
+            Invex.Extensions.Logging
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="Invex.Extensions.Logging.FancyConsole.Configuration.FancyConsoleLoggerConfiguration">
+
+
+
+  <h1 id="Invex_Extensions_Logging_FancyConsole_Configuration_FancyConsoleLoggerConfiguration" data-uid="Invex.Extensions.Logging.FancyConsole.Configuration.FancyConsoleLoggerConfiguration" class="text-break">
+Class FancyConsoleLoggerConfiguration  <a class="header-action link-secondary" title="View source" href="https://github.com/Invex-Games/logging-extensions/blob/v0.4.0/src/Invex.Extensions.Logging.FancyConsole/Configuration/FancyConsoleLoggerConfiguration.cs/#L16"><i class="bi bi-code-slash"></i></a>
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><span class="xref">Invex</span>.<span class="xref">Extensions</span>.<span class="xref">Logging</span>.<a class="xref" href="Invex.Extensions.Logging.FancyConsole.html">FancyConsole</a>.<a class="xref" href="Invex.Extensions.Logging.FancyConsole.Configuration.html">Configuration</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Invex.Extensions.Logging.FancyConsole.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Configuration options for the fancy console logger. Bound from the <code>Logging:FancyConsole</code>
+configuration section when registered via
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.logging.iloggingbuilder">AddFancyConsole(ILoggingBuilder)</a>,
+and can also be set programmatically via the
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.logging.iloggingbuilder">AddFancyConsole(ILoggingBuilder, Action&lt;FancyConsoleLoggerConfiguration&gt;)</a>
+overload.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[PublicAPI]
+public sealed class FancyConsoleLoggerConfiguration</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+      <div><span class="xref">FancyConsoleLoggerConfiguration</span></div>
+    </dd>
+  </dl>
+
+
+
+  <dl class="typelist inheritedMembers">
+    <dt>Inherited Members</dt>
+    <dd>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gethashcode">object.GetHashCode()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
+    </div>
+  </dd></dl>
+
+
+
+
+  <h2 id="Invex_Extensions_Logging_FancyConsole_Configuration_FancyConsoleLoggerConfiguration_remarks">Remarks</h2>
+  <div class="markdown level0 remarks"><p>Changes made to the bound configuration at runtime (for example, by editing <code>appsettings.json</code>)
+are picked up automatically and applied to subsequent log entries.</p>
+</div>
+
+
+  <h2 class="section" id="fields">Fields
+</h2>
+
+
+
+  <h3 id="Invex_Extensions_Logging_FancyConsole_Configuration_FancyConsoleLoggerConfiguration_DefaultExceptionFormat" data-uid="Invex.Extensions.Logging.FancyConsole.Configuration.FancyConsoleLoggerConfiguration.DefaultExceptionFormat">
+  DefaultExceptionFormat
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Invex-Games/logging-extensions/blob/v0.4.0/src/Invex.Extensions.Logging.FancyConsole/Configuration/FancyConsoleLoggerConfiguration.cs/#L53"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The default value of <a class="xref" href="Invex.Extensions.Logging.FancyConsole.Configuration.FancyConsoleLoggerConfiguration.html#Invex_Extensions_Logging_FancyConsole_Configuration_FancyConsoleLoggerConfiguration_ExceptionFormat">ExceptionFormat</a>: <a class="xref" href="Invex.Extensions.Logging.FancyConsole.Configuration.FancyConsoleExceptionFormat.html#Invex_Extensions_Logging_FancyConsole_Configuration_FancyConsoleExceptionFormat_Full">Full</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const FancyConsoleExceptionFormat DefaultExceptionFormat = Full</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Invex.Extensions.Logging.FancyConsole.Configuration.FancyConsoleExceptionFormat.html">FancyConsoleExceptionFormat</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="Invex_Extensions_Logging_FancyConsole_Configuration_FancyConsoleLoggerConfiguration_DefaultExceptionTextStyle" data-uid="Invex.Extensions.Logging.FancyConsole.Configuration.FancyConsoleLoggerConfiguration.DefaultExceptionTextStyle">
+  DefaultExceptionTextStyle
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Invex-Games/logging-extensions/blob/v0.4.0/src/Invex.Extensions.Logging.FancyConsole/Configuration/FancyConsoleLoggerConfiguration.cs/#L58"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The default value of <a class="xref" href="Invex.Extensions.Logging.FancyConsole.Configuration.FancyConsoleLoggerConfiguration.html#Invex_Extensions_Logging_FancyConsole_Configuration_FancyConsoleLoggerConfiguration_ExceptionTextStyle">ExceptionTextStyle</a>: <code>&quot;red1&quot;</code>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const string DefaultExceptionTextStyle = &quot;red1&quot;</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="Invex_Extensions_Logging_FancyConsole_Configuration_FancyConsoleLoggerConfiguration_DefaultIncludeScopes" data-uid="Invex.Extensions.Logging.FancyConsole.Configuration.FancyConsoleLoggerConfiguration.DefaultIncludeScopes">
+  DefaultIncludeScopes
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Invex-Games/logging-extensions/blob/v0.4.0/src/Invex.Extensions.Logging.FancyConsole/Configuration/FancyConsoleLoggerConfiguration.cs/#L38"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The default value of <a class="xref" href="Invex.Extensions.Logging.FancyConsole.Configuration.FancyConsoleLoggerConfiguration.html#Invex_Extensions_Logging_FancyConsole_Configuration_FancyConsoleLoggerConfiguration_IncludeScopes">IncludeScopes</a>: <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const bool DefaultIncludeScopes = false</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="Invex_Extensions_Logging_FancyConsole_Configuration_FancyConsoleLoggerConfiguration_DefaultLayout" data-uid="Invex.Extensions.Logging.FancyConsole.Configuration.FancyConsoleLoggerConfiguration.DefaultLayout">
+  DefaultLayout
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Invex-Games/logging-extensions/blob/v0.4.0/src/Invex.Extensions.Logging.FancyConsole/Configuration/FancyConsoleLoggerConfiguration.cs/#L22"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The default value of <a class="xref" href="Invex.Extensions.Logging.FancyConsole.Configuration.FancyConsoleLoggerConfiguration.html#Invex_Extensions_Logging_FancyConsole_Configuration_FancyConsoleLoggerConfiguration_Layout">Layout</a>: <a class="xref" href="Invex.Extensions.Logging.FancyConsole.Configuration.FancyConsoleLayout.html#Invex_Extensions_Logging_FancyConsole_Configuration_FancyConsoleLayout_Standard">Standard</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const FancyConsoleLayout DefaultLayout = Standard</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Invex.Extensions.Logging.FancyConsole.Configuration.FancyConsoleLayout.html">FancyConsoleLayout</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="Invex_Extensions_Logging_FancyConsole_Configuration_FancyConsoleLoggerConfiguration_DefaultLogToStandardErrorThreshold" data-uid="Invex.Extensions.Logging.FancyConsole.Configuration.FancyConsoleLoggerConfiguration.DefaultLogToStandardErrorThreshold">
+  DefaultLogToStandardErrorThreshold
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Invex-Games/logging-extensions/blob/v0.4.0/src/Invex.Extensions.Logging.FancyConsole/Configuration/FancyConsoleLoggerConfiguration.cs/#L64"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The default value of <a class="xref" href="Invex.Extensions.Logging.FancyConsole.Configuration.FancyConsoleLoggerConfiguration.html#Invex_Extensions_Logging_FancyConsole_Configuration_FancyConsoleLoggerConfiguration_LogToStandardErrorThreshold">LogToStandardErrorThreshold</a>: <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.logging.loglevel#microsoft-extensions-logging-loglevel-none">None</a>, which
+writes every entry to standard output.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const LogLevel DefaultLogToStandardErrorThreshold = None</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.logging.loglevel">LogLevel</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="Invex_Extensions_Logging_FancyConsole_Configuration_FancyConsoleLoggerConfiguration_DefaultTimestampFormat" data-uid="Invex.Extensions.Logging.FancyConsole.Configuration.FancyConsoleLoggerConfiguration.DefaultTimestampFormat">
+  DefaultTimestampFormat
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Invex-Games/logging-extensions/blob/v0.4.0/src/Invex.Extensions.Logging.FancyConsole/Configuration/FancyConsoleLoggerConfiguration.cs/#L28"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The default value of <a class="xref" href="Invex.Extensions.Logging.FancyConsole.Configuration.FancyConsoleLoggerConfiguration.html#Invex_Extensions_Logging_FancyConsole_Configuration_FancyConsoleLoggerConfiguration_TimestampFormat">TimestampFormat</a>: <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>, which uses the layout's
+default format.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const string? DefaultTimestampFormat = null</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="Invex_Extensions_Logging_FancyConsole_Configuration_FancyConsoleLoggerConfiguration_DefaultUseColors" data-uid="Invex.Extensions.Logging.FancyConsole.Configuration.FancyConsoleLoggerConfiguration.DefaultUseColors">
+  DefaultUseColors
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Invex-Games/logging-extensions/blob/v0.4.0/src/Invex.Extensions.Logging.FancyConsole/Configuration/FancyConsoleLoggerConfiguration.cs/#L48"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The default value of <a class="xref" href="Invex.Extensions.Logging.FancyConsole.Configuration.FancyConsoleLoggerConfiguration.html#Invex_Extensions_Logging_FancyConsole_Configuration_FancyConsoleLoggerConfiguration_UseColors">UseColors</a>: <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const bool DefaultUseColors = true</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="Invex_Extensions_Logging_FancyConsole_Configuration_FancyConsoleLoggerConfiguration_DefaultUseShortCategoryName" data-uid="Invex.Extensions.Logging.FancyConsole.Configuration.FancyConsoleLoggerConfiguration.DefaultUseShortCategoryName">
+  DefaultUseShortCategoryName
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Invex-Games/logging-extensions/blob/v0.4.0/src/Invex.Extensions.Logging.FancyConsole/Configuration/FancyConsoleLoggerConfiguration.cs/#L43"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The default value of <a class="xref" href="Invex.Extensions.Logging.FancyConsole.Configuration.FancyConsoleLoggerConfiguration.html#Invex_Extensions_Logging_FancyConsole_Configuration_FancyConsoleLoggerConfiguration_UseShortCategoryName">UseShortCategoryName</a>: <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const bool DefaultUseShortCategoryName = false</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="Invex_Extensions_Logging_FancyConsole_Configuration_FancyConsoleLoggerConfiguration_DefaultUseUtcTimestamp" data-uid="Invex.Extensions.Logging.FancyConsole.Configuration.FancyConsoleLoggerConfiguration.DefaultUseUtcTimestamp">
+  DefaultUseUtcTimestamp
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Invex-Games/logging-extensions/blob/v0.4.0/src/Invex.Extensions.Logging.FancyConsole/Configuration/FancyConsoleLoggerConfiguration.cs/#L33"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>The default value of <a class="xref" href="Invex.Extensions.Logging.FancyConsole.Configuration.FancyConsoleLoggerConfiguration.html#Invex_Extensions_Logging_FancyConsole_Configuration_FancyConsoleLoggerConfiguration_UseUtcTimestamp">UseUtcTimestamp</a>: <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const bool DefaultUseUtcTimestamp = false</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="Invex_Extensions_Logging_FancyConsole_Configuration_FancyConsoleLoggerConfiguration_ExceptionFormat_" data-uid="Invex.Extensions.Logging.FancyConsole.Configuration.FancyConsoleLoggerConfiguration.ExceptionFormat*"></a>
+
+  <h3 id="Invex_Extensions_Logging_FancyConsole_Configuration_FancyConsoleLoggerConfiguration_ExceptionFormat" data-uid="Invex.Extensions.Logging.FancyConsole.Configuration.FancyConsoleLoggerConfiguration.ExceptionFormat">
+  ExceptionFormat
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Invex-Games/logging-extensions/blob/v0.4.0/src/Invex.Extensions.Logging.FancyConsole/Configuration/FancyConsoleLoggerConfiguration.cs/#L135"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets how exceptions attached to log entries are rendered. Defaults to
+<a class="xref" href="Invex.Extensions.Logging.FancyConsole.Configuration.FancyConsoleLoggerConfiguration.html#Invex_Extensions_Logging_FancyConsole_Configuration_FancyConsoleLoggerConfiguration_DefaultExceptionFormat">DefaultExceptionFormat</a> (<a class="xref" href="Invex.Extensions.Logging.FancyConsole.Configuration.FancyConsoleExceptionFormat.html#Invex_Extensions_Logging_FancyConsole_Configuration_FancyConsoleExceptionFormat_Full">Full</a>).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public FancyConsoleExceptionFormat ExceptionFormat { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Invex.Extensions.Logging.FancyConsole.Configuration.FancyConsoleExceptionFormat.html">FancyConsoleExceptionFormat</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Invex_Extensions_Logging_FancyConsole_Configuration_FancyConsoleLoggerConfiguration_ExceptionTextStyle_" data-uid="Invex.Extensions.Logging.FancyConsole.Configuration.FancyConsoleLoggerConfiguration.ExceptionTextStyle*"></a>
+
+  <h3 id="Invex_Extensions_Logging_FancyConsole_Configuration_FancyConsoleLoggerConfiguration_ExceptionTextStyle" data-uid="Invex.Extensions.Logging.FancyConsole.Configuration.FancyConsoleLoggerConfiguration.ExceptionTextStyle">
+  ExceptionTextStyle
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Invex-Games/logging-extensions/blob/v0.4.0/src/Invex.Extensions.Logging.FancyConsole/Configuration/FancyConsoleLoggerConfiguration.cs/#L144"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets the Spectre.Console style string used for <a class="xref" href="Invex.Extensions.Logging.FancyConsole.Configuration.FancyConsoleExceptionFormat.html#Invex_Extensions_Logging_FancyConsole_Configuration_FancyConsoleExceptionFormat_Full">Full</a>
+and <a class="xref" href="Invex.Extensions.Logging.FancyConsole.Configuration.FancyConsoleExceptionFormat.html#Invex_Extensions_Logging_FancyConsole_Configuration_FancyConsoleExceptionFormat_Summary">Summary</a> exception text. A <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> or
+whitespace value disables styling; a value that is not a valid style uses
+<a class="xref" href="Invex.Extensions.Logging.FancyConsole.Configuration.FancyConsoleLoggerConfiguration.html#Invex_Extensions_Logging_FancyConsole_Configuration_FancyConsoleLoggerConfiguration_DefaultExceptionTextStyle">DefaultExceptionTextStyle</a>. Defaults to <a class="xref" href="Invex.Extensions.Logging.FancyConsole.Configuration.FancyConsoleLoggerConfiguration.html#Invex_Extensions_Logging_FancyConsole_Configuration_FancyConsoleLoggerConfiguration_DefaultExceptionTextStyle">DefaultExceptionTextStyle</a>
+(<code>&quot;red1&quot;</code>).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string? ExceptionTextStyle { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Invex_Extensions_Logging_FancyConsole_Configuration_FancyConsoleLoggerConfiguration_IncludeScopes_" data-uid="Invex.Extensions.Logging.FancyConsole.Configuration.FancyConsoleLoggerConfiguration.IncludeScopes*"></a>
+
+  <h3 id="Invex_Extensions_Logging_FancyConsole_Configuration_FancyConsoleLoggerConfiguration_IncludeScopes" data-uid="Invex.Extensions.Logging.FancyConsole.Configuration.FancyConsoleLoggerConfiguration.IncludeScopes">
+  IncludeScopes
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Invex-Games/logging-extensions/blob/v0.4.0/src/Invex.Extensions.Logging.FancyConsole/Configuration/FancyConsoleLoggerConfiguration.cs/#L101"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets whether active logging scopes are shown after the category, separated by <code> =&gt; </code>,
+in the <a class="xref" href="Invex.Extensions.Logging.FancyConsole.Configuration.FancyConsoleLayout.html#Invex_Extensions_Logging_FancyConsole_Configuration_FancyConsoleLayout_Standard">Standard</a> and <a class="xref" href="Invex.Extensions.Logging.FancyConsole.Configuration.FancyConsoleLayout.html#Invex_Extensions_Logging_FancyConsole_Configuration_FancyConsoleLayout_SingleLine">SingleLine</a>
+layouts. <a class="xref" href="Invex.Extensions.Logging.FancyConsole.Configuration.FancyConsoleLayout.html#Invex_Extensions_Logging_FancyConsole_Configuration_FancyConsoleLayout_Detailed">Detailed</a> always shows scopes and
+<a class="xref" href="Invex.Extensions.Logging.FancyConsole.Configuration.FancyConsoleLayout.html#Invex_Extensions_Logging_FancyConsole_Configuration_FancyConsoleLayout_Minimal">Minimal</a> never does. Defaults to <a class="xref" href="Invex.Extensions.Logging.FancyConsole.Configuration.FancyConsoleLoggerConfiguration.html#Invex_Extensions_Logging_FancyConsole_Configuration_FancyConsoleLoggerConfiguration_DefaultIncludeScopes">DefaultIncludeScopes</a>
+(<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool IncludeScopes { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="Invex_Extensions_Logging_FancyConsole_Configuration_FancyConsoleLoggerConfiguration_IncludeScopes_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Message-template scopes (for example, <code>logger.BeginScope(&quot;Order {OrderId}&quot;, 42)</code>) are shown as
+their formatted text. Other key/value scopes are shown as comma-separated <code>Key=Value</code> pairs, and
+any other scope object is shown using <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">ToString()</a>. Null and empty scopes are
+skipped.</p>
+</div>
+
+
+
+
+  <a id="Invex_Extensions_Logging_FancyConsole_Configuration_FancyConsoleLoggerConfiguration_Layout_" data-uid="Invex.Extensions.Logging.FancyConsole.Configuration.FancyConsoleLoggerConfiguration.Layout*"></a>
+
+  <h3 id="Invex_Extensions_Logging_FancyConsole_Configuration_FancyConsoleLoggerConfiguration_Layout" data-uid="Invex.Extensions.Logging.FancyConsole.Configuration.FancyConsoleLoggerConfiguration.Layout">
+  Layout
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Invex-Games/logging-extensions/blob/v0.4.0/src/Invex.Extensions.Logging.FancyConsole/Configuration/FancyConsoleLoggerConfiguration.cs/#L70"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets how each log entry is laid out. Defaults to <a class="xref" href="Invex.Extensions.Logging.FancyConsole.Configuration.FancyConsoleLoggerConfiguration.html#Invex_Extensions_Logging_FancyConsole_Configuration_FancyConsoleLoggerConfiguration_DefaultLayout">DefaultLayout</a>
+(<a class="xref" href="Invex.Extensions.Logging.FancyConsole.Configuration.FancyConsoleLayout.html#Invex_Extensions_Logging_FancyConsole_Configuration_FancyConsoleLayout_Standard">Standard</a>).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public FancyConsoleLayout Layout { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Invex.Extensions.Logging.FancyConsole.Configuration.FancyConsoleLayout.html">FancyConsoleLayout</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Invex_Extensions_Logging_FancyConsole_Configuration_FancyConsoleLoggerConfiguration_LevelStyles_" data-uid="Invex.Extensions.Logging.FancyConsole.Configuration.FancyConsoleLoggerConfiguration.LevelStyles*"></a>
+
+  <h3 id="Invex_Extensions_Logging_FancyConsole_Configuration_FancyConsoleLoggerConfiguration_LevelStyles" data-uid="Invex.Extensions.Logging.FancyConsole.Configuration.FancyConsoleLoggerConfiguration.LevelStyles">
+  LevelStyles
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Invex-Games/logging-extensions/blob/v0.4.0/src/Invex.Extensions.Logging.FancyConsole/Configuration/FancyConsoleLoggerConfiguration.cs/#L129"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets per-<a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.logging.loglevel">LogLevel</a> Spectre.Console style strings (for example, <code>&quot;bold red&quot;</code>,
+<code>&quot;#ff8800&quot;</code>, or <code>&quot;black on yellow&quot;</code>) used for each entry's level-colored text. A mapped
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> or whitespace value disables styling for that level. Missing levels and values
+that are not valid styles use the built-in defaults: <code>grey</code> (Trace), <code>seagreen3</code> (Debug),
+<code>skyblue1</code> (Information), <code>gold1</code> (Warning), <code>darkorange</code> (Error), and <code>fuchsia</code>
+(Critical). Empty by default.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Dictionary&lt;LogLevel, string?&gt; LevelStyles { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.dictionary-2">Dictionary</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.logging.loglevel">LogLevel</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Invex_Extensions_Logging_FancyConsole_Configuration_FancyConsoleLoggerConfiguration_LogToStandardErrorThreshold_" data-uid="Invex.Extensions.Logging.FancyConsole.Configuration.FancyConsoleLoggerConfiguration.LogToStandardErrorThreshold*"></a>
+
+  <h3 id="Invex_Extensions_Logging_FancyConsole_Configuration_FancyConsoleLoggerConfiguration_LogToStandardErrorThreshold" data-uid="Invex.Extensions.Logging.FancyConsole.Configuration.FancyConsoleLoggerConfiguration.LogToStandardErrorThreshold">
+  LogToStandardErrorThreshold
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Invex-Games/logging-extensions/blob/v0.4.0/src/Invex.Extensions.Logging.FancyConsole/Configuration/FancyConsoleLoggerConfiguration.cs/#L151"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets the minimum level written to standard error instead of standard output. Defaults to
+<a class="xref" href="Invex.Extensions.Logging.FancyConsole.Configuration.FancyConsoleLoggerConfiguration.html#Invex_Extensions_Logging_FancyConsole_Configuration_FancyConsoleLoggerConfiguration_DefaultLogToStandardErrorThreshold">DefaultLogToStandardErrorThreshold</a> (<a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.logging.loglevel#microsoft-extensions-logging-loglevel-none">None</a>), which writes every
+entry to standard output.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public LogLevel LogToStandardErrorThreshold { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.logging.loglevel">LogLevel</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Invex_Extensions_Logging_FancyConsole_Configuration_FancyConsoleLoggerConfiguration_TimestampFormat_" data-uid="Invex.Extensions.Logging.FancyConsole.Configuration.FancyConsoleLoggerConfiguration.TimestampFormat*"></a>
+
+  <h3 id="Invex_Extensions_Logging_FancyConsole_Configuration_FancyConsoleLoggerConfiguration_TimestampFormat" data-uid="Invex.Extensions.Logging.FancyConsole.Configuration.FancyConsoleLoggerConfiguration.TimestampFormat">
+  TimestampFormat
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Invex-Games/logging-extensions/blob/v0.4.0/src/Invex.Extensions.Logging.FancyConsole/Configuration/FancyConsoleLoggerConfiguration.cs/#L80"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets a .NET date and time format string for entry timestamps, formatted with the invariant
+culture. When <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> or empty (the default), the layout's default is used:
+<code>HH:mm:ss.fff</code> for <a class="xref" href="Invex.Extensions.Logging.FancyConsole.Configuration.FancyConsoleLayout.html#Invex_Extensions_Logging_FancyConsole_Configuration_FancyConsoleLayout_Standard">Standard</a> and
+<a class="xref" href="Invex.Extensions.Logging.FancyConsole.Configuration.FancyConsoleLayout.html#Invex_Extensions_Logging_FancyConsole_Configuration_FancyConsoleLayout_SingleLine">SingleLine</a>, and <code>yyyy-MM-dd HH:mm:ss.fff zzz</code> for
+<a class="xref" href="Invex.Extensions.Logging.FancyConsole.Configuration.FancyConsoleLayout.html#Invex_Extensions_Logging_FancyConsole_Configuration_FancyConsoleLayout_Detailed">Detailed</a>. The <a class="xref" href="Invex.Extensions.Logging.FancyConsole.Configuration.FancyConsoleLayout.html#Invex_Extensions_Logging_FancyConsole_Configuration_FancyConsoleLayout_Standard">Standard</a> header line
+always shows the date and UTC offset. Ignored by <a class="xref" href="Invex.Extensions.Logging.FancyConsole.Configuration.FancyConsoleLayout.html#Invex_Extensions_Logging_FancyConsole_Configuration_FancyConsoleLayout_Minimal">Minimal</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string? TimestampFormat { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Invex_Extensions_Logging_FancyConsole_Configuration_FancyConsoleLoggerConfiguration_UseColors_" data-uid="Invex.Extensions.Logging.FancyConsole.Configuration.FancyConsoleLoggerConfiguration.UseColors*"></a>
+
+  <h3 id="Invex_Extensions_Logging_FancyConsole_Configuration_FancyConsoleLoggerConfiguration_UseColors" data-uid="Invex.Extensions.Logging.FancyConsole.Configuration.FancyConsoleLoggerConfiguration.UseColors">
+  UseColors
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Invex-Games/logging-extensions/blob/v0.4.0/src/Invex.Extensions.Logging.FancyConsole/Configuration/FancyConsoleLoggerConfiguration.cs/#L119"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets whether level and exception styles are applied. When <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>, all output
+is written without styling, including <a class="xref" href="Invex.Extensions.Logging.FancyConsole.Configuration.FancyConsoleExceptionFormat.html#Invex_Extensions_Logging_FancyConsole_Configuration_FancyConsoleExceptionFormat_Pretty">Pretty</a> exceptions.
+Defaults to <a class="xref" href="Invex.Extensions.Logging.FancyConsole.Configuration.FancyConsoleLoggerConfiguration.html#Invex_Extensions_Logging_FancyConsole_Configuration_FancyConsoleLoggerConfiguration_DefaultUseColors">DefaultUseColors</a> (<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a>).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool UseColors { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="Invex_Extensions_Logging_FancyConsole_Configuration_FancyConsoleLoggerConfiguration_UseColors_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Even when enabled, colors are only emitted if the console supports them. Spectre.Console detects
+terminal capabilities and honors the <code>NO_COLOR</code> environment variable.</p>
+</div>
+
+
+
+
+  <a id="Invex_Extensions_Logging_FancyConsole_Configuration_FancyConsoleLoggerConfiguration_UseShortCategoryName_" data-uid="Invex.Extensions.Logging.FancyConsole.Configuration.FancyConsoleLoggerConfiguration.UseShortCategoryName*"></a>
+
+  <h3 id="Invex_Extensions_Logging_FancyConsole_Configuration_FancyConsoleLoggerConfiguration_UseShortCategoryName" data-uid="Invex.Extensions.Logging.FancyConsole.Configuration.FancyConsoleLoggerConfiguration.UseShortCategoryName">
+  UseShortCategoryName
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Invex-Games/logging-extensions/blob/v0.4.0/src/Invex.Extensions.Logging.FancyConsole/Configuration/FancyConsoleLoggerConfiguration.cs/#L108"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets whether categories are shortened to the text after their last <code>.</code> (for example,
+<code>MyApp.Services.OrderService</code> becomes <code>OrderService</code>). Defaults to
+<a class="xref" href="Invex.Extensions.Logging.FancyConsole.Configuration.FancyConsoleLoggerConfiguration.html#Invex_Extensions_Logging_FancyConsole_Configuration_FancyConsoleLoggerConfiguration_DefaultUseShortCategoryName">DefaultUseShortCategoryName</a> (<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool UseShortCategoryName { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Invex_Extensions_Logging_FancyConsole_Configuration_FancyConsoleLoggerConfiguration_UseUtcTimestamp_" data-uid="Invex.Extensions.Logging.FancyConsole.Configuration.FancyConsoleLoggerConfiguration.UseUtcTimestamp*"></a>
+
+  <h3 id="Invex_Extensions_Logging_FancyConsole_Configuration_FancyConsoleLoggerConfiguration_UseUtcTimestamp" data-uid="Invex.Extensions.Logging.FancyConsole.Configuration.FancyConsoleLoggerConfiguration.UseUtcTimestamp">
+  UseUtcTimestamp
+  <a class="header-action link-secondary" title="View source" href="https://github.com/Invex-Games/logging-extensions/blob/v0.4.0/src/Invex.Extensions.Logging.FancyConsole/Configuration/FancyConsoleLoggerConfiguration.cs/#L86"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets whether timestamps are shown in UTC rather than local time. Defaults to
+<a class="xref" href="Invex.Extensions.Logging.FancyConsole.Configuration.FancyConsoleLoggerConfiguration.html#Invex_Extensions_Logging_FancyConsole_Configuration_FancyConsoleLoggerConfiguration_DefaultUseUtcTimestamp">DefaultUseUtcTimestamp</a> (<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool UseUtcTimestamp { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/Invex-Games/logging-extensions/blob/v0.4.0/src/Invex.Extensions.Logging.FancyConsole/Configuration/FancyConsoleLoggerConfiguration.cs/#L16" class="edit-link">Edit this page</a>
+        </div>
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Useful utilities for Microsoft.Extensions.Logging
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

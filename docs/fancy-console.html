@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Fancy Console Logger | Invex.Extensions.Logging </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Fancy Console Logger | Invex.Extensions.Logging ">
+      
+      
+      <link rel="icon" href="../favicon.ico">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/Invex-Games/logging-extensions/blob/main/docs/fancy-console.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../logo.svg" alt="Invex.Extensions.Logging">
+            Invex.Extensions.Logging
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="fancy-console-logger">Fancy Console Logger</h1>
+
+<p><code>Invex.Extensions.Logging.FancyConsole</code> is a colorful console logger provider built on
+<a href="https://spectreconsole.net/">Spectre.Console</a>. It offers several layouts, per-level styles, optional
+scopes, styled or &quot;pretty&quot; exceptions, and standard-error routing, all configurable through the standard
+options pipeline with runtime reload.</p>
+<p>The library targets <code>net10.0</code>, <code>net9.0</code>, <code>net8.0</code>, and <code>netstandard2.0</code>.</p>
+<h2 id="registration">Registration</h2>
+<pre><code class="lang-csharp">using Invex.Extensions.Logging.FancyConsole;
+
+var builder = Host.CreateApplicationBuilder(args);
+
+builder.Logging.ClearProviders();
+builder.Logging.AddFancyConsole();
+</code></pre>
+<p><code>AddFancyConsole()</code> binds options from <code>Logging:FancyConsole</code>. The delegate overload applies code
+configuration on top of bound configuration:</p>
+<pre><code class="lang-csharp">using Invex.Extensions.Logging.FancyConsole;
+using Invex.Extensions.Logging.FancyConsole.Configuration;
+
+builder.Logging.AddFancyConsole(options =&gt;
+{
+    options.Layout = FancyConsoleLayout.SingleLine;
+    options.IncludeScopes = true;
+    options.UseShortCategoryName = true;
+    options.ExceptionFormat = FancyConsoleExceptionFormat.Pretty;
+    options.LogToStandardErrorThreshold = LogLevel.Error;
+});
+</code></pre>
+<p>Calling <code>AddFancyConsole</code> more than once registers the provider only once.</p>
+<h2 id="layouts">Layouts</h2>
+<p>Choose a layout with <code>Layout</code>. Level codes are <code>TRC</code>, <code>DBG</code>, <code>INF</code>, <code>WRN</code>, <code>ERR</code>, and <code>CRT</code>. In Standard,
+Minimal, and Detailed, multi-line messages are indented to the message column; SingleLine replaces line breaks with spaces.</p>
+<h3 id="standard-default">Standard (default)</h3>
+<p>A header line with the date, UTC offset, and category, followed by the time, level, and message, and a
+blank line between entries:</p>
+<pre><code class="lang-text">2026-06-11 +10:00 MyApp.Services.OrderService
+09:41:23.123  INF Order 42 submitted
+                  for customer 7
+
+</code></pre>
+<h3 id="singleline">SingleLine</h3>
+<p>One line per entry, suited to dense output and <code>grep</code>:</p>
+<pre><code class="lang-text">09:41:23.123 INF MyApp.Services.OrderService: Order 42 submitted
+</code></pre>
+<h3 id="minimal">Minimal</h3>
+<p>Only the level and message:</p>
+<pre><code class="lang-text">INF Order 42 submitted
+</code></pre>
+<h3 id="detailed">Detailed</h3>
+<p>Every available field, labeled, with a blank line between entries. <code>Event</code> is shown only for a non-default
+event ID, and <code>Scopes</code> only when scopes are active. Detailed always includes scopes, regardless of
+<code>IncludeScopes</code>.</p>
+<pre><code class="lang-text">2026-06-11 09:41:23.123 +10:00 Information
+  Category:  MyApp.Services.OrderService
+  Event:     1001 (OrderSubmitted)
+  Thread:    16
+  Scopes:    Request 0HN4 =&gt; Order 42
+  Message:   Order 42 submitted
+
+</code></pre>
+<h2 id="options">Options</h2>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Layout</code></td>
+<td><code>Standard</code></td>
+<td><code>Standard</code>, <code>SingleLine</code>, <code>Minimal</code>, or <code>Detailed</code>.</td>
+</tr>
+<tr>
+<td><code>TimestampFormat</code></td>
+<td><code>null</code></td>
+<td>.NET date/time format string (invariant culture). <code>null</code>/empty uses the layout default: <code>HH:mm:ss.fff</code> (Standard, SingleLine) or <code>yyyy-MM-dd HH:mm:ss.fff zzz</code> (Detailed). An invalid format falls back to the layout default. Ignored by Minimal; the Standard header always shows the date and offset.</td>
+</tr>
+<tr>
+<td><code>UseUtcTimestamp</code></td>
+<td><code>false</code></td>
+<td>Show timestamps in UTC instead of local time.</td>
+</tr>
+<tr>
+<td><code>IncludeScopes</code></td>
+<td><code>false</code></td>
+<td>Append active scopes after the category as <code> =&gt; scope1 =&gt; scope2</code> (Standard and SingleLine).</td>
+</tr>
+<tr>
+<td><code>UseShortCategoryName</code></td>
+<td><code>false</code></td>
+<td>Shorten categories to the text after their last <code>.</code>.</td>
+</tr>
+<tr>
+<td><code>UseColors</code></td>
+<td><code>true</code></td>
+<td>Apply level and exception styles. When <code>false</code>, all output is unstyled.</td>
+</tr>
+<tr>
+<td><code>LevelStyles</code></td>
+<td>empty</td>
+<td>Per-level Spectre.Console style strings, e.g. <code>&quot;bold red&quot;</code>, <code>&quot;#ff8800&quot;</code>, <code>&quot;black on yellow&quot;</code>.</td>
+</tr>
+<tr>
+<td><code>ExceptionFormat</code></td>
+<td><code>Full</code></td>
+<td><code>Full</code>, <code>Pretty</code>, <code>Summary</code>, or <code>Hidden</code>.</td>
+</tr>
+<tr>
+<td><code>ExceptionTextStyle</code></td>
+<td><code>&quot;red1&quot;</code></td>
+<td>Style for <code>Full</code> and <code>Summary</code> exception text.</td>
+</tr>
+<tr>
+<td><code>LogToStandardErrorThreshold</code></td>
+<td><code>None</code></td>
+<td>Entries at or above this level go to standard error. <code>None</code> writes everything to standard output.</td>
+</tr>
+</tbody>
+</table>
+<p>The same configuration in <code>appsettings.json</code>:</p>
+<pre><code class="lang-json">{
+  &quot;Logging&quot;: {
+    &quot;FancyConsole&quot;: {
+      &quot;Layout&quot;: &quot;SingleLine&quot;,
+      &quot;TimestampFormat&quot;: &quot;HH:mm:ss&quot;,
+      &quot;UseUtcTimestamp&quot;: false,
+      &quot;IncludeScopes&quot;: true,
+      &quot;UseShortCategoryName&quot;: true,
+      &quot;UseColors&quot;: true,
+      &quot;LevelStyles&quot;: {
+        &quot;Information&quot;: &quot;white&quot;,
+        &quot;Error&quot;: &quot;bold red&quot;
+      },
+      &quot;ExceptionFormat&quot;: &quot;Pretty&quot;,
+      &quot;ExceptionTextStyle&quot;: &quot;red1&quot;,
+      &quot;LogToStandardErrorThreshold&quot;: &quot;Error&quot;
+    }
+  }
+}
+</code></pre>
+<p>Configuration changes are picked up at runtime and apply to subsequent entries.</p>
+<h3 id="level-styles">Level styles</h3>
+<p>Missing levels use the built-in defaults: <code>grey</code> (Trace), <code>seagreen3</code> (Debug), <code>skyblue1</code> (Information),
+<code>gold1</code> (Warning), <code>darkorange</code> (Error), and <code>fuchsia</code> (Critical). A mapped <code>null</code> or whitespace value
+disables styling for that level, and a value that is not a valid style falls back to the default.</p>
+<p>Colors are emitted only when the console supports them. Spectre.Console detects terminal capabilities and
+honors the <code>NO_COLOR</code> environment variable; set <code>UseColors</code> to <code>false</code> to disable styling unconditionally.</p>
+<h3 id="scopes">Scopes</h3>
+<p>Message-template scopes (<code>logger.BeginScope(&quot;Order {OrderId}&quot;, 42)</code>) are shown as their formatted text,
+other key/value scopes as comma-separated <code>Key=Value</code> pairs, and any other object via <code>ToString()</code>. Null
+and empty scopes are skipped. Minimal never shows scopes.</p>
+<pre><code class="lang-text">09:41:23.123 INF OrderService =&gt; Request 0HN4 =&gt; Order 42: Order 42 submitted
+</code></pre>
+<h2 id="exceptions">Exceptions</h2>
+<table>
+<thead>
+<tr>
+<th>Format</th>
+<th>Output</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Full</code></td>
+<td><code>Exception.ToString()</code>, indented to the message column and styled with <code>ExceptionTextStyle</code>.</td>
+</tr>
+<tr>
+<td><code>Pretty</code></td>
+<td>Spectre.Console's formatted exception with highlighted types, methods, and paths.</td>
+</tr>
+<tr>
+<td><code>Summary</code></td>
+<td>Type and message of the exception and each inner exception, e.g. <code>InvalidOperationException: Boom ---&gt; ArgumentException: Inner</code>.</td>
+</tr>
+<tr>
+<td><code>Hidden</code></td>
+<td>Nothing; only the log message is written.</td>
+</tr>
+</tbody>
+</table>
+<p>In Standard layout exceptions follow the message on their own lines, and in Detailed they appear under an
+<code>Exception:</code> label. In SingleLine and Minimal, <code>Summary</code> is appended to the line as <code> | {summary}</code> so each
+entry stays on one line; other formats are written on the following lines.</p>
+<p><code>Pretty</code> falls back to <code>Full</code> when Spectre.Console cannot render the exception, for example an exception
+that was never thrown on .NET Framework.</p>
+<h2 id="output-filtering-and-wrapping">Output, filtering, and wrapping</h2>
+<p>The provider does no level filtering of its own. Use standard logging rules, scoped to the <code>FancyConsole</code>
+provider alias when needed:</p>
+<pre><code class="lang-json">{
+  &quot;Logging&quot;: {
+    &quot;FancyConsole&quot;: {
+      &quot;LogLevel&quot;: {
+        &quot;Default&quot;: &quot;Information&quot;,
+        &quot;Microsoft&quot;: &quot;Warning&quot;
+      }
+    }
+  }
+}
+</code></pre>
+<p>Each entry is rendered and written as a single unit, so concurrent entries are not interleaved. Empty
+messages and <code>LogLevel.None</code> entries are skipped. Rendering failures are reported to debug output and
+standard error and never thrown into the application.</p>
+<p>Spectre.Console wraps long lines at the console width, which is 80 columns when output is redirected.
+Use the Microsoft console logger or the file logger when you need unwrapped, machine-parseable output.</p>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/Invex-Games/logging-extensions/blob/main/docs/fancy-console.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Useful utilities for Microsoft.Extensions.Logging
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

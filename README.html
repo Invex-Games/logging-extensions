@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Invex Logging Extensions | Invex.Extensions.Logging </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Invex Logging Extensions | Invex.Extensions.Logging ">
+      
+      
+      <link rel="icon" href="favicon.ico">
+      <link rel="stylesheet" href="public/docfx.min.css">
+      <link rel="stylesheet" href="public/main.css">
+      <meta name="docfx:navrel" content="toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/Invex-Games/logging-extensions/blob/main/README.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="index.html">
+            <img id="logo" class="svg" src="logo.svg" alt="Invex.Extensions.Logging">
+            Invex.Extensions.Logging
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="invex-logging-extensions">Invex Logging Extensions</h1>
+
+<p>Useful utilities for <a href="https://learn.microsoft.com/dotnet/core/extensions/logging"><code>Microsoft.Extensions.Logging</code></a>.</p>
+<h2 id="packages">Packages</h2>
+<table>
+<thead>
+<tr>
+<th>Package</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="https://www.nuget.org/packages/Invex.Extensions.Logging.FancyConsole"><code>Invex.Extensions.Logging.FancyConsole</code></a></td>
+<td>A colorful, readable console logger built on <a href="https://spectreconsole.net/">Spectre.Console</a>, with multiple layouts, per-level styles, scopes, pretty exceptions, and standard-error routing.</td>
+</tr>
+<tr>
+<td><a href="https://www.nuget.org/packages/Invex.Extensions.Logging.File"><code>Invex.Extensions.Logging.File</code></a></td>
+<td>A dependency-light file logger with size- and time-based rollover, retention limits, routing by scoped group and log level, and buffered or synchronous writing.</td>
+</tr>
+</tbody>
+</table>
+<p>Both packages are standard logging providers: they plug into any ASP.NET Core, Generic Host, or manually
+created <code>ILoggerFactory</code>, bind options from the <code>Logging</code> configuration section, pick up configuration
+changes at runtime, and leave level filtering to the standard logging rules. They target <code>net10.0</code>,
+<code>net9.0</code>, <code>net8.0</code>, and <code>netstandard2.0</code>, and can be used independently or together.</p>
+<h2 id="quick-start">Quick start</h2>
+<p>Install one or both packages:</p>
+<pre><code class="lang-shell">dotnet add package Invex.Extensions.Logging.FancyConsole
+dotnet add package Invex.Extensions.Logging.File
+</code></pre>
+<p>Register them with your host. A common setup is readable console output while you watch the app, plus
+rolling files for later inspection:</p>
+<pre><code class="lang-csharp">using Invex.Extensions.Logging.FancyConsole;
+using Invex.Extensions.Logging.File;
+
+var builder = WebApplication.CreateBuilder(args);
+
+builder.Logging.ClearProviders();
+builder.Logging.AddFancyConsole();
+builder.Logging.AddFile();
+
+var app = builder.Build();
+</code></pre>
+<p>They also work with a manually created logger factory:</p>
+<pre><code class="lang-csharp">using Invex.Extensions.Logging.FancyConsole;
+using Invex.Extensions.Logging.File;
+using Microsoft.Extensions.Logging;
+
+using var loggerFactory = LoggerFactory.Create(logging =&gt; logging
+    .AddFancyConsole()
+    .AddFile());
+
+var logger = loggerFactory.CreateLogger&lt;Program&gt;();
+logger.LogInformation(&quot;Hello, world!&quot;);
+</code></pre>
+<p>See <a href="docs/getting-started.html">getting started</a> for defaults and level filtering.</p>
+<h2 id="fancy-console-logger">Fancy console logger</h2>
+<p><code>AddFancyConsole</code> writes styled, human-friendly output to the console. Pick from four layouts:</p>
+<table>
+<thead>
+<tr>
+<th>Layout</th>
+<th>Output</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Standard</code> (default)</td>
+<td>A date and category header, then time, level, and message, with a blank line between entries.</td>
+</tr>
+<tr>
+<td><code>SingleLine</code></td>
+<td>One line per entry: time, level, category, and message.</td>
+</tr>
+<tr>
+<td><code>Minimal</code></td>
+<td>Only the level and message.</td>
+</tr>
+<tr>
+<td><code>Detailed</code></td>
+<td>Every available field (category, event, thread, scopes, and message), labeled on separate lines.</td>
+</tr>
+</tbody>
+</table>
+<p>Standard:</p>
+<pre><code class="lang-text">2026-06-11 +10:00 MyApp.Services.OrderService
+09:41:23.123  INF Order 42 submitted
+
+</code></pre>
+<p>SingleLine:</p>
+<pre><code class="lang-text">09:41:23.123 INF MyApp.Services.OrderService: Order 42 submitted
+</code></pre>
+<p>Exceptions can be rendered in <code>Full</code>, Spectre.Console <code>Pretty</code>, one-line <code>Summary</code>, or <code>Hidden</code> form, and
+entries at or above a chosen level can be routed to standard error. Configure in code:</p>
+<pre><code class="lang-csharp">using Invex.Extensions.Logging.FancyConsole;
+using Invex.Extensions.Logging.FancyConsole.Configuration;
+using Microsoft.Extensions.Logging;
+
+builder.Logging.AddFancyConsole(options =&gt;
+{
+    options.Layout = FancyConsoleLayout.SingleLine;
+    options.IncludeScopes = true;
+    options.UseShortCategoryName = true;
+    options.LevelStyles[LogLevel.Error] = &quot;bold red&quot;;
+    options.ExceptionFormat = FancyConsoleExceptionFormat.Pretty;
+    options.LogToStandardErrorThreshold = LogLevel.Error;
+});
+</code></pre>
+<p>Or under <code>Logging:FancyConsole</code> (provider alias <code>FancyConsole</code>). Values configured by the delegate are
+applied after values bound from configuration:</p>
+<pre><code class="lang-json">{
+  &quot;Logging&quot;: {
+    &quot;FancyConsole&quot;: {
+      &quot;Layout&quot;: &quot;SingleLine&quot;,
+      &quot;IncludeScopes&quot;: true,
+      &quot;LevelStyles&quot;: {
+        &quot;Error&quot;: &quot;bold red&quot;
+      },
+      &quot;ExceptionFormat&quot;: &quot;Pretty&quot;,
+      &quot;LogToStandardErrorThreshold&quot;: &quot;Error&quot;
+    }
+  }
+}
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th style="text-align: right;">Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Layout</code></td>
+<td style="text-align: right;"><code>Standard</code></td>
+<td><code>Standard</code>, <code>SingleLine</code>, <code>Minimal</code>, or <code>Detailed</code>.</td>
+</tr>
+<tr>
+<td><code>TimestampFormat</code></td>
+<td style="text-align: right;"><code>null</code></td>
+<td>.NET date/time format string; <code>null</code> or empty uses the layout default.</td>
+</tr>
+<tr>
+<td><code>UseUtcTimestamp</code></td>
+<td style="text-align: right;"><code>false</code></td>
+<td>Show timestamps in UTC instead of local time.</td>
+</tr>
+<tr>
+<td><code>IncludeScopes</code></td>
+<td style="text-align: right;"><code>false</code></td>
+<td>Append active scopes after the category (Standard and SingleLine; Detailed always shows them).</td>
+</tr>
+<tr>
+<td><code>UseShortCategoryName</code></td>
+<td style="text-align: right;"><code>false</code></td>
+<td>Shorten categories to the text after their last <code>.</code>.</td>
+</tr>
+<tr>
+<td><code>UseColors</code></td>
+<td style="text-align: right;"><code>true</code></td>
+<td>Apply styles when the console supports them; <code>NO_COLOR</code> is honored.</td>
+</tr>
+<tr>
+<td><code>LevelStyles</code></td>
+<td style="text-align: right;">empty</td>
+<td>Per-level Spectre.Console styles, such as <code>&quot;bold red&quot;</code> or <code>&quot;black on yellow&quot;</code>.</td>
+</tr>
+<tr>
+<td><code>ExceptionFormat</code></td>
+<td style="text-align: right;"><code>Full</code></td>
+<td><code>Full</code>, <code>Pretty</code>, <code>Summary</code>, or <code>Hidden</code>.</td>
+</tr>
+<tr>
+<td><code>ExceptionTextStyle</code></td>
+<td style="text-align: right;"><code>&quot;red1&quot;</code></td>
+<td>Style for <code>Full</code> and <code>Summary</code> exception text.</td>
+</tr>
+<tr>
+<td><code>LogToStandardErrorThreshold</code></td>
+<td style="text-align: right;"><code>None</code></td>
+<td>Entries at or above this level go to standard error; <code>None</code> writes everything to standard output.</td>
+</tr>
+</tbody>
+</table>
+<p>Each entry is written as a single unit, so concurrent entries do not interleave, and rendering failures
+are never thrown into the application. See the <a href="docs/fancy-console.html">fancy console guide</a> for every
+layout, style, and exception option.</p>
+<h2 id="file-logger">File logger</h2>
+<p><code>AddFile</code> writes plain, parseable log lines to rolling files:</p>
+<pre><code class="lang-text">[2026-06-11 09:41:23.123 +10:00 INF MyApp.Services.OrderService] Order 42 submitted
+</code></pre>
+<p>By default it writes to a <code>Logs</code> directory relative to the current working directory. The active file is
+named after <code>AppDomain.CurrentDomain.FriendlyName</code>, rolls over daily or at 100 MiB (whichever happens
+first), and retains up to 10 GiB of rolled-over files.</p>
+<div class="IMPORTANT">
+<h5>Important</h5>
+<p>Buffered writing is the default. Dispose the host or <code>ILoggerFactory</code> during graceful shutdown so
+queued entries are flushed, even when disposal immediately follows the last log call; no delay is needed.
+Entries still in memory can be lost if the process crashes or is killed.</p>
+</div>
+<p>Configure in code:</p>
+<pre><code class="lang-csharp">using Invex.Extensions.Logging.File;
+using Invex.Extensions.Logging.File.Configuration;
+using Microsoft.Extensions.Logging;
+
+builder.Logging.AddFile(options =&gt;
+{
+    options.LogDirectory = &quot;Logs&quot;;
+    options.LogName = &quot;my-app&quot;;
+    options.FileSizeLimitBytes = 50L * 1024 * 1024;
+    options.RolloverInterval = FileRolloverInterval.Hour;
+    options.MaxTotalSizeBytes = 1L * 1024 * 1024 * 1024;
+    options.PerGroupLogName[&quot;Orders&quot;] = &quot;orders&quot;;
+    options.PerLevelLogName[LogLevel.Error] = &quot;errors&quot;;
+});
+</code></pre>
+<p>Or under <code>Logging:File</code> (provider alias <code>File</code>). Values configured by the delegate are applied after
+values bound from configuration:</p>
+<pre><code class="lang-json">{
+  &quot;Logging&quot;: {
+    &quot;File&quot;: {
+      &quot;LogDirectory&quot;: &quot;Logs&quot;,
+      &quot;LogName&quot;: &quot;my-app&quot;,
+      &quot;FileSizeLimitBytes&quot;: 104857600,
+      &quot;RolloverInterval&quot;: &quot;Day&quot;,
+      &quot;MaxTotalSizeBytes&quot;: 10737418240,
+      &quot;PerGroupLogName&quot;: {
+        &quot;Orders&quot;: &quot;orders&quot;
+      },
+      &quot;PerLevelLogName&quot;: {
+        &quot;Error&quot;: &quot;errors&quot;,
+        &quot;Critical&quot;: &quot;errors&quot;
+      }
+    }
+  }
+}
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th style="text-align: right;">Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>LogDirectory</code></td>
+<td style="text-align: right;"><code>&quot;Logs&quot;</code></td>
+<td>Absolute directory, or a directory relative to the current working directory. Created when needed.</td>
+</tr>
+<tr>
+<td><code>LogName</code></td>
+<td style="text-align: right;"><code>null</code></td>
+<td>Active base name without <code>.log</code>; <code>null</code> uses the application domain friendly name.</td>
+</tr>
+<tr>
+<td><code>PerGroupLogName</code></td>
+<td style="text-align: right;">empty</td>
+<td>Suffixes for selected scoped groups, appended to the base name before any level suffix. A mapped <code>null</code> or empty string adds nothing.</td>
+</tr>
+<tr>
+<td><code>PerLevelLogName</code></td>
+<td style="text-align: right;">empty</td>
+<td>Suffixes for selected levels, appended after the base name and any group suffix. A mapped <code>null</code> or empty string adds nothing.</td>
+</tr>
+<tr>
+<td><code>FileSizeLimitBytes</code></td>
+<td style="text-align: right;">100 MiB</td>
+<td>Rolls over before a write that would make the active file reach this size.</td>
+</tr>
+<tr>
+<td><code>RolloverInterval</code></td>
+<td style="text-align: right;"><code>Day</code></td>
+<td>Elapsed interval from file creation: <code>Infinite</code>, <code>Year</code> (365 days), <code>Month</code> (30 days), <code>Day</code>, <code>Hour</code>, or <code>Minute</code>.</td>
+</tr>
+<tr>
+<td><code>MaxTotalSizeBytes</code></td>
+<td style="text-align: right;">10 GiB</td>
+<td>Maximum total size of rolled-over files for each base name. The oldest rolled-over file is removed when the limit is reached.</td>
+</tr>
+</tbody>
+</table>
+<div class="IMPORTANT">
+<h5>Important</h5>
+<p><code>PerLevelLogName</code> values now append to <code>LogName</code> as suffixes instead of replacing it. Update existing
+full-name mappings to suffixes; for example, use <code>&quot;errors&quot;</code> with <code>LogName = &quot;my-app&quot;</code> to write
+<code>my-app_errors.log</code>. See <a href="docs/configuration.html#migrating-existing-level-mappings">migration guidance</a>.</p>
+</div>
+<h3 id="routing-by-group">Routing by group</h3>
+<p>Use <code>BeginGroupScope</code> to set a group for log calls within a scope:</p>
+<pre><code class="lang-csharp">using Invex.Extensions.Logging.File;
+
+using (logger.BeginGroupScope(&quot;Orders&quot;))
+{
+    logger.LogInformation(&quot;Order submitted&quot;); // my-app_orders.log
+    logger.LogError(&quot;Payment failed&quot;);       // my-app_orders_errors.log
+}
+</code></pre>
+<p>File names start with <code>LogName</code>, followed by the mapped group suffix and then the mapped level suffix,
+each separated by an underscore. Missing mappings and null or empty mapped suffixes add no separator or
+text. Nested groups override outer groups until disposed, and scopes flow across <code>await</code> and logger
+categories. Dictionary and formatted scopes such as <code>logger.BeginScope(&quot;{Group}&quot;, &quot;Orders&quot;)</code> also work.
+Scope values affect routing without appearing in the file's log lines. See
+<a href="docs/configuration.html#routing-groups-to-separate-files">group routing</a> for the complete rules.</p>
+<h3 id="rollover-retention-and-write-modes">Rollover, retention, and write modes</h3>
+<p>When rollover occurs, the active <code>{name}.log</code> is renamed to <code>{name}_{yyMMdd-HHmmss}.log</code>; collisions
+receive <code>_1</code>, <code>_2</code>, and later suffixes. Time rollover uses elapsed durations, not calendar boundaries, and
+checks occur only when an entry is written. Retention is evaluated independently for each base name and
+never deletes the active file. Case-only path aliases follow the destination filesystem's behavior for
+buffered routing, archive naming, and retention. See <a href="docs/rollover-and-retention.html">file rollover and retention</a>.</p>
+<p>Buffered mode queues entries for a dedicated background thread that writes batches of up to 10 entries.
+Use direct mode when an entry must be written before the log call returns:</p>
+<pre><code class="lang-csharp">builder.Logging.AddFile(buffered: false);
+</code></pre>
+<p>Both modes retry failed writes up to five times, report failures to console/debug output, and drop entries
+that still cannot be written. See <a href="docs/buffering.html">buffered versus direct writing</a> and the
+<a href="docs/log-format.html">log format guide</a>.</p>
+<h2 id="filtering">Filtering</h2>
+<p>Neither provider filters levels itself. Use the standard
+<a href="https://learn.microsoft.com/dotnet/core/extensions/logging#configure-logging">log filtering rules</a>,
+scoped to a provider alias when needed:</p>
+<pre><code class="lang-json">{
+  &quot;Logging&quot;: {
+    &quot;LogLevel&quot;: {
+      &quot;Default&quot;: &quot;Information&quot;
+    },
+    &quot;FancyConsole&quot;: {
+      &quot;LogLevel&quot;: {
+        &quot;Microsoft&quot;: &quot;Warning&quot;
+      }
+    },
+    &quot;File&quot;: {
+      &quot;LogLevel&quot;: {
+        &quot;Default&quot;: &quot;Warning&quot;,
+        &quot;MyApp.Services&quot;: &quot;Information&quot;
+      }
+    }
+  }
+}
+</code></pre>
+<h2 id="documentation">Documentation</h2>
+<ul>
+<li><a href="docs/getting-started.html">Getting started</a></li>
+<li>Fancy console logger: <a href="docs/fancy-console.html">guide</a></li>
+<li>File logger: <a href="docs/configuration.html">configuration</a>, <a href="docs/rollover-and-retention.html">rollover and retention</a>,
+<a href="docs/buffering.html">buffered versus direct writing</a>, and <a href="docs/log-format.html">log output format</a></li>
+<li><a href="api/index.html">API reference</a></li>
+</ul>
+<h2 id="license">License</h2>
+<p>Licensed under the terms of <a href="LICENSE.txt">LICENSE.txt</a>.</p>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/Invex-Games/logging-extensions/blob/main/README.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Useful utilities for Microsoft.Extensions.Logging
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

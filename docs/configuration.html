@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>File Logger Configuration | Invex.Extensions.Logging </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="File Logger Configuration | Invex.Extensions.Logging ">
+      
+      
+      <link rel="icon" href="../favicon.ico">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/Invex-Games/logging-extensions/blob/main/docs/configuration.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../logo.svg" alt="Invex.Extensions.Logging">
+            Invex.Extensions.Logging
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="file-logger-configuration">File Logger Configuration</h1>
+
+<p>The file logger is configured via the <code>FileLoggerConfiguration</code> options class. Options can be supplied from
+configuration (the <code>Logging:File</code> section), from code, or both — values set in code override bound values.</p>
+<h2 id="options-reference">Options reference</h2>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>LogDirectory</code></td>
+<td><code>string</code></td>
+<td><code>&quot;Logs&quot;</code></td>
+<td>Directory for log files. Absolute, or relative to the current working directory. Created automatically.</td>
+</tr>
+<tr>
+<td><code>LogName</code></td>
+<td><code>string?</code></td>
+<td><code>null</code></td>
+<td>Base file name (no extension). <code>null</code> uses the application's name (<code>AppDomain.CurrentDomain.FriendlyName</code>).</td>
+</tr>
+<tr>
+<td><code>PerGroupLogName</code></td>
+<td><code>Dictionary&lt;string, string?&gt;</code></td>
+<td>empty</td>
+<td>Group suffixes appended to the base name before any level suffix. Null or empty values add nothing.</td>
+</tr>
+<tr>
+<td><code>PerLevelLogName</code></td>
+<td><code>Dictionary&lt;LogLevel, string?&gt;</code></td>
+<td>empty</td>
+<td>Level suffixes appended after the base name and any group suffix. Null or empty values add nothing.</td>
+</tr>
+<tr>
+<td><code>FileSizeLimitBytes</code></td>
+<td><code>long</code></td>
+<td><code>104857600</code> (100 MiB)</td>
+<td>Maximum size of a single log file before it is rolled over.</td>
+</tr>
+<tr>
+<td><code>RolloverInterval</code></td>
+<td><code>FileRolloverInterval</code></td>
+<td><code>Day</code></td>
+<td>Time-based rollover interval: <code>Infinite</code>, <code>Year</code>, <code>Month</code>, <code>Day</code>, <code>Hour</code>, or <code>Minute</code>.</td>
+</tr>
+<tr>
+<td><code>MaxTotalSizeBytes</code></td>
+<td><code>long</code></td>
+<td><code>10737418240</code> (10 GiB)</td>
+<td>Maximum combined size of rolled-over files before the oldest is deleted.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="configuring-via-appsettingsjson">Configuring via appsettings.json</h2>
+<p>The provider registers under the alias <code>File</code>, so it binds to the <code>Logging:File</code> section:</p>
+<pre><code class="lang-json">{
+  &quot;Logging&quot;: {
+    &quot;File&quot;: {
+      &quot;LogDirectory&quot;: &quot;C:/logs/my-app&quot;,
+      &quot;LogName&quot;: &quot;my-app&quot;,
+      &quot;FileSizeLimitBytes&quot;: 52428800,
+      &quot;RolloverInterval&quot;: &quot;Hour&quot;,
+      &quot;MaxTotalSizeBytes&quot;: 1073741824,
+      &quot;PerGroupLogName&quot;: {
+        &quot;Orders&quot;: &quot;orders&quot;
+      },
+      &quot;PerLevelLogName&quot;: {
+        &quot;Error&quot;: &quot;errors&quot;,
+        &quot;Critical&quot;: &quot;errors&quot;
+      }
+    }
+  }
+}
+</code></pre>
+<div class="NOTE">
+<h5>Note</h5>
+<p><code>RolloverInterval</code> accepts the enum names: <code>Infinite</code>, <code>Year</code>, <code>Month</code>, <code>Day</code>, <code>Hour</code>, <code>Minute</code>.</p>
+</div>
+<h2 id="configuring-in-code">Configuring in code</h2>
+<pre><code class="lang-csharp">using Invex.Extensions.Logging.File;
+using Invex.Extensions.Logging.File.Configuration;
+using Microsoft.Extensions.Logging;
+
+builder.Logging.AddFile(options =&gt;
+{
+    options.LogDirectory = &quot;Logs&quot;;
+    options.LogName = &quot;my-app&quot;;
+    options.FileSizeLimitBytes = 50L * 1024 * 1024; // 50 MiB
+    options.RolloverInterval = FileRolloverInterval.Hour;
+    options.MaxTotalSizeBytes = 1L * 1024 * 1024 * 1024; // 1 GiB
+
+    options.PerGroupLogName[&quot;Orders&quot;] = &quot;orders&quot;;
+    options.PerLevelLogName[LogLevel.Error] = &quot;errors&quot;;
+    options.PerLevelLogName[LogLevel.Critical] = &quot;errors&quot;;
+});
+</code></pre>
+<h2 id="routing-levels-to-separate-files">Routing levels to separate files</h2>
+<p><code>PerLevelLogName</code> maps a <code>LogLevel</code> to a suffix appended to <code>LogName</code>, separated by an underscore.
+Without a group suffix, a mapped level writes to <code>{baseName}_{levelSuffix}.log</code>; missing, null, or empty
+level suffixes leave <code>{baseName}.log</code>. A null <code>LogName</code> uses <code>AppDomain.CurrentDomain.FriendlyName</code> as
+the base name. Matching group suffixes are inserted before level suffixes, as described below.</p>
+<pre><code class="lang-csharp">builder.Logging.AddFile(options =&gt;
+{
+    options.LogName = &quot;app&quot;;
+
+    // Errors and critical entries go to their own file
+    options.PerLevelLogName[LogLevel.Error] = &quot;errors&quot;;
+    options.PerLevelLogName[LogLevel.Critical] = &quot;errors&quot;;
+
+    // Trace entries go to a separate diagnostic file
+    options.PerLevelLogName[LogLevel.Trace] = &quot;trace&quot;;
+});
+</code></pre>
+<p>Produces:</p>
+<pre><code class="lang-text">Logs/
+    app.log          &lt;- Debug, Information, Warning
+    app_errors.log   &lt;- Error, Critical
+    app_trace.log    &lt;- Trace
+</code></pre>
+<p>Each file rolls over and is purged independently, using the same <code>FileSizeLimitBytes</code>, <code>RolloverInterval</code>,
+and <code>MaxTotalSizeBytes</code> settings.</p>
+<div class="TIP">
+<h5>Tip</h5>
+<p>A <code>null</code> or empty value in either mapping dictionary omits that suffix and its separator. The base name
+and any other nonempty suffix still apply.</p>
+</div>
+<h2 id="migrating-existing-level-mappings">Migrating existing level mappings</h2>
+<p><code>PerLevelLogName</code> now contains suffixes rather than replacement file names. This intentionally changes
+the behavior of existing mappings. For example, <code>LogName = &quot;app&quot;</code> with an existing <code>Error = &quot;app-errors&quot;</code>
+mapping now produces <code>app_app-errors.log</code>. Change the mapping to <code>&quot;errors&quot;</code> to produce <code>app_errors.log</code>.
+Null level mappings now omit the level suffix instead of selecting the application friendly name;
+only a null <code>LogName</code> selects that base name.</p>
+<h2 id="routing-groups-to-separate-files">Routing groups to separate files</h2>
+<p><code>PerGroupLogName</code> maps a scoped group to a suffix appended to the base name. Use <code>BeginGroupScope</code> to set
+the group before logging:</p>
+<pre><code class="lang-csharp">using Invex.Extensions.Logging.File;
+using Microsoft.Extensions.Logging;
+
+builder.Logging.AddFile(options =&gt;
+{
+    options.LogName = &quot;app&quot;;
+    options.PerGroupLogName[&quot;Orders&quot;] = &quot;orders&quot;;
+    options.PerLevelLogName[LogLevel.Error] = &quot;errors&quot;;
+});
+
+// Later, using an ILogger from the application's logging infrastructure:
+using (logger.BeginGroupScope(&quot;Orders&quot;))
+{
+    logger.LogInformation(&quot;Order submitted&quot;); // app_orders.log
+    logger.LogError(&quot;Payment failed&quot;);       // app_orders_errors.log
+}
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Group</th>
+<th>Level</th>
+<th>File</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Orders</code></td>
+<td><code>Error</code></td>
+<td><code>app_orders_errors.log</code></td>
+</tr>
+<tr>
+<td><code>Orders</code></td>
+<td><code>Information</code></td>
+<td><code>app_orders.log</code></td>
+</tr>
+<tr>
+<td>Missing or unmapped</td>
+<td><code>Error</code></td>
+<td><code>app_errors.log</code></td>
+</tr>
+<tr>
+<td>Missing or unmapped</td>
+<td><code>Information</code></td>
+<td><code>app.log</code></td>
+</tr>
+</tbody>
+</table>
+<p>File names always start with <code>LogName</code>, or <code>AppDomain.CurrentDomain.FriendlyName</code> when <code>LogName</code> is null.
+Append each nonempty mapped suffix in group-then-level order, with an underscore before each suffix:
+<code>{baseName}[_{groupSuffix}][_{levelSuffix}].log</code>. Brackets denote optional components, not literal text.
+Mapped suffixes are used verbatim. A missing, null, or empty mapping adds no text and no separator.
+For example, a null group suffix with an <code>&quot;errors&quot;</code> level suffix produces <code>app_errors.log</code>; two omitted
+suffixes produce <code>app.log</code>. Routes that resolve to the same name share a file and its rollover and
+retention limits.</p>
+<p>Case-only destination aliases follow the actual filesystem behavior in the destination directory,
+including when batching entries and protecting active files during rollover and retention. See
+<a href="rollover-and-retention.html#file-naming">file naming</a> for the filesystem check used for these aliases.</p>
+<p>Groups are case-sensitive by default; a dictionary supplied in code uses its configured comparer. The
+scope property key must be exactly <code>&quot;Group&quot;</code>.</p>
+<p><code>BeginGroupScope</code> delegates to <code>ILogger.BeginScope</code> and returns its disposable (which can be <code>null</code> if no
+provider supports scopes). Standard structured scopes also work:</p>
+<pre><code class="lang-csharp">using (logger.BeginScope(new Dictionary&lt;string, object?&gt; { [&quot;Group&quot;] = &quot;Orders&quot; }))
+{
+    logger.LogInformation(&quot;Order submitted&quot;);
+}
+
+using (logger.BeginScope(&quot;{Group}&quot;, &quot;Orders&quot;))
+{
+    logger.LogInformation(&quot;Order submitted&quot;);
+}
+</code></pre>
+<p>Scope state must implement <code>IEnumerable&lt;KeyValuePair&lt;string, object?&gt;&gt;</code>. The innermost nonempty string
+group wins, even when it has no mapping: an unmapped inner group uses normal level/default routing,
+rather than an outer group's mapping. Disposing the scope restores the outer group. Null, empty, and
+non-string group values, and unstructured scopes, are ignored, leaving any outer group effective.
+These rules also apply to values passed through the helper; a null logger throws <code>ArgumentNullException</code>.</p>
+<p>Scopes flow across <code>await</code> and logger categories within the same logging infrastructure; concurrent
+execution contexts maintain independent scopes. The helper creates ordinary scope state, which other
+logging providers may also inspect. Group data is not included in the file's log-line format.</p>
+<h2 id="runtime-configuration-changes">Runtime configuration changes</h2>
+<p>The provider monitors its options with <code>IOptionsMonitor&lt;T&gt;</code>. Changes to the <code>Logging:File</code> section in
+<code>appsettings.json</code> (or any reloadable configuration source) are picked up automatically and applied to
+subsequent log writes — no restart required.</p>
+<p>The group string is captured when <code>Log</code> is called. Both writers resolve that group and the entry's level
+using configuration at write time (once per batch in buffered mode), so queued entries can use updated
+file mappings. Disposing a scope or changing its dictionary after logging does not change the captured
+group.</p>
+<h2 id="default-constants">Default constants</h2>
+<p>Scalar defaults are exposed as public constants on <code>FileLoggerConfiguration</code> for use in your own code:</p>
+<ul>
+<li><code>FileLoggerConfiguration.DefaultLogDirectory</code></li>
+<li><code>FileLoggerConfiguration.DefaultLogName</code></li>
+<li><code>FileLoggerConfiguration.DefaultFileSizeLimitBytes</code></li>
+<li><code>FileLoggerConfiguration.DefaultRollingInterval</code></li>
+<li><code>FileLoggerConfiguration.DefaultMaxTotalSizeBytes</code></li>
+</ul>
+<p><code>PerGroupLogName</code> and <code>PerLevelLogName</code> each default to an empty dictionary and have no default constant.</p>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/Invex-Games/logging-extensions/blob/main/docs/configuration.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Useful utilities for Microsoft.Extensions.Logging
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>
