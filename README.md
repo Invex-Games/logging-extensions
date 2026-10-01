@@ -150,7 +150,8 @@ first), and retains up to 10 GiB of rolled-over files.
 
 > [!IMPORTANT]
 > Buffered writing is the default. Dispose the host or `ILoggerFactory` during graceful shutdown so
-> queued entries are flushed. Entries still in memory can be lost if the process crashes or is killed.
+> queued entries are flushed, even when disposal immediately follows the last log call; no delay is needed.
+> Entries still in memory can be lost if the process crashes or is killed.
 
 Configure in code:
 

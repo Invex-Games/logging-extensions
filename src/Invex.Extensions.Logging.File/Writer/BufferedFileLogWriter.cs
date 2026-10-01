@@ -31,11 +31,6 @@ internal sealed class BufferedFileLogWriter(
     });
 
     /// <summary>
-    ///     Signals that the background writer should exit after draining the queue.
-    /// </summary>
-    private readonly CancellationTokenSource _writerCancelTokenSource = new();
-
-    /// <summary>
     ///     The background writer thread, created when the provider starts.
     /// </summary>
     private Thread? _writerThread;
@@ -54,8 +49,7 @@ internal sealed class BufferedFileLogWriter(
         _writerThread = new(() => RunBackgroundThread(_logEntryChannel.Reader,
             fileSystem,
             TimeProvider,
-            getCurrentConfig,
-            _writerCancelTokenSource.Token));
+            getCurrentConfig));
 
         _writerThread.Start();
     }
@@ -78,7 +72,6 @@ internal sealed class BufferedFileLogWriter(
     public void Dispose()
     {
         _logEntryChannel.Writer.TryComplete();
-        _writerCancelTokenSource.Cancel();
         _writerThread?.Join();
         _writerThread = null;
     }
@@ -91,29 +84,25 @@ internal sealed class BufferedFileLogWriter(
     /// <param name="fileSystem">The file system abstraction used for all file operations.</param>
     /// <param name="timeProvider">The time provider used for timestamps and rollover decisions.</param>
     /// <param name="getCurrentConfig">A delegate returning the current configuration.</param>
-    /// <param name="cancellationToken">Stops the loop once cancelled and the channel has been drained.</param>
     private static void RunBackgroundThread(
         ChannelReader<LogEvent> reader,
         IFileSystem fileSystem,
         TimeProvider timeProvider,
-        Func<FileLoggerConfiguration> getCurrentConfig,
-        CancellationToken cancellationToken)
+        Func<FileLoggerConfiguration> getCurrentConfig)
     {
-        while (true)
+        // Channel completion ends the wait only after all queued entries have been read. Checking
+        // a separate stop signal after an empty read could miss an entry enqueued between the two.
+        while (reader
+               .WaitToReadAsync()
+               .AsTask()
+               .GetAwaiter()
+               .GetResult())
         {
             var entries = new List<LogEvent>();
             const int maxReadCount = 10;
 
             while (entries.Count < maxReadCount && reader.TryRead(out var item))
                 entries.Add(item);
-
-            if (entries.Count == 0)
-            {
-                if (cancellationToken.IsCancellationRequested)
-                    break;
-
-                continue;
-            }
 
             FileLoggerConfiguration? config = null;
             LogRouteComparer? routeComparer = null;

@@ -29,9 +29,10 @@ batch; a configuration reload can therefore change the destination of queued ent
   usage grows.
 
 **Shutdown:** disposing the logging infrastructure (which hosts do automatically on graceful shutdown)
-signals the background thread to stop and blocks until every queued entry has been drained to disk. Make
-sure your application shuts down gracefully — entries are only lost if the process crashes or is killed
-before disposal runs.
+closes the queue and blocks until the background thread has drained all accepted entries and exited.
+Disposal can immediately follow the last log call; no delay is needed to let the writer catch up.
+The same retry-and-drop policy described below applies while draining, and entries logged after disposal
+are dropped. Entries still queued when the process crashes or is killed cannot be flushed.
 
 ## Direct mode
 
