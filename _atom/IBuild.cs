@@ -204,7 +204,27 @@ internal interface IBuild : IWorkflowBuildDefinition,
         t => t
             .DescribedAs("Builds the DocFX documentation.")
             .ProducesArtifact(GeneratedDocsArtifactName)
-            .Executes(cancellationToken => BuildDocFxDocs(cancellationToken: cancellationToken));
+            .Executes(async cancellationToken =>
+            {
+                // DocFX reads compiled assemblies so C# 14 extension members are included in the API reference.
+                RootedPath[] documentationProjects =
+                [
+                    Projects.Invex_Extensions_Logging_Utils.Path(RootedFileSystem),
+                    Projects.Invex_Extensions_Logging_File.Path(RootedFileSystem),
+                    Projects.Invex_Extensions_Logging_FancyConsole.Path(RootedFileSystem),
+                ];
+
+                foreach (var project in documentationProjects)
+                    await DotnetCli.Build(project,
+                        new()
+                        {
+                            Configuration = "Release",
+                            Framework = WorkflowLabels.Dotnet.Framework.Net_10_0,
+                        },
+                        cancellationToken: cancellationToken);
+
+                await BuildDocFxDocs(cancellationToken: cancellationToken);
+            });
 
     Target ServeDocs =>
         t => t

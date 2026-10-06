@@ -37,6 +37,9 @@
       },
       {
         Name: RolloverInterval
+      },
+      {
+        Name: SetLogNameSuffix
       }
     ]
   },

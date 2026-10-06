@@ -1,12 +1,13 @@
-﻿namespace Invex.Extensions.Logging.File.Configuration;
+namespace Invex.Extensions.Logging.File.Configuration;
 
 /// <summary>
 ///     Specifies how frequently the active log file is rolled over to a new file, based on the elapsed time
 ///     since the file was created.
 /// </summary>
 /// <remarks>
-///     Intervals are approximate elapsed durations rather than calendar boundaries:
+///     Intervals are fixed elapsed durations rather than calendar boundaries:
 ///     <see cref="Year" /> corresponds to 365 days and <see cref="Month" /> to 30 days.
+///     Rollover is checked before writes; an idle file remains active until another entry arrives.
 /// </remarks>
 [PublicAPI]
 public enum FileRolloverInterval

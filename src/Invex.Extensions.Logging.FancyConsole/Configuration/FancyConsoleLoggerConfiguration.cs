@@ -10,8 +10,10 @@ namespace Invex.Extensions.Logging.FancyConsole.Configuration;
 ///     overload.
 /// </summary>
 /// <remarks>
-///     Changes made to the bound configuration at runtime (for example, by editing <c>appsettings.json</c>)
-///     are picked up automatically and applied to subsequent log entries.
+///     Changes from configuration sources that support reload (for example, <c>appsettings.json</c> loaded with
+///     <c>reloadOnChange</c>) are applied to subsequent log entries. Programmatic configuration delegates are
+///     reapplied when options are rebuilt, so their values continue to override bound configuration.
+///     Messages, categories, and scopes are written as literal text, not Spectre.Console markup.
 /// </remarks>
 [PublicAPI]
 public sealed class FancyConsoleLoggerConfiguration
@@ -77,6 +79,10 @@ public sealed class FancyConsoleLoggerConfiguration
     ///     <see cref="FancyConsoleLayout.Detailed" />. The <see cref="FancyConsoleLayout.Standard" /> header line
     ///     always shows the date and UTC offset. Ignored by <see cref="FancyConsoleLayout.Minimal" />.
     /// </summary>
+    /// <remarks>
+    ///     A format that raises <see cref="FormatException" /> falls back to the layout's default. Formatting
+    ///     controls the displayed timestamp only; it does not change when entries are captured.
+    /// </remarks>
     public string? TimestampFormat { get; set; } = DefaultTimestampFormat;
 
     /// <summary>
@@ -95,16 +101,22 @@ public sealed class FancyConsoleLoggerConfiguration
     /// <remarks>
     ///     Message-template scopes (for example, <c>logger.BeginScope("Order {OrderId}", 42)</c>) are shown as
     ///     their formatted text. Other key/value scopes are shown as comma-separated <c>Key=Value</c> pairs, and
-    ///     any other scope object is shown using <see cref="object.ToString" />. Null and empty scopes are
-    ///     skipped.
+    ///     any other scope object is shown using <see cref="object.ToString" />. Scopes are shown outermost first.
+    ///     Null and empty scope text is skipped; whitespace and line breaks are preserved.
     /// </remarks>
     public bool IncludeScopes { get; set; } = DefaultIncludeScopes;
 
     /// <summary>
-    ///     Gets or sets whether categories are shortened to the text after their last <c>.</c> (for example,
+    ///     Gets or sets whether categories are shortened to the text after their last <c>.</c> outside generic
+    ///     arguments (for example,
     ///     <c>MyApp.Services.OrderService</c> becomes <c>OrderService</c>). Defaults to
     ///     <see cref="DefaultUseShortCategoryName" /> (<see langword="false" />).
     /// </summary>
+    /// <remarks>
+    ///     Dots inside generic arguments are ignored: <c>MyApp.Repository&lt;MyApp.Models.Order&gt;</c> becomes
+    ///     <c>Repository&lt;MyApp.Models.Order&gt;</c>. Categories with no qualifying dot or a trailing dot are unchanged.
+    ///     Shortening affects display only; framework category filters still use the original category.
+    /// </remarks>
     public bool UseShortCategoryName { get; set; } = DefaultUseShortCategoryName;
 
     /// <summary>
@@ -126,6 +138,10 @@ public sealed class FancyConsoleLoggerConfiguration
     ///     <c>skyblue1</c> (Information), <c>gold1</c> (Warning), <c>darkorange</c> (Error), and <c>fuchsia</c>
     ///     (Critical). Empty by default.
     /// </summary>
+    /// <remarks>
+    ///     Styles apply to headers, level codes, and Detailed field labels. Message text remains unstyled, and
+    ///     exception text uses <see cref="ExceptionTextStyle" /> or the Pretty formatter's own styles.
+    /// </remarks>
     public Dictionary<LogLevel, string?> LevelStyles { get; set; } = [];
 
     /// <summary>
@@ -148,5 +164,9 @@ public sealed class FancyConsoleLoggerConfiguration
     ///     <see cref="DefaultLogToStandardErrorThreshold" /> (<see cref="LogLevel.None" />), which writes every
     ///     entry to standard output.
     /// </summary>
+    /// <remarks>
+    ///     The entire entry, including scopes and exception output, is sent to the selected stream. Routing
+    ///     uses the entry's level, not whether it carries an exception, and does not filter entries.
+    /// </remarks>
     public LogLevel LogToStandardErrorThreshold { get; set; } = DefaultLogToStandardErrorThreshold;
 }

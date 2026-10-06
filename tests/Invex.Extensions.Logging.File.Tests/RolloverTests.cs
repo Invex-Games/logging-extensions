@@ -1,4 +1,7 @@
-﻿namespace Invex.Extensions.Logging.File.Tests;
+﻿using Invex.Extensions.Logging.File.Configuration;
+using Invex.Extensions.Logging.File.Provider;
+
+namespace Invex.Extensions.Logging.File.Tests;
 
 public sealed class RolloverTests : TestBase
 {

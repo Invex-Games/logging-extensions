@@ -13,7 +13,8 @@ namespace Invex.Extensions.Logging.File.Writer;
 /// <remarks>
 ///     The background thread reads up to 10 entries per iteration and groups them by resolved file name
 ///     and severity. Group identity is captured when logging; file names are resolved when writing.
-///     Disposal drains all remaining queued entries before the background thread exits.
+///     Entries within one file/severity bucket retain queue order; different severities can be reordered.
+///     Disposal drains all accepted queued entries using the normal retry-and-drop policy before the thread exits.
 /// </remarks>
 internal sealed class BufferedFileLogWriter(
     IFileSystem fileSystem,
@@ -55,8 +56,8 @@ internal sealed class BufferedFileLogWriter(
     }
 
     /// <summary>
-    ///     Enqueues the entry and its captured group. Enqueue failures are reported and retried up to
-    ///     five times before the entry is dropped.
+    ///     Enqueues the entry and its captured group. Thrown enqueue failures use one initial attempt
+    ///     and up to five retries. A completed channel silently rejects new entries.
     /// </summary>
     /// <inheritdoc />
     public void Log(string log, LogLevel logLevel, string? group) =>
@@ -67,7 +68,7 @@ internal sealed class BufferedFileLogWriter(
 
     /// <summary>
     ///     Signals the background thread to stop and blocks until it has drained all remaining queued
-    ///     entries to disk and exited. Entries logged after disposal are dropped.
+    ///     entries using the normal retry-and-drop policy and exited. Entries logged after disposal are dropped.
     /// </summary>
     public void Dispose()
     {

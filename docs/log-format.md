@@ -1,10 +1,13 @@
 # File Log Output Format
 
-Each file log entry is written as a single line (plus the platform newline) in a fixed, easily parseable format:
+Each file log entry has a bracketed prefix followed by the formatter's message and a platform newline:
 
 ```text
 [{timestamp} {level} {category}] {message}
 ```
+
+Files are appended as UTF-8 text. Messages are written verbatim and may contain embedded newlines, so
+one entry can span several physical lines.
 
 Example:
 
@@ -19,6 +22,9 @@ Example:
 
 Local time with offset, formatted as `yyyy-MM-dd HH:mm:ss.fff zzz` — e.g. `2026-06-11 09:41:23.123 +10:00`.
 Millisecond precision; the UTC offset makes entries unambiguous across time zones and DST transitions.
+The timestamp is captured when the log call is made, before buffered entries are queued. Formatting
+uses the logging thread's current culture, including its calendar and time separator; the examples
+assume a Gregorian calendar and `:` time separator.
 
 ### Level
 
@@ -38,17 +44,25 @@ A fixed three-letter code:
 
 The logger category name — typically the fully qualified type name passed to `ILogger<T>` or
 `ILoggerFactory.CreateLogger(string)`.
+Category names are cached case-insensitively within the provider, so requests that differ only in case
+reuse the first category spelling. The category is not escaped.
 
 ### Message
 
 The message produced by the standard `Microsoft.Extensions.Logging` formatter, with all structured
 placeholders (`{OrderId}` etc.) already rendered into the string.
+When calling `ILogger.Log<TState>` directly, the supplied formatter determines the entire message.
+Structured property names and values are not persisted separately.
 
 ## Behavior notes
 
 - **Empty messages are skipped.** If the formatter produces a `null` or empty string, no line is written.
-- **Exceptions** are included only insofar as the standard formatter renders them; pass exceptions via the
-  `ILogger` exception parameter and they will be formatted by the framework's default formatter.
+- **Exceptions are not appended automatically.** The exception is passed to the formatter, and only
+  that formatter's returned string is written. The usual `LogError(exception, "message")` helpers do not
+  include exception details in that string. To include details, put them in the message, for example
+  `logger.LogError("Payment failed: {Exception}", exception.ToString())`, or supply a formatter that renders them.
+- **Event IDs are not printed.** Include an identifier in the message if it must appear in the file.
+- **Whitespace is preserved.** A whitespace-only message is written, and embedded newlines are not escaped.
 - **Scopes support group routing.** `BeginGroupScope` or a structured scope's `"Group"` property selects
   a configured file destination. Scope data is not printed; the line format stays the same. See
   [group routing](configuration.md#routing-groups-to-separate-files).
@@ -60,10 +74,12 @@ placeholders (`{OrderId}` etc.) already rendered into the string.
 The bracketed prefix has a fixed shape, so a simple regex can split entries:
 
 ```regex
-^\[(?<ts>\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}\.\d{3} [+-]\d{2}:\d{2}) (?<level>[A-Z?]{3}) (?<category>[^\]]+)\] (?<message>.*)$
+^\[(?<ts>\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}\.\d{3} [+-]\d{2}:\d{2}) (?<level>[A-Z?]{3}) (?<category>[^\]]*)\] (?<message>.*)$
 ```
 
 > [!NOTE]
-> Messages may themselves contain newlines (e.g. rendered exceptions), in which case continuation lines will
-> not match the prefix pattern — treat any line that doesn't match as a continuation of the previous entry.
+> This pattern assumes the culture used in the examples and a category without `]` or newlines. Treat
+> nonmatching lines after an entry as continuation lines. A message can itself contain a line that looks
+> like a prefix, so this text format cannot guarantee lossless recovery of arbitrary multiline messages.
+> If precise structured parsing is required, use a provider with a structured output format.
 

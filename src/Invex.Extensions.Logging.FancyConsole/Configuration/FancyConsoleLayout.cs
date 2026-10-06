@@ -14,11 +14,15 @@ public enum FancyConsoleLayout
     Standard = 0,
 
     /// <summary>
-    ///     One line per entry: the time, three-letter level code, and category, followed by a colon and the
+    ///     A compact entry: the time, three-letter level code, and category, followed by a colon and the
     ///     message. Line breaks in the message are replaced by spaces. Exceptions shown with
     ///     <see cref="FancyConsoleExceptionFormat.Summary" /> stay on the same line; other exception formats are
     ///     written on the following lines, indented by four spaces.
     /// </summary>
+    /// <remarks>
+    ///     Line breaks in categories, scopes, and custom timestamps are preserved. Spectre.Console can also wrap
+    ///     long output at the console width, so this layout does not guarantee one physical line per entry.
+    /// </remarks>
     SingleLine = 1,
 
     /// <summary>
@@ -28,7 +32,7 @@ public enum FancyConsoleLayout
     Minimal = 2,
 
     /// <summary>
-    ///     A multi-line block followed by a blank line, showing the full timestamp and level name followed by
+    ///     A multi-line block followed by a blank line, showing the configured timestamp and level name followed by
     ///     labeled fields for the category, event ID (when set), managed thread ID, scopes (when present),
     ///     message, and exception. Scopes are always included in this layout.
     /// </summary>

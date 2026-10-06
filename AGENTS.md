@@ -1,9 +1,9 @@
 # Agent Instructions
 
 Guidance for AI agents working in **Invex Logging Extensions** — a small, focused set of utilities for
-`Microsoft.Extensions.Logging`, currently consisting of a file logger provider with size- and time-based
-rollover, disk usage caps, and scoped group/level log file routing. Keep changes focused and defer to the
-linked docs for detail.
+`Microsoft.Extensions.Logging`: a file provider with size- and time-based rollover, archive cleanup
+thresholds, and scoped group/level routing; a Spectre.Console provider; and startup logging helpers.
+Keep changes focused and defer to the linked docs for detail.
 
 ## What's in the repo
 
@@ -13,6 +13,7 @@ linked docs for detail.
 | `Invex.Extensions.Logging.File.Tests` | NUnit test suite, including a public API surface snapshot test | `net10.0;net9.0;net8.0;net48` |
 | `Invex.Extensions.Logging.FancyConsole` | Spectre.Console console provider: `AddFancyConsole`, `FancyConsoleLoggerConfiguration`, `FancyConsoleLayout`, `FancyConsoleExceptionFormat` | `net10.0;net9.0;net8.0;netstandard2.0` |
 | `Invex.Extensions.Logging.FancyConsole.Tests` | NUnit tests for layouts, styles, exceptions, provider behavior, and public API | `net10.0;net9.0;net8.0;net48` |
+| `Invex.Extensions.Logging.Utils` | Standalone host loggers, factory ownership, and startup information: `LogUtil` and `HostLogger` | `net10.0;net9.0;net8.0;netstandard2.0` |
 | `_atom` | Atom build definition (`IBuild.cs`) that generates the GitHub Actions workflows | `net10.0` |
 
 Sources live under `src/`, tests under `tests/`, the Atom build definition under `_atom/`, and the
@@ -21,7 +22,7 @@ and `toc.yml`.
 
 ## Build & language specifics
 
-- **.NET 10 SDK** is required (see `global.json`). The library multi-targets down to
+- **.NET 10 SDK or a later stable SDK** is required (see `global.json`, which permits major-version roll-forward). The libraries multi-target down to
   `netstandard2.0` (via `Polyfill`, `Microsoft.Bcl.TimeProvider`, and `System.Threading.Channels`);
   tests also run on `net48`.
 - C# `LangVersion` 14, `ImplicitUsings` and `Nullable` enabled, `TreatWarningsAsErrors` on.
@@ -43,8 +44,14 @@ dotnet test Invex.Extensions.Logging.slnx
 Build the docs site:
 
 ```shell
+dotnet build Invex.Extensions.Logging.slnx --configuration Release
 docfx docfx.json          # add --serve to preview locally
 ```
+
+DocFX reads the three libraries' `bin/Release/net10.0` assemblies and sibling XML documentation files.
+Build them before regenerating docs. Compiled metadata preserves registration methods declared in
+C# 14 extension blocks, which source extraction in DocFX 2.78.5 omits. Generated `api/*.yml` files are
+ignored by Git; edit source XML comments or Markdown instead.
 
 After C# changes, run ReSharper cleanup over the solution. Resolve the SDK selected by `global.json`
 and pass its `MSBuild.dll`; this avoids ReSharper selecting an incompatible Visual Studio MSBuild:
@@ -63,6 +70,8 @@ Cleanup honors `.editorconfig` and repository/team-shared `*.DotSettings` automa
 - `tests/Invex.Extensions.Logging.File.Tests/` contains NUnit tests, test doubles, and Verify snapshots.
 - `src/Invex.Extensions.Logging.FancyConsole/` and `tests/Invex.Extensions.Logging.FancyConsole.Tests/`
   contain the Spectre.Console console logger and its tests.
+- `src/Invex.Extensions.Logging.Utils/` contains startup logging helpers; the sample under `samples/`
+  demonstrates their use alongside the providers.
 - `_atom/` contains the Atom build definition.
 - `docs/`, `README.md`, `index.md`, `toc.yml`, and `docfx.json` define the DocFX site.
 - `.github/workflows/` and `.github/dependabot.yml` are generated or maintained from the Atom definition
@@ -70,7 +79,7 @@ Cleanup honors `.editorconfig` and repository/team-shared `*.DotSettings` automa
 
 ## Architecture overview
 
-The public surface is intentionally tiny — three types:
+The file provider's public surface is intentionally tiny — three types:
 
 - **`FileLoggerExtension`** (`Invex.Extensions.Logging.File`) — `AddFile(ILoggingBuilder, bool)` and
   `AddFile(ILoggingBuilder, Action<FileLoggerConfiguration>, bool)`. The `buffered` flag selects
@@ -101,7 +110,7 @@ Everything else is `internal`:
   `{resolvedName}_{yyMMdd-HHmmss}.log` with `_{n}` collision suffixes; `resolvedName` includes any
   group and level suffixes.
 - **Retention**: on each rollover/new file, if archives for the exact resolved base name total
-  ≥ `MaxTotalSizeBytes`, the oldest one is deleted. Archive names must end in `_yyMMdd-HHmmss`,
+  ≥ `MaxTotalSizeBytes`, at most one oldest archive is deleted; this is not a hard disk quota. Archive names must end in `_yyMMdd-HHmmss`,
   optionally a positive numeric collision suffix, and `.log`. Configured active destinations are
   excluded from purging and rollover-name selection. Purging is per resolved base name.
 - **Per-level routing**: `PerLevelLogName` values are suffixes appended to `LogName` after any group
@@ -113,8 +122,10 @@ Everything else is `internal`:
   `{baseName}[_{groupSuffix}][_{levelSuffix}]`. Null or empty mapped suffixes are omitted. An unmapped
   group uses level/default routing, even inside a mapped outer group. Capture the
   group during `Log`, then resolve mappings from current configuration per write/batch.
-- **Logging never throws into the app**: file writes retry up to five times, echoing failures to
-  console/debug output, then drop the batch/entry. Keep this resilience intact.
+- **File write/routing resilience**: file operations make an initial attempt plus up to five retries,
+  echo failures to console/debug output, then drop the affected batch/entry without propagating those
+  failures to the app. Custom formatter and timestamp operations run before this handling and can throw.
+  Keep writer resilience intact.
 - **No level filtering in the provider** (`IsEnabled` returns `true`); filtering belongs to the
   framework. Scopes support group routing but are not included in log lines. Empty messages are skipped.
 - **Runtime config reload** must keep working — config is re-read per write/batch via
@@ -134,6 +145,15 @@ stderr; `FancyConsoleLogger` builds a `FancyConsoleLogEntry` and never throws; `
 holds all layout/exception rendering. The provider's static `Console`, `ErrorConsole`, and
 `TimeProvider` hooks are replaced by tests. `Pretty` exceptions fall back to `Full` when Spectre cannot
 render them (e.g. unthrown exceptions on .NET Framework). See `docs/fancy-console.md` for exact output.
+
+### Logging utilities
+
+`Invex.Extensions.Logging.Utils` exposes `LogUtil` and `HostLogger`. `CreateHostLoggerFactory` registers
+a `Microsoft` category filter at `Warning`, then invokes an optional configuration callback; it adds no
+providers by default and does not automatically load host configuration. `CreateHostLogger` wraps a
+logger with category `Host` and owns its factory. Disposing `HostLogger` disposes that factory and its
+owned providers. `LogStartupInfo<T>` uses `typeof(T).Assembly`, the machine name, and an optional host
+environment, and logs at Information. See `docs/logging-utilities.md` for current output and lifetime rules.
 
 ## Key design rules
 
@@ -237,6 +257,7 @@ For anything beyond the above, prefer these over duplicating detail:
 
 - `README.md` — package overview, quick start, and configuration examples.
 - `docs/getting-started.md` — installation, registration, defaults, level filtering.
+- `docs/logging-utilities.md` — standalone host logging, configuration, startup information, and factory lifetime.
 - `docs/configuration.md` — every option with defaults, JSON/code examples, group/level routing.
 - `docs/rollover-and-retention.md` — file naming, rollover semantics, purging, sizing guidance.
 - `docs/buffering.md` — buffered vs. direct trade-offs and error handling.

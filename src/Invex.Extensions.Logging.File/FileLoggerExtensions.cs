@@ -1,4 +1,4 @@
-﻿namespace Invex.Extensions.Logging.File;
+namespace Invex.Extensions.Logging.File;
 
 /// <summary>
 ///     Provides extension methods for registering the file logger and creating group routing scopes.
@@ -9,7 +9,7 @@ public static class FileLoggerExtension
     /// <summary>
     ///     Begins a structured scope whose <c>Group</c> property selects a file name suffix from
     ///     <see cref="FileLoggerConfiguration.PerGroupLogName" />. Disposing the scope restores the outer
-    ///     group, if any. Empty group names are ignored, leaving an outer group effective.
+    ///     group, if any. Null or empty group names are ignored, leaving an outer group effective.
     /// </summary>
     /// <param name="logger">The logger on which to begin the scope.</param>
     /// <param name="groupName">The group name to match against the configured group mappings.</param>
@@ -20,6 +20,7 @@ public static class FileLoggerExtension
     /// <remarks>
     ///     This creates a standard logging scope, so other providers that consume scopes can also see its
     ///     <c>Group</c> property. The file logger uses the property for routing without rendering it in log lines.
+    ///     An unmapped nonempty group uses the normal level/default destination, even inside a mapped group.
     /// </remarks>
     public static IDisposable? BeginGroupScope(this ILogger logger, string? groupName) =>
         logger is null
@@ -36,14 +37,15 @@ public static class FileLoggerExtension
         /// <param name="buffered">
         ///     When <see langword="true" /> (the default), log entries are queued and written to disk by a dedicated
         ///     background thread, minimizing logging overhead on application threads. When <see langword="false" />,
-        ///     each log entry is written to disk synchronously on the calling thread, guaranteeing the entry is
-        ///     persisted before the call returns.
+        ///     each log entry is written synchronously on the calling thread, with stream buffers flushed before
+        ///     the call returns when writing succeeds. Persistent write failures cause entries to be dropped.
         /// </param>
         /// <returns>The same <see cref="ILoggingBuilder" /> instance so that additional calls can be chained.</returns>
         /// <remarks>
         ///     The provider is registered with the alias <c>"File"</c>, so it can be configured via the
-        ///     <c>Logging:File</c> configuration section. Calling this method multiple times registers the
-        ///     provider only once.
+        ///     <c>Logging:File</c> configuration section. Repeated calls with the same buffered value register
+        ///     that provider only once. Calling with both values registers both providers and can duplicate
+        ///     output. Stream flushing does not guarantee persistence through power loss or storage failure.
         /// </remarks>
         public ILoggingBuilder AddFile(bool buffered = true)
         {

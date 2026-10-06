@@ -1,4 +1,4 @@
-﻿namespace Invex.Extensions.Logging.File.Writer;
+namespace Invex.Extensions.Logging.File.Writer;
 
 /// <summary>
 ///     Persists formatted log entries to disk, handling file rollover and purging according to the active
@@ -18,7 +18,7 @@ internal interface IFileLogWriter : IDisposable
     void Start();
 
     /// <summary>
-    ///     Persists a single pre-formatted log entry.
+    ///     Accepts a single pre-formatted entry for synchronous writing or queued writing, depending on the mode.
     /// </summary>
     /// <param name="log">The fully formatted log entry, including the trailing newline.</param>
     /// <param name="logLevel">

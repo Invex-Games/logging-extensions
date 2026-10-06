@@ -1,4 +1,4 @@
-﻿namespace Invex.Extensions.Logging.File;
+namespace Invex.Extensions.Logging.File;
 
 /// <summary>
 ///     An <see cref="ILogger" /> implementation that formats log entries and forwards them to an
@@ -12,8 +12,10 @@
 ///     <c>[{timestamp} {level} {category}] {message}</c>, where the timestamp uses the local time of the
 ///     writer's <see cref="TimeProvider" /> in <c>yyyy-MM-dd HH:mm:ss.fff zzz</c> format and the level is a
 ///     three-letter code (<c>TRC</c>, <c>DBG</c>, <c>INF</c>, <c>WRN</c>, <c>ERR</c>, or <c>CRT</c>).
+///     The timestamp is captured before queueing and formatted using the logging thread's current culture.
 ///     The innermost nonempty string <c>Group</c> scope property controls file routing. Scope data is not
-///     included in the formatted entry.
+///     included in the formatted entry. Event IDs and exceptions are not appended separately; the entry
+///     contains only the supplied formatter's result. Messages may contain embedded newlines.
 ///     Level filtering is delegated to the logging framework, so <see cref="IsEnabled" /> always returns
 ///     <see langword="true" />.
 /// </remarks>
@@ -35,6 +37,14 @@ internal sealed class FileLogger(string name, IFileLogWriter logWriter, Func<IEx
     public bool IsEnabled(LogLevel logLevel) =>
         true;
 
+    /// <summary>
+    ///     Formats a message with its logging-time timestamp and category, captures the scope group,
+    ///     and forwards it to the writer. Null or empty formatter results are skipped.
+    /// </summary>
+    /// <remarks>
+    ///     Group capture and writer operations use retry handling. Formatter and timestamp generation
+    ///     execute before that handling, so exceptions from those operations can propagate to the caller.
+    /// </remarks>
     /// <inheritdoc />
     public void Log<TState>(
         LogLevel logLevel,

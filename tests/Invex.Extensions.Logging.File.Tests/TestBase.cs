@@ -1,4 +1,6 @@
-﻿namespace Invex.Extensions.Logging.File.Tests;
+﻿using Invex.Extensions.Logging.File.Configuration;
+
+namespace Invex.Extensions.Logging.File.Tests;
 
 public abstract class TestBase
 {

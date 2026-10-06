@@ -1,4 +1,4 @@
-using System.Text.RegularExpressions;
+using Invex.Extensions.Logging.FancyConsole.Configuration;
 
 namespace Invex.Extensions.Logging.FancyConsole.Tests;
 

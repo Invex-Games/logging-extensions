@@ -1,4 +1,6 @@
-﻿namespace Invex.Extensions.Logging.File.Tests;
+﻿using Invex.Extensions.Logging.File.Provider;
+
+namespace Invex.Extensions.Logging.File.Tests;
 
 [TestFixture]
 public sealed class BasicTests : TestBase

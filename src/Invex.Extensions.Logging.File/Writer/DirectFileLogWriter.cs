@@ -2,7 +2,7 @@ namespace Invex.Extensions.Logging.File.Writer;
 
 /// <summary>
 ///     An <see cref="IFileLogWriter" /> that writes each log entry to disk synchronously on the calling
-///     thread, guaranteeing the entry is persisted before <see cref="Log" /> returns when writing succeeds.
+///     thread, flushing stream buffers before <see cref="Log" /> returns when writing succeeds.
 /// </summary>
 /// <param name="fileSystem">The file system abstraction used for all file operations.</param>
 /// <param name="timeProvider">The time provider used for timestamps and rollover decisions.</param>
@@ -29,7 +29,8 @@ internal sealed class DirectFileLogWriter(
 
     /// <summary>
     ///     Resolves the captured group and severity, then writes the entry with rollover and retention.
-    ///     Failures are reported and retried up to five times before the entry is dropped.
+    ///     Failures use one initial attempt and up to five retries with the same configuration snapshot,
+    ///     then the entry is dropped. Stream flushing does not force a durable storage flush.
     /// </summary>
     /// <inheritdoc />
     public void Log(string log, LogLevel logLevel, string? group)

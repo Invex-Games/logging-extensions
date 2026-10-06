@@ -1,4 +1,4 @@
-﻿namespace Invex.Extensions.Logging.File.Writer;
+namespace Invex.Extensions.Logging.File.Writer;
 
 /// <summary>
 ///     Shared helpers used by the file log writers for rolling over, purging, and appending to log files.
@@ -46,6 +46,7 @@ internal static class FileLogWriterUtil
     /// <summary>
     ///     Executes a write operation with an initial attempt and up to five retries. Persistent failures
     ///     are reported to console/debug output and dropped without escaping into application code.
+    ///     Retries are immediate, without delay or backoff; each failed attempt is reported.
     /// </summary>
     /// <param name="operation">The operation to execute, including routing and path resolution.</param>
     /// <returns>Whether the operation succeeded.</returns>
@@ -205,7 +206,7 @@ internal static class FileLogWriterUtil
     }
 
     /// <summary>
-    ///     Rolls over the active log file because it has reached the configured size limit. The file is
+    ///     Rolls over the active log file before a pending write would meet or exceed the size threshold. The file is
     ///     renamed to <c>{logName}_{yyMMdd-HHmmss}.log</c> (with a numeric <c>_{n}</c> suffix appended if
     ///     that name already exists or is reserved for an active route), allowing a new active file to be
     ///     created on the next write.
@@ -306,10 +307,11 @@ internal static class FileLogWriterUtil
     /// <summary>
     ///     Deletes the oldest archive of the exact base name if their combined size meets or exceeds
     ///     <paramref name="maxTotalSizeBytes" />. Only timestamped archive names with an optional numeric
-    ///     collision suffix qualify; configured active names are excluded. At most one file is deleted.
+    ///     collision suffix qualify; configured active names are excluded. At most one file is deleted,
+    ///     using creation time rather than the timestamp in its name to choose the oldest.
     /// </summary>
     /// <param name="fileSystem">The file system abstraction used to enumerate and delete files.</param>
-    /// <param name="maxTotalSizeBytes">The maximum combined size, in bytes, of rolled-over log files.</param>
+    /// <param name="maxTotalSizeBytes">The combined archive size, in bytes, that triggers deleting one archive.</param>
     /// <param name="logsDirectory">The directory containing the log files.</param>
     /// <param name="logName">The base log file name, without extension.</param>
     /// <param name="activeLogNames">Normalized active file paths that must never be purged.</param>
@@ -362,7 +364,8 @@ internal static class FileLogWriterUtil
 
     /// <summary>
     ///     Appends the given pre-formatted log entries to the file at <paramref name="filePath" />, creating
-    ///     the file if it does not exist, and flushes the stream before returning.
+    ///     the file if it does not exist, using the UTF-8 text writer returned by the file system abstraction,
+    ///     and flushes stream buffers before returning. This does not force a durable storage flush.
     /// </summary>
     /// <param name="fileSystem">The file system abstraction used to open the file.</param>
     /// <param name="filePath">The full path of the log file to append to.</param>

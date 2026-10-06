@@ -1,4 +1,4 @@
-﻿namespace Invex.Extensions.Logging.File.Provider;
+namespace Invex.Extensions.Logging.File.Provider;
 
 /// <summary>
 ///     An <see cref="ILoggerProvider" /> whose loggers enqueue entries onto an in-memory channel that is
@@ -12,6 +12,9 @@
 internal sealed class BufferedFileLoggerProvider(IOptionsMonitor<FileLoggerConfiguration> config)
     : FileLoggerProvider(config), ILoggerProvider
 {
+    /// <summary>
+    ///     The writer created lazily for this provider and shared by its category loggers.
+    /// </summary>
     private BufferedFileLogWriter? _logWriter;
 
     /// <inheritdoc />

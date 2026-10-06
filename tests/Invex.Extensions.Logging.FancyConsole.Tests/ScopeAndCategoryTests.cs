@@ -1,3 +1,5 @@
+using Invex.Extensions.Logging.FancyConsole.Configuration;
+
 namespace Invex.Extensions.Logging.FancyConsole.Tests;
 
 [TestFixture]

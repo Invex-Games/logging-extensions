@@ -17,7 +17,8 @@ public static class FancyConsoleLoggerExtensions
         /// <remarks>
         ///     The provider is registered with the alias <c>"FancyConsole"</c>, so it can be configured and filtered via
         ///     the <c>Logging:FancyConsole</c> configuration section. Calling this method multiple times registers the
-        ///     provider only once.
+        ///     provider only once. Existing logging providers remain registered; call
+        ///     <c>ClearProviders()</c> first when replacing the default console provider.
         /// </remarks>
         public ILoggingBuilder AddFancyConsole()
         {
@@ -41,6 +42,10 @@ public static class FancyConsoleLoggerExtensions
         ///     values bound from the <c>Logging:FancyConsole</c> configuration section.
         /// </param>
         /// <returns>The same <see cref="ILoggingBuilder" /> instance so that additional calls can be chained.</returns>
+        /// <remarks>
+        ///     The delegate is applied whenever options are created, including after a configuration reload.
+        ///     Repeated calls register one provider but add each supplied configuration delegate in call order.
+        /// </remarks>
         public ILoggingBuilder AddFancyConsole(Action<FancyConsoleLoggerConfiguration> configure)
         {
             builder.AddFancyConsole();

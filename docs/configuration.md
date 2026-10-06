@@ -11,9 +11,16 @@ configuration (the `Logging:File` section), from code, or both — values set in
 | `LogName`            | `string?`                       | `null`         | Base file name (no extension). `null` uses the application's name (`AppDomain.CurrentDomain.FriendlyName`).     |
 | `PerGroupLogName`    | `Dictionary<string, string?>`  | empty          | Group suffixes appended to the base name before any level suffix. Null or empty values add nothing.           |
 | `PerLevelLogName`    | `Dictionary<LogLevel, string?>` | empty          | Level suffixes appended after the base name and any group suffix. Null or empty values add nothing.             |
-| `FileSizeLimitBytes` | `long`                          | `104857600` (100 MiB) | Maximum size of a single log file before it is rolled over.                                              |
+| `FileSizeLimitBytes` | `long`                          | `104857600` (100 MiB) | Rollover threshold for an existing active file plus the pending UTF-8 entry or batch. Equality triggers rollover. |
 | `RolloverInterval`   | `FileRolloverInterval`          | `Day`          | Time-based rollover interval: `Infinite`, `Year`, `Month`, `Day`, `Hour`, or `Minute`.                          |
-| `MaxTotalSizeBytes`  | `long`                          | `10737418240` (10 GiB) | Maximum combined size of rolled-over files before the oldest is deleted.                                |
+| `MaxTotalSizeBytes`  | `long`                          | `10737418240` (10 GiB) | Archive retention threshold per resolved file name. At most one oldest archive is deleted when the threshold is met. |
+
+Use a positive value for each size setting. Zero or negative values do not disable either feature:
+`FileSizeLimitBytes` then rolls an existing file before every write, and `MaxTotalSizeBytes` deletes one
+qualifying archive whenever retention is checked. To disable time-based rollover, use `Infinite`.
+
+The size settings are thresholds, not hard quotas. A single entry or buffered batch is never split, and
+retention excludes active files. See [rollover and retention](rollover-and-retention.md) for sizing details.
 
 ## Configuring via appsettings.json
 
@@ -64,6 +71,28 @@ builder.Logging.AddFile(options =>
 });
 ```
 
+Keep file names and suffixes to file name components without `.log` or directory separators. Set the
+directory through `LogDirectory`. Names are not trimmed or sanitized, and invalid destination paths
+follow the [write retry and drop policy](buffering.md#error-handling). Only a null `LogName` selects the
+application friendly name; an empty string is used literally and produces `.log` without other suffixes.
+
+### SetLogNameSuffix helper
+
+`SetLogNameSuffix` replaces `LogName`; it does not append to the currently configured name. The current
+implementation uses the `DefaultLogName` constant, which is null:
+
+| Call | Resulting `LogName` | Active file before group/level routing |
+|---|---|---|
+| `options.SetLogNameSuffix(null)` | `null` | `{AppDomain.CurrentDomain.FriendlyName}.log` |
+| `options.SetLogNameSuffix("worker")` | `"_worker"` | `_worker.log` |
+| `options.SetLogNameSuffix("")` | `"_"` | `_.log` |
+
+To include the application friendly name in a suffixed base name, set it explicitly:
+
+```csharp
+options.LogName = $"{AppDomain.CurrentDomain.FriendlyName}_worker";
+```
+
 ## Routing levels to separate files
 
 `PerLevelLogName` maps a `LogLevel` to a suffix appended to `LogName`, separated by an underscore.
@@ -85,7 +114,7 @@ builder.Logging.AddFile(options =>
 });
 ```
 
-Produces:
+With those levels enabled by the framework's filters, produces:
 
 ```text
 Logs/
@@ -175,6 +204,7 @@ group wins, even when it has no mapping: an unmapped inner group uses normal lev
 rather than an outer group's mapping. Disposing the scope restores the outer group. Null, empty, and
 non-string group values, and unstructured scopes, are ignored, leaving any outer group effective.
 These rules also apply to values passed through the helper; a null logger throws `ArgumentNullException`.
+Whitespace-only group names and suffixes count as nonempty and are used literally.
 
 Scopes flow across `await` and logger categories within the same logging infrastructure; concurrent
 execution contexts maintain independent scopes. The helper creates ordinary scope state, which other
@@ -189,7 +219,12 @@ subsequent log writes — no restart required.
 The group string is captured when `Log` is called. Both writers resolve that group and the entry's level
 using configuration at write time (once per batch in buffered mode), so queued entries can use updated
 file mappings. Disposing a scope or changing its dictionary after logging does not change the captured
-group.
+group. The formatted message and timestamp are also captured before queueing.
+
+Code configuration delegates run again when the options are recreated, so values they set continue to
+override bound values after a reload. Changing a route leaves its previous files in place; retention only
+examines archives for the route currently being written. The `buffered` registration flag is not an
+option and cannot be changed through `Logging:File` at runtime.
 
 ## Default constants
 

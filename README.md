@@ -8,11 +8,13 @@ Useful utilities for [`Microsoft.Extensions.Logging`](https://learn.microsoft.co
 |---|---|
 | [`Invex.Extensions.Logging.FancyConsole`](https://www.nuget.org/packages/Invex.Extensions.Logging.FancyConsole) | A colorful, readable console logger built on [Spectre.Console](https://spectreconsole.net/), with multiple layouts, per-level styles, scopes, pretty exceptions, and standard-error routing. |
 | [`Invex.Extensions.Logging.File`](https://www.nuget.org/packages/Invex.Extensions.Logging.File) | A dependency-light file logger with size- and time-based rollover, retention limits, routing by scoped group and log level, and buffered or synchronous writing. |
+| `Invex.Extensions.Logging.Utils` | Helpers for creating a logger before a host is built, owning its factory, and logging startup information. |
 
-Both packages are standard logging providers: they plug into any ASP.NET Core, Generic Host, or manually
+The FancyConsole and File packages are standard logging providers: they plug into ASP.NET Core, Generic Host, or manually
 created `ILoggerFactory`, bind options from the `Logging` configuration section, pick up configuration
-changes at runtime, and leave level filtering to the standard logging rules. They target `net10.0`,
-`net9.0`, `net8.0`, and `netstandard2.0`, and can be used independently or together.
+changes from sources that support reload, and leave level filtering to the standard logging rules. All
+three projects target `net10.0`, `net9.0`, `net8.0`, and `netstandard2.0`. The providers can be used
+independently or together; Utils creates a separate factory with the providers you choose.
 
 ## Quick start
 
@@ -63,7 +65,7 @@ See [getting started](docs/getting-started.md) for defaults and level filtering.
 | Layout | Output |
 |---|---|
 | `Standard` (default) | A date and category header, then time, level, and message, with a blank line between entries. |
-| `SingleLine` | One line per entry: time, level, category, and message. |
+| `SingleLine` | Time, level, category, and message; message line breaks become spaces. Full and Pretty exceptions follow on separate lines. |
 | `Minimal` | Only the level and message. |
 | `Detailed` | Every available field (category, event, thread, scopes, and message), labeled on separate lines. |
 
@@ -124,7 +126,7 @@ applied after values bound from configuration:
 | `Layout` | `Standard` | `Standard`, `SingleLine`, `Minimal`, or `Detailed`. |
 | `TimestampFormat` | `null` | .NET date/time format string; `null` or empty uses the layout default. |
 | `UseUtcTimestamp` | `false` | Show timestamps in UTC instead of local time. |
-| `IncludeScopes` | `false` | Append active scopes after the category (Standard and SingleLine; Detailed always shows them). |
+| `IncludeScopes` | `false` | Append active scopes after the category in Standard and SingleLine; Detailed always shows them, and Minimal omits them. |
 | `UseShortCategoryName` | `false` | Shorten categories to the text after their last `.`. |
 | `UseColors` | `true` | Apply styles when the console supports them; `NO_COLOR` is honored. |
 | `LevelStyles` | empty | Per-level Spectre.Console styles, such as `"bold red"` or `"black on yellow"`. |
@@ -132,7 +134,7 @@ applied after values bound from configuration:
 | `ExceptionTextStyle` | `"red1"` | Style for `Full` and `Summary` exception text. |
 | `LogToStandardErrorThreshold` | `None` | Entries at or above this level go to standard error; `None` writes everything to standard output. |
 
-Each entry is written as a single unit, so concurrent entries do not interleave, and rendering failures
+Each entry is written as a single unit, so concurrent FancyConsole entries do not interleave, and rendering failures
 are never thrown into the application. See the [fancy console guide](docs/fancy-console.md) for every
 layout, style, and exception option.
 
@@ -144,9 +146,15 @@ layout, style, and exception option.
 [2026-06-11 09:41:23.123 +10:00 INF MyApp.Services.OrderService] Order 42 submitted
 ```
 
+File output contains the formatted message. Attached exceptions and event IDs are not appended
+automatically; include any required details in the message. Messages can span multiple lines. See
+[log output format](docs/log-format.md) for examples and parsing guidance.
+
 By default it writes to a `Logs` directory relative to the current working directory. The active file is
-named after `AppDomain.CurrentDomain.FriendlyName`, rolls over daily or at 100 MiB (whichever happens
-first), and retains up to 10 GiB of rolled-over files.
+named after `AppDomain.CurrentDomain.FriendlyName`, and rolls over before a write when the existing file
+is at least 24 hours old or the write would bring it to at least 100 MiB. Retention checks a 10 GiB archive
+threshold per resolved file name and removes at most one oldest archive when a file is created or rolled.
+These thresholds are not hard disk quotas; see the [rollover guide](docs/rollover-and-retention.md).
 
 > [!IMPORTANT]
 > Buffered writing is the default. Dispose the host or `ILoggerFactory` during graceful shutdown so
@@ -202,9 +210,9 @@ values bound from configuration:
 | `LogName` | `null` | Active base name without `.log`; `null` uses the application domain friendly name. |
 | `PerGroupLogName` | empty | Suffixes for selected scoped groups, appended to the base name before any level suffix. A mapped `null` or empty string adds nothing. |
 | `PerLevelLogName` | empty | Suffixes for selected levels, appended after the base name and any group suffix. A mapped `null` or empty string adds nothing. |
-| `FileSizeLimitBytes` | 100 MiB | Rolls over before a write that would make the active file reach this size. |
+| `FileSizeLimitBytes` | 100 MiB | Rolls an existing file before a write that would make it reach this size; an oversized entry or batch is still written in full. |
 | `RolloverInterval` | `Day` | Elapsed interval from file creation: `Infinite`, `Year` (365 days), `Month` (30 days), `Day`, `Hour`, or `Minute`. |
-| `MaxTotalSizeBytes` | 10 GiB | Maximum total size of rolled-over files for each base name. The oldest rolled-over file is removed when the limit is reached. |
+| `MaxTotalSizeBytes` | 10 GiB | Archive cleanup threshold per resolved base name. On creation or rollover, removes at most one oldest archive if the total meets the threshold; excludes active files. |
 
 > [!IMPORTANT]
 > `PerLevelLogName` values now append to `LogName` as suffixes instead of replacing it. Update existing
@@ -241,15 +249,36 @@ never deletes the active file. Case-only path aliases follow the destination fil
 buffered routing, archive naming, and retention. See [file rollover and retention](docs/rollover-and-retention.md).
 
 Buffered mode queues entries for a dedicated background thread that writes batches of up to 10 entries.
-Use direct mode when an entry must be written before the log call returns:
+Use direct mode to attempt each write on the calling thread before the log call returns:
 
 ```csharp
 builder.Logging.AddFile(buffered: false);
 ```
 
-Both modes retry failed writes up to five times, report failures to console/debug output, and drop entries
-that still cannot be written. See [buffered versus direct writing](docs/buffering.md) and the
+Both modes make an initial write attempt plus up to five retries, report failures to console/debug
+output, and drop entries that still cannot be written. A successful write flushes the stream to the
+operating system without guaranteeing physical disk durability. See [buffered versus direct writing](docs/buffering.md) and the
 [log format guide](docs/log-format.md).
+
+## Logging before the host starts
+
+`Invex.Extensions.Logging.Utils` lets you create a separate logger for startup and shutdown messages.
+`CreateHostLogger` uses the category `Host`, adds a `Microsoft` category filter at `Warning`, and runs
+your configuration callback. Register the providers you need in that callback:
+
+```csharp
+using Invex.Extensions.Logging.FancyConsole;
+using Invex.Extensions.Logging.Utils;
+using Microsoft.Extensions.Logging;
+
+using var startupLogger = LogUtil.CreateHostLogger(logging => logging.AddFancyConsole());
+startupLogger.LogStartupInfo<Program>();
+startupLogger.LogInformation("Configuring services...");
+```
+
+Disposing the returned `HostLogger` disposes its factory and factory-owned providers. It has its own configuration;
+the application's later host configuration does not automatically apply to it. See
+[logging utilities](docs/logging-utilities.md) for configuration, factory ownership, and startup fields.
 
 ## Filtering
 
@@ -281,10 +310,21 @@ scoped to a provider alias when needed:
 ## Documentation
 
 - [Getting started](docs/getting-started.md)
+- [Logging utilities](docs/logging-utilities.md)
 - Fancy console logger: [guide](docs/fancy-console.md)
 - File logger: [configuration](docs/configuration.md), [rollover and retention](docs/rollover-and-retention.md),
   [buffered versus direct writing](docs/buffering.md), and [log output format](docs/log-format.md)
 - [API reference](api/index.md)
+
+To build the documentation locally, use the SDK selected by `global.json` and run from the repository root:
+
+```shell
+dotnet build Invex.Extensions.Logging.slnx --configuration Release
+docfx docfx.json --warningsAsErrors
+```
+
+DocFX reads the compiled libraries and their XML comments. Build first to include the latest API and
+documentation; add `--serve` to preview the generated site in `_site/`.
 
 ## License
 
