@@ -23,19 +23,23 @@ internal interface IBuild : IWorkflowBuildDefinition,
 {
     static readonly string[] ProjectsToPack =
     [
-        Projects.Invex_Extensions_Logging_FancyConsole.Name, Projects.Invex_Extensions_Logging_File.Name,
+        Projects.Invex_Extensions_Logging_FancyConsole.Name,
+        Projects.Invex_Extensions_Logging_File.Name,
+        Projects.Invex_Extensions_Logging_Utils.Name,
     ];
 
     static readonly string[] ProjectsToTest =
     [
         Projects.Invex_Extensions_Logging_FancyConsole_Tests.Name,
         Projects.Invex_Extensions_Logging_File_Tests.Name,
+        Projects.Invex_Extensions_Logging_Utils_Tests.Name,
     ];
 
     static readonly string[] ProjectsToTestFx =
     [
         Projects.Invex_Extensions_Logging_FancyConsole_Tests.Name,
         Projects.Invex_Extensions_Logging_File_Tests.Name,
+        Projects.Invex_Extensions_Logging_Utils_Tests.Name,
     ];
 
     static readonly string[] TestFrameworkNames =
@@ -204,27 +208,7 @@ internal interface IBuild : IWorkflowBuildDefinition,
         t => t
             .DescribedAs("Builds the DocFX documentation.")
             .ProducesArtifact(GeneratedDocsArtifactName)
-            .Executes(async cancellationToken =>
-            {
-                // DocFX reads compiled assemblies so C# 14 extension members are included in the API reference.
-                RootedPath[] documentationProjects =
-                [
-                    Projects.Invex_Extensions_Logging_Utils.Path(RootedFileSystem),
-                    Projects.Invex_Extensions_Logging_File.Path(RootedFileSystem),
-                    Projects.Invex_Extensions_Logging_FancyConsole.Path(RootedFileSystem),
-                ];
-
-                foreach (var project in documentationProjects)
-                    await DotnetCli.Build(project,
-                        new()
-                        {
-                            Configuration = "Release",
-                            Framework = WorkflowLabels.Dotnet.Framework.Net_10_0,
-                        },
-                        cancellationToken: cancellationToken);
-
-                await BuildDocFxDocs(cancellationToken: cancellationToken);
-            });
+            .Executes(cancellationToken => BuildDocFxDocs(cancellationToken: cancellationToken));
 
     Target ServeDocs =>
         t => t

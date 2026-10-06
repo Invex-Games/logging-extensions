@@ -14,6 +14,7 @@ Keep changes focused and defer to the linked docs for detail.
 | `Invex.Extensions.Logging.FancyConsole` | Spectre.Console console provider: `AddFancyConsole`, `FancyConsoleLoggerConfiguration`, `FancyConsoleLayout`, `FancyConsoleExceptionFormat` | `net10.0;net9.0;net8.0;netstandard2.0` |
 | `Invex.Extensions.Logging.FancyConsole.Tests` | NUnit tests for layouts, styles, exceptions, provider behavior, and public API | `net10.0;net9.0;net8.0;net48` |
 | `Invex.Extensions.Logging.Utils` | Standalone host loggers, factory ownership, and startup information: `LogUtil` and `HostLogger` | `net10.0;net9.0;net8.0;netstandard2.0` |
+| `Invex.Extensions.Logging.Utils.Tests` | NUnit tests for startup information, factory filtering and ownership, wrapper delegation, and public API | `net10.0;net9.0;net8.0;net48` |
 | `_atom` | Atom build definition (`IBuild.cs`) that generates the GitHub Actions workflows | `net10.0` |
 
 Sources live under `src/`, tests under `tests/`, the Atom build definition under `_atom/`, and the
@@ -72,6 +73,8 @@ Cleanup honors `.editorconfig` and repository/team-shared `*.DotSettings` automa
   contain the Spectre.Console console logger and its tests.
 - `src/Invex.Extensions.Logging.Utils/` contains startup logging helpers; the sample under `samples/`
   demonstrates their use alongside the providers.
+- `tests/Invex.Extensions.Logging.Utils.Tests/` covers utility formatting, structured startup state,
+  standalone factory filtering and disposal, wrapper delegation, and the public API snapshot.
 - `_atom/` contains the Atom build definition.
 - `docs/`, `README.md`, `index.md`, `toc.yml`, and `docfx.json` define the DocFX site.
 - `.github/workflows/` and `.github/dependabot.yml` are generated or maintained from the Atom definition
@@ -86,7 +89,8 @@ The file provider's public surface is intentionally tiny — three types:
   which provider gets registered. `BeginGroupScope(ILogger, string)` adds a standard scope containing
   the `"Group"` property for routing.
 - **`FileLoggerConfiguration`** (`...File.Configuration`) — options class bound to the
-  `Logging:File` section (provider alias `File`), with `Default*` constants for scalar options.
+  `Logging:File` section (provider alias `File`), with `Default*` constants for fixed scalar options.
+  `LogName` defaults to `AppDomain.CurrentDomain.FriendlyName` and has no default constant.
   `PerGroupLogName` and `PerLevelLogName` default to empty dictionaries without constants.
 - **`FileRolloverInterval`** (`...File.Configuration`) — time-based rollover enum.
 
@@ -114,7 +118,9 @@ Everything else is `internal`:
   optionally a positive numeric collision suffix, and `.log`. Configured active destinations are
   excluded from purging and rollover-name selection. Purging is per resolved base name.
 - **Per-level routing**: `PerLevelLogName` values are suffixes appended to `LogName` after any group
-  suffix, separated by underscores. Null `LogName` uses `AppDomain.CurrentDomain.FriendlyName`.
+  suffix, separated by underscores. `LogName` is non-nullable and defaults to
+  `AppDomain.CurrentDomain.FriendlyName`. `SetLogNameSuffix` replaces it with
+  `{AppDomain.CurrentDomain.FriendlyName}_{suffix}`; an empty suffix leaves a trailing underscore.
   Missing, null, or empty mapped suffixes add no text or separator. This intentionally replaces the
   earlier behavior where level mappings supplied replacement base names.
 - **Group routing**: `PerGroupLogName` maps the innermost nonempty string `"Group"` scope value.

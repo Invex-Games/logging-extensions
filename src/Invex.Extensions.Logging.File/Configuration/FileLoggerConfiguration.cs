@@ -22,12 +22,6 @@ public sealed class FileLoggerConfiguration
     public const string DefaultLogDirectory = "Logs";
 
     /// <summary>
-    ///     The default value of <see cref="LogName" />: <see langword="null" />, which means the
-    ///     current application's name (<see cref="System.AppDomain.FriendlyName" />) is used.
-    /// </summary>
-    public const string? DefaultLogName = null;
-
-    /// <summary>
     ///     The default value of <see cref="FileSizeLimitBytes" />: 100 MiB.
     /// </summary>
     public const long DefaultFileSizeLimitBytes = 100L * 1024 * 1024;
@@ -53,18 +47,18 @@ public sealed class FileLoggerConfiguration
     ///     Gets or sets the base file name (without extension) of the log file. The active log file is named
     ///     <c>{LogName}.log</c> before any configured group and level suffixes are appended. Rolled-over files
     ///     append <c>_{timestamp}</c> to the complete name before the extension.
-    ///     When <see langword="null" /> (the default), the current application's name
-    ///     (<see cref="System.AppDomain.FriendlyName" />) is used. An empty string is used literally.
+    ///     Defaults to <see cref="AppDomain.CurrentDomain" />.<see cref="AppDomain.FriendlyName" />
+    ///     when the configuration instance is created. An empty string is used literally.
     /// </summary>
     /// <remarks>
     ///     Names and mapped suffixes are used verbatim. Use file name components without an extension
     ///     or directory separators, and set the destination directory through <see cref="LogDirectory" />.
     /// </remarks>
-    public string? LogName { get; set; } = DefaultLogName;
+    public string LogName { get; set; } = AppDomain.CurrentDomain.FriendlyName;
 
     /// <summary>
     ///     Gets or sets per-<see cref="LogLevel" /> file name suffixes. A matching nonempty suffix is appended
-    ///     to <see cref="LogName" /> (or the application's name when null), separated by an underscore.
+    ///     to <see cref="LogName" />, separated by an underscore.
     ///     When a group also matches <see cref="PerGroupLogName" />, its suffix precedes the level suffix:
     ///     <c>{LogName}_{groupSuffix}_{levelSuffix}.log</c>. Missing levels and mapped null or empty values
     ///     add no level suffix or separator. Empty by default.
@@ -73,8 +67,8 @@ public sealed class FileLoggerConfiguration
 
     /// <summary>
     ///     Gets or sets file name suffixes for groups supplied by a logging scope's <c>Group</c> property.
-    ///     A matching nonempty suffix is appended to <see cref="LogName" /> (or the application's name when
-    ///     null), separated by an underscore, before any <see cref="PerLevelLogName" /> suffix. Missing or
+    ///     A matching nonempty suffix is appended to <see cref="LogName" />, separated by an underscore,
+    ///     before any <see cref="PerLevelLogName" /> suffix. Missing or
     ///     unmapped groups and mapped null or empty values add no group suffix or separator. Empty by default,
     ///     with case-sensitive group matching; a replacement dictionary's comparer is respected.
     /// </summary>
@@ -121,19 +115,18 @@ public sealed class FileLoggerConfiguration
     public long MaxTotalSizeBytes { get; set; } = DefaultMaxTotalSizeBytes;
 
     /// <summary>
-    ///     Replaces <see cref="LogName" /> with <see cref="DefaultLogName" /> when the suffix is null,
-    ///     or with <c>_{suffix}</c> otherwise.
+    ///     Replaces <see cref="LogName" /> with the current application's friendly name followed by
+    ///     an underscore and the supplied suffix.
     /// </summary>
     /// <param name="suffix">
-    ///     The suffix used to construct a new name. Null resets to the default; an empty string produces <c>_</c>.
+    ///     The suffix appended to the application's friendly name. An empty string leaves a trailing underscore.
     /// </param>
     /// <remarks>
-    ///     <see cref="DefaultLogName" /> is null, so a nonnull suffix does not include the application's name
-    ///     or the current <see cref="LogName" />. For example, <c>SetLogNameSuffix("worker")</c> produces
-    ///     <c>_worker.log</c> before group and level suffixes are applied.
+    ///     Uses <see cref="AppDomain.CurrentDomain" />.<see cref="AppDomain.FriendlyName" /> rather than
+    ///     the current <see cref="LogName" />. For an application named <c>MyApp</c>,
+    ///     <c>SetLogNameSuffix("worker")</c> produces <c>MyApp_worker.log</c> before group and level
+    ///     suffixes are applied.
     /// </remarks>
-    public void SetLogNameSuffix(string? suffix) =>
-        LogName = suffix is null
-            ? DefaultLogName
-            : $"{DefaultLogName}_{suffix}";
+    public void SetLogNameSuffix(string suffix) =>
+        LogName = $"{AppDomain.CurrentDomain.FriendlyName}_{suffix}";
 }

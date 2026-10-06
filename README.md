@@ -8,7 +8,7 @@ Useful utilities for [`Microsoft.Extensions.Logging`](https://learn.microsoft.co
 |---|---|
 | [`Invex.Extensions.Logging.FancyConsole`](https://www.nuget.org/packages/Invex.Extensions.Logging.FancyConsole) | A colorful, readable console logger built on [Spectre.Console](https://spectreconsole.net/), with multiple layouts, per-level styles, scopes, pretty exceptions, and standard-error routing. |
 | [`Invex.Extensions.Logging.File`](https://www.nuget.org/packages/Invex.Extensions.Logging.File) | A dependency-light file logger with size- and time-based rollover, retention limits, routing by scoped group and log level, and buffered or synchronous writing. |
-| `Invex.Extensions.Logging.Utils` | Helpers for creating a logger before a host is built, owning its factory, and logging startup information. |
+| [`Invex.Extensions.Logging.Utils`](https://www.nuget.org/packages/Invex.Extensions.Logging.Utils) | Helpers for creating a logger before a host is built, owning its factory, and logging startup information. |
 
 The FancyConsole and File packages are standard logging providers: they plug into ASP.NET Core, Generic Host, or manually
 created `ILoggerFactory`, bind options from the `Logging` configuration section, pick up configuration
@@ -207,7 +207,7 @@ values bound from configuration:
 | Option | Default | Description |
 |---|---:|---|
 | `LogDirectory` | `"Logs"` | Absolute directory, or a directory relative to the current working directory. Created when needed. |
-| `LogName` | `null` | Active base name without `.log`; `null` uses the application domain friendly name. |
+| `LogName` | `AppDomain.CurrentDomain.FriendlyName` | Active base name without `.log`, initialized to the application domain friendly name. |
 | `PerGroupLogName` | empty | Suffixes for selected scoped groups, appended to the base name before any level suffix. A mapped `null` or empty string adds nothing. |
 | `PerLevelLogName` | empty | Suffixes for selected levels, appended after the base name and any group suffix. A mapped `null` or empty string adds nothing. |
 | `FileSizeLimitBytes` | 100 MiB | Rolls an existing file before a write that would make it reach this size; an oversized entry or batch is still written in full. |
@@ -218,6 +218,10 @@ values bound from configuration:
 > `PerLevelLogName` values now append to `LogName` as suffixes instead of replacing it. Update existing
 > full-name mappings to suffixes; for example, use `"errors"` with `LogName = "my-app"` to write
 > `my-app_errors.log`. See [migration guidance](docs/configuration.md#migrating-existing-level-mappings).
+
+`LogName` now defaults directly to the application friendly name, and `SetLogNameSuffix("worker")`
+produces `{AppDomain.CurrentDomain.FriendlyName}_worker.log`. `DefaultLogName` has been removed;
+see [log name migration guidance](docs/configuration.md#migrating-log-names).
 
 ### Routing by group
 
@@ -325,6 +329,8 @@ docfx docfx.json --warningsAsErrors
 
 DocFX reads the compiled libraries and their XML comments. Build first to include the latest API and
 documentation; add `--serve` to preview the generated site in `_site/`.
+
+The Atom `BuildDocs` and `ServeDocs` targets also require the Release assemblies to be built first.
 
 ## License
 

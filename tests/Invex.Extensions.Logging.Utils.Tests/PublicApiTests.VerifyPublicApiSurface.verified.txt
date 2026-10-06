@@ -1,0 +1,39 @@
+﻿[
+  {
+    Name: Invex.Extensions.Logging.Utils.HostLogger,
+    Members: [
+      {
+        Name: BeginScope
+      },
+      {
+        Name: Dispose
+      },
+      {
+        Name: IsEnabled
+      },
+      {
+        Name: Log
+      },
+      {
+        Name: LogStartupInfo
+      }
+    ]
+  },
+  {
+    Name: Invex.Extensions.Logging.Utils.LogUtil,
+    Members: [
+      {
+        Name: CreateHostLogger
+      },
+      {
+        Name: CreateHostLoggerFactory
+      },
+      {
+        Name: LogStartupInfo
+      },
+      {
+        Name: LogStartupInfo
+      }
+    ]
+  }
+]

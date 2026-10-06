@@ -10,6 +10,7 @@
   <Folder Name="/tests/">
     <Project Path="tests/Invex.Extensions.Logging.FancyConsole.Tests/Invex.Extensions.Logging.FancyConsole.Tests.csproj" />
     <Project Path="tests/Invex.Extensions.Logging.File.Tests/Invex.Extensions.Logging.File.Tests.csproj" />
+    <Project Path="tests/Invex.Extensions.Logging.Utils.Tests/Invex.Extensions.Logging.Utils.Tests.csproj" />
   </Folder>
   <Project Path="_atom/_atom.csproj" />
 </Solution>

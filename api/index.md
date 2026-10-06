@@ -49,3 +49,6 @@ docfx docfx.json --warningsAsErrors
 The site is generated in `_site/`. Add `--serve` to the DocFX command to preview it locally. Files under
 `api/` with a `.yml` extension are generated; edit source XML comments or Markdown pages instead.
 
+The Atom `BuildDocs` target also generates the site from existing Release assemblies; it does not
+compile the libraries. Run the Release build above first, including before using `ServeDocs`.
+

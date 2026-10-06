@@ -26,13 +26,13 @@ internal static class FileLogWriterUtil
     /// <summary>
     ///     Builds a destination name consistently for writing and reserving active files during rollover.
     /// </summary>
-    /// <param name="logName">The standard base name, or null for the application's name.</param>
+    /// <param name="logName">The configured base name, used verbatim.</param>
     /// <param name="groupSuffix">The group suffix; null or empty adds nothing.</param>
     /// <param name="levelSuffix">The level suffix; null or empty adds nothing.</param>
     /// <returns>The base name with an underscore before each nonempty suffix.</returns>
-    private static string ComposeLogName(string? logName, string? groupSuffix, string? levelSuffix)
+    private static string ComposeLogName(string logName, string? groupSuffix, string? levelSuffix)
     {
-        var name = logName ?? AppDomain.CurrentDomain.FriendlyName;
+        var name = logName;
 
         if (!string.IsNullOrEmpty(groupSuffix))
             name += $"_{groupSuffix}";

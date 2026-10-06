@@ -9,9 +9,6 @@
         Name: DefaultLogDirectory
       },
       {
-        Name: DefaultLogName
-      },
-      {
         Name: DefaultMaxTotalSizeBytes
       },
       {

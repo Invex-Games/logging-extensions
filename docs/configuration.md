@@ -8,7 +8,7 @@ configuration (the `Logging:File` section), from code, or both — values set in
 | Option               | Type                            | Default        | Description                                                                                                   |
 |----------------------|---------------------------------|----------------|---------------------------------------------------------------------------------------------------------------|
 | `LogDirectory`       | `string`                        | `"Logs"`       | Directory for log files. Absolute, or relative to the current working directory. Created automatically.        |
-| `LogName`            | `string?`                       | `null`         | Base file name (no extension). `null` uses the application's name (`AppDomain.CurrentDomain.FriendlyName`).     |
+| `LogName`            | `string`                        | `AppDomain.CurrentDomain.FriendlyName` | Base file name (no extension), initialized to the application's friendly name. |
 | `PerGroupLogName`    | `Dictionary<string, string?>`  | empty          | Group suffixes appended to the base name before any level suffix. Null or empty values add nothing.           |
 | `PerLevelLogName`    | `Dictionary<LogLevel, string?>` | empty          | Level suffixes appended after the base name and any group suffix. Null or empty values add nothing.             |
 | `FileSizeLimitBytes` | `long`                          | `104857600` (100 MiB) | Rollover threshold for an existing active file plus the pending UTF-8 entry or batch. Equality triggers rollover. |
@@ -73,32 +73,33 @@ builder.Logging.AddFile(options =>
 
 Keep file names and suffixes to file name components without `.log` or directory separators. Set the
 directory through `LogDirectory`. Names are not trimmed or sanitized, and invalid destination paths
-follow the [write retry and drop policy](buffering.md#error-handling). Only a null `LogName` selects the
-application friendly name; an empty string is used literally and produces `.log` without other suffixes.
+follow the [write retry and drop policy](buffering.md#error-handling). `LogName` is initialized to
+`AppDomain.CurrentDomain.FriendlyName` when the options instance is created. An empty string is used
+literally and produces `.log` without other suffixes.
 
 ### SetLogNameSuffix helper
 
-`SetLogNameSuffix` replaces `LogName`; it does not append to the currently configured name. The current
-implementation uses the `DefaultLogName` constant, which is null:
+`SetLogNameSuffix(string suffix)` replaces `LogName` with
+`$"{AppDomain.CurrentDomain.FriendlyName}_{suffix}"`, regardless of the currently configured name.
+For an application whose friendly name is `MyApp`:
 
 | Call | Resulting `LogName` | Active file before group/level routing |
 |---|---|---|
-| `options.SetLogNameSuffix(null)` | `null` | `{AppDomain.CurrentDomain.FriendlyName}.log` |
-| `options.SetLogNameSuffix("worker")` | `"_worker"` | `_worker.log` |
-| `options.SetLogNameSuffix("")` | `"_"` | `_.log` |
+| `options.SetLogNameSuffix("worker")` | `"MyApp_worker"` | `MyApp_worker.log` |
+| `options.SetLogNameSuffix("")` | `"MyApp_"` | `MyApp_.log` |
 
-To include the application friendly name in a suffixed base name, set it explicitly:
+To restore the unsuffixed application friendly name, assign it directly:
 
 ```csharp
-options.LogName = $"{AppDomain.CurrentDomain.FriendlyName}_worker";
+options.LogName = AppDomain.CurrentDomain.FriendlyName;
 ```
 
 ## Routing levels to separate files
 
 `PerLevelLogName` maps a `LogLevel` to a suffix appended to `LogName`, separated by an underscore.
 Without a group suffix, a mapped level writes to `{baseName}_{levelSuffix}.log`; missing, null, or empty
-level suffixes leave `{baseName}.log`. A null `LogName` uses `AppDomain.CurrentDomain.FriendlyName` as
-the base name. Matching group suffixes are inserted before level suffixes, as described below.
+level suffixes leave `{baseName}.log`. The base name defaults to `AppDomain.CurrentDomain.FriendlyName`.
+Matching group suffixes are inserted before level suffixes, as described below.
 
 ```csharp
 builder.Logging.AddFile(options =>
@@ -135,8 +136,17 @@ and `MaxTotalSizeBytes` settings.
 `PerLevelLogName` now contains suffixes rather than replacement file names. This intentionally changes
 the behavior of existing mappings. For example, `LogName = "app"` with an existing `Error = "app-errors"`
 mapping now produces `app_app-errors.log`. Change the mapping to `"errors"` to produce `app_errors.log`.
-Null level mappings now omit the level suffix instead of selecting the application friendly name;
-only a null `LogName` selects that base name.
+Null level mappings now omit the level suffix and retain the configured `LogName`.
+
+## Migrating log names
+
+`LogName` is now a non-nullable `string` initialized to `AppDomain.CurrentDomain.FriendlyName`.
+Leave it unset to use that default, or assign the friendly name explicitly to reset it; assigning null
+no longer selects the application name. The `DefaultLogName` constant has been removed.
+
+`SetLogNameSuffix` now takes a non-nullable suffix and includes the application's friendly name. For
+example, `SetLogNameSuffix("worker")` changes from `_worker.log` to `MyApp_worker.log` for an application
+named `MyApp`. It replaces any custom `LogName`; an empty suffix produces `MyApp_.log`.
 
 ## Routing groups to separate files
 
@@ -169,7 +179,7 @@ using (logger.BeginGroupScope("Orders"))
 | Missing or unmapped | `Error` | `app_errors.log` |
 | Missing or unmapped | `Information` | `app.log` |
 
-File names always start with `LogName`, or `AppDomain.CurrentDomain.FriendlyName` when `LogName` is null.
+File names always start with `LogName`, which defaults to `AppDomain.CurrentDomain.FriendlyName`.
 Append each nonempty mapped suffix in group-then-level order, with an underscore before each suffix:
 `{baseName}[_{groupSuffix}][_{levelSuffix}].log`. Brackets denote optional components, not literal text.
 Mapped suffixes are used verbatim. A missing, null, or empty mapping adds no text and no separator.
@@ -228,13 +238,13 @@ option and cannot be changed through `Logging:File` at runtime.
 
 ## Default constants
 
-Scalar defaults are exposed as public constants on `FileLoggerConfiguration` for use in your own code:
+Fixed scalar defaults are exposed as public constants on `FileLoggerConfiguration` for use in your own code:
 
 - `FileLoggerConfiguration.DefaultLogDirectory`
-- `FileLoggerConfiguration.DefaultLogName`
 - `FileLoggerConfiguration.DefaultFileSizeLimitBytes`
 - `FileLoggerConfiguration.DefaultRollingInterval`
 - `FileLoggerConfiguration.DefaultMaxTotalSizeBytes`
 
+`LogName` defaults to `AppDomain.CurrentDomain.FriendlyName` and has no default constant.
 `PerGroupLogName` and `PerLevelLogName` each default to an empty dictionary and have no default constant.
 

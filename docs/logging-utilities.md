@@ -7,6 +7,12 @@ and `netstandard2.0`.
 The two public types are `LogUtil` and `HostLogger`. They use the standard `Microsoft.Extensions.Logging`
 interfaces; they do not provide a logging destination themselves.
 
+Install the utilities package alongside the providers you want to use:
+
+```shell
+dotnet add package Invex.Extensions.Logging.Utils
+```
+
 ## Create a lifecycle logger
 
 Register the providers you need in the callback. This example uses FancyConsole for startup and shutdown

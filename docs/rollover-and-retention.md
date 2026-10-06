@@ -6,7 +6,7 @@ Size and retention settings are thresholds rather than hard disk quotas.
 
 ## File naming
 
-In the names below, `name` means `LogName` (or the application friendly name when null), followed by any
+In the names below, `name` means `LogName` (which defaults to the application friendly name), followed by any
 nonempty group and level suffixes: `{baseName}[_{groupSuffix}][_{levelSuffix}]`. Omitted suffixes add no
 separator. See [group routing](configuration.md#routing-groups-to-separate-files) for the selection rules.
 

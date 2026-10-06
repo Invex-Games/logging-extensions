@@ -23,6 +23,12 @@ dotnet add package Invex.Extensions.Logging.File
 
 Install only the package you need, or both.
 
+For startup logging and a separately owned host logger, also install the utilities package:
+
+```shell
+dotnet add package Invex.Extensions.Logging.Utils
+```
+
 ## Registering the providers
 
 ### ASP.NET Core / Generic Host
