@@ -1,3 +1,6 @@
+using Invex.Extensions.Logging.File.Configuration;
+using Invex.Extensions.Logging.File.Provider;
+
 namespace Invex.Extensions.Logging.File.Tests;
 
 /// <summary>
@@ -60,7 +63,7 @@ public sealed class GroupRoutingTests(bool buffered) : TestBase
     /// <summary>
     ///     Null and empty mappings omit their suffix and separator while retaining the configured or default base.
     /// </summary>
-    /// <param name="logName">The configured base filename, or null to use the application name.</param>
+    /// <param name="logName">The configured base filename, used verbatim.</param>
     /// <param name="groupSuffix">The mapped group suffix.</param>
     /// <param name="levelSuffix">The mapped level suffix.</param>
     /// <param name="expectedSuffix">The expected suffixes including their separators.</param>
@@ -72,12 +75,8 @@ public sealed class GroupRoutingTests(bool buffered) : TestBase
     [TestCase("app", "", "", "")]
     [TestCase("app", null, "", "")]
     [TestCase("app", "", null, "")]
-    [TestCase(null, null, "errors", "_errors")]
-    [TestCase(null, "orders", "", "_orders")]
-    [TestCase(null, null, null, "")]
-    [TestCase(null, "", "", "")]
     public void Logger_OmitsNullAndEmptySuffixes(
-        string? logName,
+        string logName,
         string? groupSuffix,
         string? levelSuffix,
         string expectedSuffix)

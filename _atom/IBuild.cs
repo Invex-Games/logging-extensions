@@ -23,19 +23,23 @@ internal interface IBuild : IWorkflowBuildDefinition,
 {
     static readonly string[] ProjectsToPack =
     [
-        Projects.Invex_Extensions_Logging_FancyConsole.Name, Projects.Invex_Extensions_Logging_File.Name,
+        Projects.Invex_Extensions_Logging_FancyConsole.Name,
+        Projects.Invex_Extensions_Logging_File.Name,
+        Projects.Invex_Extensions_Logging_Utils.Name,
     ];
 
     static readonly string[] ProjectsToTest =
     [
         Projects.Invex_Extensions_Logging_FancyConsole_Tests.Name,
         Projects.Invex_Extensions_Logging_File_Tests.Name,
+        Projects.Invex_Extensions_Logging_Utils_Tests.Name,
     ];
 
     static readonly string[] ProjectsToTestFx =
     [
         Projects.Invex_Extensions_Logging_FancyConsole_Tests.Name,
         Projects.Invex_Extensions_Logging_File_Tests.Name,
+        Projects.Invex_Extensions_Logging_Utils_Tests.Name,
     ];
 
     static readonly string[] TestFrameworkNames =

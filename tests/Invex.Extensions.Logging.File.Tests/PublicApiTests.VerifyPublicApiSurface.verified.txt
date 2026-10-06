@@ -9,9 +9,6 @@
         Name: DefaultLogDirectory
       },
       {
-        Name: DefaultLogName
-      },
-      {
         Name: DefaultMaxTotalSizeBytes
       },
       {
@@ -37,6 +34,9 @@
       },
       {
         Name: RolloverInterval
+      },
+      {
+        Name: SetLogNameSuffix
       }
     ]
   },

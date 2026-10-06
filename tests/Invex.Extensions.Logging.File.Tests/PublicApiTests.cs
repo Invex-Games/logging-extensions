@@ -1,4 +1,6 @@
-namespace Invex.Extensions.Logging.File.Tests;
+using Invex.Extensions.Logging.File;
+
+namespace Microsoft.Extensions.Logging;
 
 [TestFixture]
 public class PublicApiTests

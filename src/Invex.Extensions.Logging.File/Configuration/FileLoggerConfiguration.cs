@@ -1,4 +1,4 @@
-﻿namespace Invex.Extensions.Logging.File.Configuration;
+namespace Invex.Extensions.Logging.File.Configuration;
 
 /// <summary>
 ///     Configuration options for the file logger. Bound from the <c>Logging:File</c> configuration section
@@ -10,8 +10,8 @@
 ///     overload.
 /// </summary>
 /// <remarks>
-///     Changes made to the bound configuration at runtime (for example, by editing <c>appsettings.json</c>)
-///     are picked up automatically and applied to subsequent log writes.
+///     Reloadable configuration sources update these options through the options monitor. Writers use
+///     the current options for each entry or buffered batch, so already queued entries can use new routes.
 /// </remarks>
 [PublicAPI]
 public sealed class FileLoggerConfiguration
@@ -20,12 +20,6 @@ public sealed class FileLoggerConfiguration
     ///     The default value of <see cref="LogDirectory" />: <c>"Logs"</c>.
     /// </summary>
     public const string DefaultLogDirectory = "Logs";
-
-    /// <summary>
-    ///     The default value of <see cref="LogName" />: <see langword="null" />, which means the
-    ///     current application's name (<see cref="System.AppDomain.FriendlyName" />) is used.
-    /// </summary>
-    public const string? DefaultLogName = null;
 
     /// <summary>
     ///     The default value of <see cref="FileSizeLimitBytes" />: 100 MiB.
@@ -53,14 +47,18 @@ public sealed class FileLoggerConfiguration
     ///     Gets or sets the base file name (without extension) of the log file. The active log file is named
     ///     <c>{LogName}.log</c> before any configured group and level suffixes are appended. Rolled-over files
     ///     append <c>_{timestamp}</c> to the complete name before the extension.
-    ///     When <see langword="null" /> (the default), the current application's name
-    ///     (<see cref="System.AppDomain.FriendlyName" />) is used.
+    ///     Defaults to <see cref="AppDomain.CurrentDomain" />.<see cref="AppDomain.FriendlyName" />
+    ///     when the configuration instance is created. An empty string is used literally.
     /// </summary>
-    public string? LogName { get; set; } = DefaultLogName;
+    /// <remarks>
+    ///     Names and mapped suffixes are used verbatim. Use file name components without an extension
+    ///     or directory separators, and set the destination directory through <see cref="LogDirectory" />.
+    /// </remarks>
+    public string LogName { get; set; } = AppDomain.CurrentDomain.FriendlyName;
 
     /// <summary>
     ///     Gets or sets per-<see cref="LogLevel" /> file name suffixes. A matching nonempty suffix is appended
-    ///     to <see cref="LogName" /> (or the application's name when null), separated by an underscore.
+    ///     to <see cref="LogName" />, separated by an underscore.
     ///     When a group also matches <see cref="PerGroupLogName" />, its suffix precedes the level suffix:
     ///     <c>{LogName}_{groupSuffix}_{levelSuffix}.log</c>. Missing levels and mapped null or empty values
     ///     add no level suffix or separator. Empty by default.
@@ -69,18 +67,27 @@ public sealed class FileLoggerConfiguration
 
     /// <summary>
     ///     Gets or sets file name suffixes for groups supplied by a logging scope's <c>Group</c> property.
-    ///     A matching nonempty suffix is appended to <see cref="LogName" /> (or the application's name when
-    ///     null), separated by an underscore, before any <see cref="PerLevelLogName" /> suffix. Missing or
+    ///     A matching nonempty suffix is appended to <see cref="LogName" />, separated by an underscore,
+    ///     before any <see cref="PerLevelLogName" /> suffix. Missing or
     ///     unmapped groups and mapped null or empty values add no group suffix or separator. Empty by default,
     ///     with case-sensitive group matching; a replacement dictionary's comparer is respected.
     /// </summary>
+    /// <remarks>
+    ///     The innermost nonempty string <c>Group</c> value wins. An unmapped inner group suppresses an
+    ///     outer group's mapping. Null, empty, and non-string scope values leave the outer group effective.
+    ///     The group is captured when logging; its mapping is resolved when the entry is written.
+    /// </remarks>
     public Dictionary<string, string?> PerGroupLogName { get; set; } = [];
 
     /// <summary>
-    ///     Gets or sets the maximum size, in bytes, of a single log file. When writing an entry would cause the
-    ///     active file to reach this limit, the file is rolled over (renamed with a timestamp suffix) and a new
-    ///     active file is started. Defaults to <see cref="DefaultFileSizeLimitBytes" /> (100 MiB).
+    ///     Gets or sets the size-based rollover threshold, in bytes. An existing active file is rolled over
+    ///     before its size plus the pending UTF-8 entry or batch size would meet or exceed this value.
+    ///     Defaults to <see cref="DefaultFileSizeLimitBytes" /> (100 MiB).
     /// </summary>
+    /// <remarks>
+    ///     Entries and batches are not split, so a new active file can exceed this threshold. Zero or negative
+    ///     values cause every write to an existing active file to roll over; they do not disable rollover.
+    /// </remarks>
     public long FileSizeLimitBytes { get; set; } = DefaultFileSizeLimitBytes;
 
     /// <summary>
@@ -88,12 +95,38 @@ public sealed class FileLoggerConfiguration
     ///     creation time. Use <see cref="FileRolloverInterval.Infinite" /> to disable time-based rollover.
     ///     Defaults to <see cref="DefaultRollingInterval" /> (<see cref="FileRolloverInterval.Day" />).
     /// </summary>
+    /// <remarks>
+    ///     Checked only before writes. Intervals measure elapsed time rather than calendar boundaries;
+    ///     a month is 30 days and a year is 365 days. New files receive the writer's current UTC creation time.
+    /// </remarks>
     public FileRolloverInterval RolloverInterval { get; set; } = DefaultRollingInterval;
 
     /// <summary>
-    ///     Gets or sets the maximum combined size, in bytes, of rolled-over log files sharing the same base name.
-    ///     When a rollover occurs and the total size of rolled-over files meets or exceeds this limit, the oldest
-    ///     rolled-over file is deleted. Defaults to <see cref="DefaultMaxTotalSizeBytes" /> (10 GiB).
+    ///     Gets or sets the retention threshold, in bytes, for archives of each resolved base name, including
+    ///     group and level suffixes. On rollover or initial file creation, if qualifying archives meet or exceed
+    ///     this value, the oldest archive by creation time is deleted. Defaults to
+    ///     <see cref="DefaultMaxTotalSizeBytes" /> (10 GiB).
     /// </summary>
+    /// <remarks>
+    ///     At most one archive is deleted per check. Active destinations are excluded, and the active file's
+    ///     size is not counted. This is not a hard disk quota. Zero or negative values delete the oldest
+    ///     qualifying archive whenever a retention check finds one; they do not disable retention.
+    /// </remarks>
     public long MaxTotalSizeBytes { get; set; } = DefaultMaxTotalSizeBytes;
+
+    /// <summary>
+    ///     Replaces <see cref="LogName" /> with the current application's friendly name followed by
+    ///     an underscore and the supplied suffix.
+    /// </summary>
+    /// <param name="suffix">
+    ///     The suffix appended to the application's friendly name. An empty string leaves a trailing underscore.
+    /// </param>
+    /// <remarks>
+    ///     Uses <see cref="AppDomain.CurrentDomain" />.<see cref="AppDomain.FriendlyName" /> rather than
+    ///     the current <see cref="LogName" />. For an application named <c>MyApp</c>,
+    ///     <c>SetLogNameSuffix("worker")</c> produces <c>MyApp_worker.log</c> before group and level
+    ///     suffixes are applied.
+    /// </remarks>
+    public void SetLogNameSuffix(string suffix) =>
+        LogName = $"{AppDomain.CurrentDomain.FriendlyName}_{suffix}";
 }

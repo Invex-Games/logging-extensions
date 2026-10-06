@@ -130,7 +130,8 @@ internal static class FancyConsoleFormatter
     }
 
     /// <summary>
-    ///     Builds a single-line summary of an exception and its inner exceptions.
+    ///     Builds a summary of an exception and its <see cref="Exception.InnerException" /> chain, preserving
+    ///     any line breaks in exception messages for the layout to handle.
     /// </summary>
     /// <param name="exception">The outermost exception.</param>
     /// <returns><c>{TypeName}: {Message}</c> for each exception, joined by <c> ---&gt; </c>.</returns>
@@ -156,6 +157,9 @@ internal static class FancyConsoleFormatter
     /// <summary>
     ///     Formats an entry using <see cref="FancyConsoleLayout.Standard" />.
     /// </summary>
+    /// <param name="output">The entry being built.</param>
+    /// <param name="entry">The captured entry.</param>
+    /// <param name="config">The layout, timestamp, scope, and style options.</param>
     private static void FormatStandard(
         EntryBuilder output,
         FancyConsoleLogEntry entry,
@@ -188,6 +192,9 @@ internal static class FancyConsoleFormatter
     /// <summary>
     ///     Formats an entry using <see cref="FancyConsoleLayout.SingleLine" />.
     /// </summary>
+    /// <param name="output">The entry being built.</param>
+    /// <param name="entry">The captured entry.</param>
+    /// <param name="config">The layout, timestamp, scope, and style options.</param>
     private static void FormatSingleLine(
         EntryBuilder output,
         FancyConsoleLogEntry entry,
@@ -209,6 +216,9 @@ internal static class FancyConsoleFormatter
     /// <summary>
     ///     Formats an entry using <see cref="FancyConsoleLayout.Minimal" />.
     /// </summary>
+    /// <param name="output">The entry being built.</param>
+    /// <param name="entry">The captured entry.</param>
+    /// <param name="config">The exception and style options.</param>
     private static void FormatMinimal(
         EntryBuilder output,
         FancyConsoleLogEntry entry,
@@ -227,6 +237,9 @@ internal static class FancyConsoleFormatter
     /// <summary>
     ///     Formats an entry using <see cref="FancyConsoleLayout.Detailed" />.
     /// </summary>
+    /// <param name="output">The entry being built.</param>
+    /// <param name="entry">The captured entry, including all nonempty active scopes.</param>
+    /// <param name="config">The timestamp, category, exception, and style options.</param>
     private static void FormatDetailed(
         EntryBuilder output,
         FancyConsoleLogEntry entry,
@@ -297,6 +310,11 @@ internal static class FancyConsoleFormatter
     ///     Appends a labeled <see cref="FancyConsoleLayout.Detailed" /> field, aligning continuation lines with the
     ///     value column.
     /// </summary>
+    /// <param name="output">The entry being built.</param>
+    /// <param name="label">The field label without its trailing colon.</param>
+    /// <param name="value">The field's literal text.</param>
+    /// <param name="labelStyle">The style for the field label, or <see langword="null" /> for no styling.</param>
+    /// <param name="valueStyle">The style for the field value, or <see langword="null" /> for no styling.</param>
     private static void AppendField(
         EntryBuilder output,
         string label,
@@ -318,6 +336,9 @@ internal static class FancyConsoleFormatter
     ///     Appends an exception summary to the current line when the compact layouts use
     ///     <see cref="FancyConsoleExceptionFormat.Summary" />.
     /// </summary>
+    /// <param name="output">The entry being built.</param>
+    /// <param name="exception">The exception to summarize, if any.</param>
+    /// <param name="config">The exception format and style options.</param>
     private static void AppendInlineExceptionSummary(
         EntryBuilder output,
         Exception? exception,
@@ -420,6 +441,10 @@ internal static class FancyConsoleFormatter
     ///     Formats a timestamp using the invariant culture, falling back to <paramref name="defaultFormat" /> when
     ///     <paramref name="format" /> is missing or invalid.
     /// </summary>
+    /// <param name="timestamp">The captured local or UTC timestamp.</param>
+    /// <param name="format">The requested format, or <see langword="null" /> to use the default.</param>
+    /// <param name="defaultFormat">The valid layout default used when the requested format is missing or invalid.</param>
+    /// <returns>The formatted timestamp.</returns>
     private static string FormatTimestamp(DateTimeOffset timestamp, string? format, string defaultFormat)
     {
         if (string.IsNullOrEmpty(format))
@@ -439,6 +464,9 @@ internal static class FancyConsoleFormatter
     ///     Gets the category to display, shortened when <see cref="FancyConsoleLoggerConfiguration.UseShortCategoryName" />
     ///     is enabled. Dots inside generic arguments are ignored when shortening.
     /// </summary>
+    /// <param name="entry">The entry containing the full logger category.</param>
+    /// <param name="config">The options controlling category shortening.</param>
+    /// <returns>The display category, which may differ from the category used for framework filtering.</returns>
     private static string GetCategory(FancyConsoleLogEntry entry, FancyConsoleLoggerConfiguration config)
     {
         var category = entry.Category;
@@ -450,18 +478,20 @@ internal static class FancyConsoleFormatter
         var lastDot = -1;
 
         for (var index = category.Length - 1; index >= 0; index--)
-        {
             if (category[index] == '>')
+            {
                 genericDepth++;
+            }
             else if (category[index] == '<' && genericDepth > 0)
+            {
                 genericDepth--;
+            }
             else if (category[index] == '.' && genericDepth == 0)
             {
                 lastDot = index;
 
                 break;
             }
-        }
 
         return lastDot >= 0 && lastDot < category.Length - 1
             ? category.Substring(lastDot + 1)
@@ -471,6 +501,9 @@ internal static class FancyConsoleFormatter
     /// <summary>
     ///     Gets the scopes to display after the category, or an empty string when scopes are excluded or absent.
     /// </summary>
+    /// <param name="entry">The entry containing formatted scopes.</param>
+    /// <param name="includeScopes">Whether to show captured scopes.</param>
+    /// <returns>The scope separator followed by the joined scopes, or an empty string.</returns>
     private static string GetScopeSuffix(FancyConsoleLogEntry entry, bool includeScopes) =>
         includeScopes && entry.Scopes.Count > 0
             ? ScopeSeparator + string.Join(ScopeSeparator, entry.Scopes)
@@ -479,6 +512,8 @@ internal static class FancyConsoleFormatter
     /// <summary>
     ///     Gets the three-letter code for a log level.
     /// </summary>
+    /// <param name="logLevel">The level to display.</param>
+    /// <returns>The level code, or <c>???</c> for an unknown level.</returns>
     private static string GetLevelCode(LogLevel logLevel) =>
         logLevel switch
         {
@@ -494,6 +529,8 @@ internal static class FancyConsoleFormatter
     /// <summary>
     ///     Gets the built-in style for a log level.
     /// </summary>
+    /// <param name="logLevel">The level to style.</param>
+    /// <returns>The default style, or <see langword="null" /> for an unknown level.</returns>
     private static string? GetDefaultLevelStyle(LogLevel logLevel) =>
         logLevel switch
         {
@@ -509,6 +546,9 @@ internal static class FancyConsoleFormatter
     /// <summary>
     ///     Gets the effective style for a log level, or <see langword="null" /> for no styling.
     /// </summary>
+    /// <param name="logLevel">The level to style.</param>
+    /// <param name="config">The options controlling colors and per-level overrides.</param>
+    /// <returns>The valid configured or default style, or <see langword="null" /> when styling is disabled.</returns>
     private static string? GetLevelStyle(LogLevel logLevel, FancyConsoleLoggerConfiguration config)
     {
         if (!config.UseColors)
@@ -524,6 +564,8 @@ internal static class FancyConsoleFormatter
     /// <summary>
     ///     Gets the effective exception text style, or <see langword="null" /> for no styling.
     /// </summary>
+    /// <param name="config">The options controlling colors and exception text styling.</param>
+    /// <returns>The valid configured or default style, or <see langword="null" /> when styling is disabled.</returns>
     private static string? GetExceptionTextStyle(FancyConsoleLoggerConfiguration config) =>
         config.UseColors
             ? ResolveStyle(config.ExceptionTextStyle, FancyConsoleLoggerConfiguration.DefaultExceptionTextStyle)
@@ -533,6 +575,9 @@ internal static class FancyConsoleFormatter
     ///     Validates a configured style, returning <see langword="null" /> for blank styles and
     ///     <paramref name="fallback" /> for invalid styles.
     /// </summary>
+    /// <param name="style">The configured Spectre.Console style string.</param>
+    /// <param name="fallback">The default to use if the configured style cannot be parsed.</param>
+    /// <returns>The trimmed valid style, the fallback, or <see langword="null" /> for blank input.</returns>
     private static string? ResolveStyle(string? style, string? fallback)
     {
         if (style is null || string.IsNullOrWhiteSpace(style))
@@ -548,6 +593,8 @@ internal static class FancyConsoleFormatter
     /// <summary>
     ///     Replaces line breaks with spaces.
     /// </summary>
+    /// <param name="text">The literal text to flatten.</param>
+    /// <returns>The text with CRLF pairs and remaining CR or LF characters replaced by spaces.</returns>
     private static string Flatten(string text) =>
         text
             .Replace("\r\n", " ")
@@ -559,12 +606,22 @@ internal static class FancyConsoleFormatter
     /// </summary>
     private sealed class EntryBuilder
     {
+        /// <summary>
+        ///     The escaped markup accumulated since the last renderable was added.
+        /// </summary>
         private readonly StringBuilder _markup = new();
+
+        /// <summary>
+        ///     Completed markup and exception renderables, in write order.
+        /// </summary>
         private readonly List<IRenderable> _renderables = [];
 
         /// <summary>
         ///     Appends escaped text, wrapped in a style tag when <paramref name="style" /> is set.
         /// </summary>
+        /// <param name="text">The literal text to append.</param>
+        /// <param name="style">The valid style to apply, or <see langword="null" /> for no styling.</param>
+        /// <returns>This builder.</returns>
         public EntryBuilder Append(string text, string? style = null)
         {
             if (text.Length == 0)
@@ -586,6 +643,7 @@ internal static class FancyConsoleFormatter
         /// <summary>
         ///     Appends a line break.
         /// </summary>
+        /// <returns>This builder.</returns>
         public EntryBuilder AppendLine()
         {
             _markup.Append('\n');
@@ -597,6 +655,11 @@ internal static class FancyConsoleFormatter
         ///     Appends multi-line text, indenting the first line by <paramref name="firstIndent" /> spaces and each
         ///     following line by <paramref name="restIndent" /> spaces. Indentation is never styled.
         /// </summary>
+        /// <param name="text">The literal text, with CRLF and LF line breaks.</param>
+        /// <param name="firstIndent">The indentation before the first line.</param>
+        /// <param name="restIndent">The indentation before subsequent lines.</param>
+        /// <param name="style">The valid style for the text, or <see langword="null" /> for no styling.</param>
+        /// <returns>This builder.</returns>
         public EntryBuilder AppendLines(string text, int firstIndent, int restIndent, string? style = null)
         {
             var lines = text
@@ -622,6 +685,7 @@ internal static class FancyConsoleFormatter
         /// <summary>
         ///     Appends a renderable after any pending markup.
         /// </summary>
+        /// <param name="renderable">The renderable to add to the entry.</param>
         public void AppendRenderable(IRenderable renderable)
         {
             Flush();

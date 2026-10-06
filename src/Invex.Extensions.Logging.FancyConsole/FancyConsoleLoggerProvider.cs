@@ -6,8 +6,9 @@ namespace Invex.Extensions.Logging.FancyConsole;
 /// </summary>
 /// <remarks>
 ///     One <see cref="FancyConsoleLogger" /> is cached per category. Configuration is tracked via
-///     <see cref="IOptionsMonitor{TOptionsMonitor}" /> and re-read for every entry, so runtime changes apply to
-///     subsequent entries. Writes from all loggers are serialized so entries are never interleaved.
+///     <see cref="IOptionsMonitor{TOptionsMonitor}" /> change notifications and captured for every entry, so runtime
+///     changes apply to subsequent entries. Writes from FancyConsole loggers are serialized across provider instances.
+///     Other console writers do not participate in this lock and can interleave their output.
 /// </remarks>
 [ProviderAlias("FancyConsole")]
 internal sealed class FancyConsoleLoggerProvider : ILoggerProvider, ISupportExternalScope
@@ -18,7 +19,8 @@ internal sealed class FancyConsoleLoggerProvider : ILoggerProvider, ISupportExte
     private static readonly object WriteLock = new();
 
     /// <summary>
-    ///     The console that receives entries below <see cref="FancyConsoleLoggerConfiguration.LogToStandardErrorThreshold" />.
+    ///     The console that receives entries below <see cref="FancyConsoleLoggerConfiguration.LogToStandardErrorThreshold" />,
+    ///     or all entries when the threshold is <see cref="LogLevel.None" />.
     /// </summary>
     private readonly IAnsiConsole _console;
 
@@ -115,6 +117,10 @@ internal sealed class FancyConsoleLoggerProvider : ILoggerProvider, ISupportExte
     /// </summary>
     /// <param name="entry">The entry to write.</param>
     /// <param name="config">The configuration to format the entry with.</param>
+    /// <remarks>
+    ///     Formatting occurs before the shared write lock is acquired. All renderables for the entry are written
+    ///     synchronously to the selected stream while holding the lock.
+    /// </remarks>
     internal void Write(FancyConsoleLogEntry entry, FancyConsoleLoggerConfiguration config)
     {
         var renderables = FancyConsoleFormatter.Format(entry, config);

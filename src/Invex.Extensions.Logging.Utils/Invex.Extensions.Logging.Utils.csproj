@@ -7,13 +7,13 @@
   <!--  Packages-->
   <ItemGroup>
     <PackageReference Include="JetBrains.Annotations" Version="2026.2.0" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Configuration" Version="10.0.12" />
-    <PackageReference Include="Spectre.Console" Version="0.57.2" />
+    <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="10.0.12" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="10.0.12" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.12" />
   </ItemGroup>
 
   <!--  .NET Framework Packages-->
   <ItemGroup Condition="'$(TargetFramework)' == 'net48' or '$(TargetFramework)' == 'netstandard2.0'">
-    <PackageReference Include="Microsoft.Bcl.TimeProvider" Version="10.0.12" />
     <PackageReference Include="Polyfill" Version="11.4.1">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>

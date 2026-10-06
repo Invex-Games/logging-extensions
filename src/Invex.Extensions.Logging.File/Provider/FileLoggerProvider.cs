@@ -1,4 +1,4 @@
-﻿namespace Invex.Extensions.Logging.File.Provider;
+namespace Invex.Extensions.Logging.File.Provider;
 
 /// <summary>
 ///     Base class for file logger providers. Caches one <see cref="FileLogger" /> per category name and
@@ -6,8 +6,19 @@
 /// </summary>
 internal abstract class FileLoggerProvider : ISupportExternalScope
 {
+    /// <summary>
+    ///     Category loggers cached using case-insensitive names; aliases retain the first category spelling.
+    /// </summary>
     private readonly ConcurrentDictionary<string, FileLogger> _loggers = new(StringComparer.OrdinalIgnoreCase);
+
+    /// <summary>
+    ///     The subscription disposed when this provider stops monitoring configuration.
+    /// </summary>
     private readonly IDisposable? _onChangeToken;
+
+    /// <summary>
+    ///     The latest options supplied by the monitor and read by the writer for each entry or batch.
+    /// </summary>
     private FileLoggerConfiguration _currentConfig;
 
     /// <summary>
@@ -64,12 +75,13 @@ internal abstract class FileLoggerProvider : ISupportExternalScope
     ///     Gets the most recent <see cref="FileLoggerConfiguration" />, reflecting any runtime
     ///     configuration changes.
     /// </summary>
+    /// <returns>The current configuration snapshot.</returns>
     protected FileLoggerConfiguration GetCurrentConfig() =>
         _currentConfig;
 
     /// <summary>
-    ///     Disposes the <see cref="LogWriter" /> (flushing any pending entries), clears the logger cache,
-    ///     and unsubscribes from configuration change notifications.
+    ///     Disposes the <see cref="LogWriter" /> (draining pending buffered entries with retry handling),
+    ///     clears the logger cache, and unsubscribes from configuration change notifications.
     /// </summary>
     public virtual void Dispose()
     {

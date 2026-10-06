@@ -5,10 +5,12 @@
   <Folder Name="/src/">
     <Project Path="src/Invex.Extensions.Logging.FancyConsole/Invex.Extensions.Logging.FancyConsole.csproj" />
     <Project Path="src/Invex.Extensions.Logging.File/Invex.Extensions.Logging.File.csproj" />
+    <Project Path="src/Invex.Extensions.Logging.Utils/Invex.Extensions.Logging.Utils.csproj" />
   </Folder>
   <Folder Name="/tests/">
     <Project Path="tests/Invex.Extensions.Logging.FancyConsole.Tests/Invex.Extensions.Logging.FancyConsole.Tests.csproj" />
     <Project Path="tests/Invex.Extensions.Logging.File.Tests/Invex.Extensions.Logging.File.Tests.csproj" />
+    <Project Path="tests/Invex.Extensions.Logging.Utils.Tests/Invex.Extensions.Logging.Utils.Tests.csproj" />
   </Folder>
   <Project Path="_atom/_atom.csproj" />
 </Solution>

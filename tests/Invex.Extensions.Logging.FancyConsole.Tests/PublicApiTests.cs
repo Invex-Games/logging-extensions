@@ -1,4 +1,6 @@
-namespace Invex.Extensions.Logging.FancyConsole.Tests;
+using Invex.Extensions.Logging.FancyConsole;
+
+namespace Microsoft.Extensions.Logging;
 
 [TestFixture]
 public class PublicApiTests

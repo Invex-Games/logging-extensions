@@ -1,9 +1,9 @@
-﻿namespace Invex.Extensions.Logging.File.Provider;
+namespace Invex.Extensions.Logging.File.Provider;
 
 /// <summary>
 ///     An <see cref="ILoggerProvider" /> whose loggers write each entry to disk synchronously on the calling
-///     thread (see <see cref="DirectFileLogWriter" />), guaranteeing the entry is persisted before the log
-///     call returns. Registered by
+///     thread (see <see cref="DirectFileLogWriter" />), flushing stream buffers before the log call returns
+///     when writing succeeds. Registered by
 ///     <see cref="FileLoggerExtension.AddFile(Microsoft.Extensions.Logging.ILoggingBuilder, bool)" />
 ///     when <c>buffered</c> is <see langword="false" />.
 /// </summary>
@@ -13,6 +13,9 @@
 internal sealed class DirectFileLoggerProvider(IOptionsMonitor<FileLoggerConfiguration> config)
     : FileLoggerProvider(config), ILoggerProvider
 {
+    /// <summary>
+    ///     The writer created lazily for this provider and shared by its category loggers.
+    /// </summary>
     private DirectFileLogWriter? _logWriter;
 
     /// <inheritdoc />

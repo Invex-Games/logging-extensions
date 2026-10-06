@@ -7,8 +7,8 @@ namespace Invex.Extensions.Logging.FancyConsole;
 /// <param name="name">The category name.</param>
 /// <param name="provider">The provider that owns this logger.</param>
 /// <remarks>
-///     Logging never throws: any failure while formatting or writing an entry is reported to debug output and
-///     standard error, and the entry is dropped.
+///     Failures while capturing, formatting, or writing an entry are reported to debug output and standard error
+///     without propagating into the application. Failed entries are not retried; output already written may remain.
 /// </remarks>
 internal sealed class FancyConsoleLogger(string name, FancyConsoleLoggerProvider provider) : ILogger
 {
@@ -28,7 +28,7 @@ internal sealed class FancyConsoleLogger(string name, FancyConsoleLoggerProvider
 
     /// <summary>
     ///     Writes a log entry to the console. Entries whose formatted message is <see langword="null" /> or empty
-    ///     are skipped.
+    ///     are skipped, even when an exception is supplied. Whitespace-only messages are written.
     /// </summary>
     /// <param name="logLevel">The level of the entry.</param>
     /// <param name="eventId">The event ID of the entry.</param>
@@ -36,6 +36,10 @@ internal sealed class FancyConsoleLogger(string name, FancyConsoleLoggerProvider
     /// <param name="exception">The exception related to the entry, if any.</param>
     /// <param name="formatter">Creates the message from <paramref name="state" /> and <paramref name="exception" />.</param>
     /// <typeparam name="TState">The type of the state to be logged.</typeparam>
+    /// <remarks>
+    ///     Captures the current options, timestamp, scopes, and managed thread ID, then synchronously writes the
+    ///     entry on the calling thread. <see cref="LogLevel.None" /> is skipped before the formatter is invoked.
+    /// </remarks>
     public void Log<TState>(
         LogLevel logLevel,
         EventId eventId,

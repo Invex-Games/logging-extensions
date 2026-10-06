@@ -1,3 +1,5 @@
+using Invex.Extensions.Logging.File.Provider;
+
 namespace Invex.Extensions.Logging.File.Tests;
 
 /// <summary>
