@@ -129,15 +129,15 @@ public static class LogUtil
             ? $" v{version.TrimStart('v', 'V')}"
             : string.Empty;
 
-        var environmentDisplay = machineName is { Length: > 0 }
+        var machineNameDisplay = machineName is { Length: > 0 }
             ? $" on {machineName}"
             : string.Empty;
 
-        var machineNameDisplay = environment is { Length: > 0 }
+        var environmentDisplay = environment is { Length: > 0 }
             ? $" in {environment} configuration"
             : string.Empty;
 
-        logger.LogInformation("Started{AppName}{Version}{MachineName}{Configuration}",
+        logger.LogInformation("Started{AppName}{Version}{MachineName}{Environment}",
             applicationNameDisplay,
             versionDisplay,
             machineNameDisplay,
