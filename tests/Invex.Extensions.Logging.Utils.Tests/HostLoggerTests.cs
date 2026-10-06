@@ -163,7 +163,7 @@ public sealed class HostLoggerTests
             .Entries[0]
             .Message
             .ShouldBe(
-                $"Started {assemblyName.Name} v{assemblyName.Version}{environmentClause} on {Environment.MachineName}");
+                $"Started {assemblyName.Name} v{assemblyName.Version} on {Environment.MachineName}{environmentClause}");
     }
 
     /// <summary>

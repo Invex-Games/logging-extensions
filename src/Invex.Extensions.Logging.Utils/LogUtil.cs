@@ -121,19 +121,19 @@ public static class LogUtil
         if (!logger.IsEnabled(LogLevel.Information))
             return;
 
-        var applicationNameDisplay = applicationName is { Length: > 0 }
+        var applicationNameDisplay = !string.IsNullOrWhiteSpace(applicationName)
             ? $" {applicationName}"
             : " Application";
 
-        var versionDisplay = version is { Length: > 0 }
-            ? $" v{version.TrimStart('v', 'V')}"
+        var versionDisplay = !string.IsNullOrWhiteSpace(version)
+            ? $" v{version?.TrimStart('v', 'V')}"
             : string.Empty;
 
-        var machineNameDisplay = machineName is { Length: > 0 }
+        var machineNameDisplay = !string.IsNullOrWhiteSpace(machineName)
             ? $" on {machineName}"
             : string.Empty;
 
-        var environmentDisplay = environment is { Length: > 0 }
+        var environmentDisplay = !string.IsNullOrWhiteSpace(environment)
             ? $" in {environment} configuration"
             : string.Empty;
 

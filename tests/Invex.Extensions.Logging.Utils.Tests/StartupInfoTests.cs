@@ -22,15 +22,15 @@ public sealed class StartupInfoTests
         entry.Level.ShouldBe(LogLevel.Information);
         entry.EventId.ShouldBe(default);
         entry.Exception.ShouldBeNull();
-        entry.Message.ShouldBe("Started OrderWorker v2.3.0 in Production configuration on worker-01");
+        entry.Message.ShouldBe("Started OrderWorker v2.3.0 on worker-01 in Production configuration");
         var properties = entry.State.ShouldBeAssignableTo<IEnumerable<KeyValuePair<string, object?>>>();
 
         properties.ShouldBe([
             new("AppName", " OrderWorker"),
             new("Version", " v2.3.0"),
-            new("MachineName", " in Production configuration"),
-            new("Configuration", " on worker-01"),
-            new("{OriginalFormat}", "Started{AppName}{Version}{MachineName}{Configuration}"),
+            new("MachineName", " on worker-01"),
+            new("Environment", " in Production configuration"),
+            new("{OriginalFormat}", "Started{AppName}{Version}{MachineName}{Environment}"),
         ]);
     }
 
@@ -62,9 +62,9 @@ public sealed class StartupInfoTests
     /// <param name="machine">The machine name.</param>
     /// <param name="environment">The environment name.</param>
     /// <param name="expected">The expected message.</param>
-    [TestCase(null, "1.0", "node", "Production", "Started Application v1.0 in Production configuration on node")]
-    [TestCase("App", null, "node", "Production", "Started App in Production configuration on node")]
-    [TestCase("App", "", "node", "Production", "Started App in Production configuration on node")]
+    [TestCase(null, "1.0", "node", "Production", "Started Application v1.0 on node in Production configuration")]
+    [TestCase("App", null, "node", "Production", "Started App on node in Production configuration")]
+    [TestCase("App", "", "node", "Production", "Started App on node in Production configuration")]
     [TestCase("App", "1.0", null, "Production", "Started App v1.0 in Production configuration")]
     [TestCase("App", "1.0", "", "Production", "Started App v1.0 in Production configuration")]
     [TestCase("App", "1.0", "node", null, "Started App v1.0 on node")]
@@ -125,7 +125,7 @@ public sealed class StartupInfoTests
         logger
             .Entries[0]
             .Message
-            .ShouldBe("Started   v  in   configuration on  ");
+            .ShouldBe("Started Application");
     }
 
     /// <summary>
@@ -192,7 +192,7 @@ public sealed class StartupInfoTests
             .Entries[0]
             .Message
             .ShouldBe(
-                $"Started {assemblyName.Name} v{assemblyName.Version}{environmentClause} on {Environment.MachineName}");
+                $"Started {assemblyName.Name} v{assemblyName.Version} on {Environment.MachineName}{environmentClause}");
 
         A
             .CallTo(() => environment.ApplicationName)
