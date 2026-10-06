@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Logging Utilities | Invex.Extensions.Logging </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Logging Utilities | Invex.Extensions.Logging ">
+      
+      
+      <link rel="icon" href="../favicon.ico">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/Invex-Games/logging-extensions/blob/main/docs/logging-utilities.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../logo.svg" alt="Invex.Extensions.Logging">
+            Invex.Extensions.Logging
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="logging-utilities">Logging Utilities</h1>
+
+<p><code>Invex.Extensions.Logging.Utils</code> provides a standalone logger for messages written before a host is built
+or after it stops, plus helpers for a consistent startup message. It targets <code>net10.0</code>, <code>net9.0</code>, <code>net8.0</code>,
+and <code>netstandard2.0</code>.</p>
+<p>The two public types are <code>LogUtil</code> and <code>HostLogger</code>. They use the standard <code>Microsoft.Extensions.Logging</code>
+interfaces; they do not provide a logging destination themselves.</p>
+<p>Install the utilities package alongside the providers you want to use:</p>
+<pre><code class="lang-shell">dotnet add package Invex.Extensions.Logging.Utils
+</code></pre>
+<h2 id="create-a-lifecycle-logger">Create a lifecycle logger</h2>
+<p>Register the providers you need in the callback. This example uses FancyConsole for startup and shutdown
+messages, independently of the providers configured on the application host:</p>
+<pre><code class="lang-csharp">using Invex.Extensions.Logging.FancyConsole;
+using Invex.Extensions.Logging.Utils;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+
+using var hostLogger = LogUtil.CreateHostLogger(logging =&gt; logging.AddFancyConsole());
+
+var builder = Host.CreateApplicationBuilder(args);
+hostLogger.LogStartupInfo&lt;Program&gt;(builder.Environment);
+hostLogger.LogInformation(&quot;Configuring services...&quot;);
+
+builder.Logging.ClearProviders();
+builder.Logging.AddFancyConsole();
+
+using var host = builder.Build();
+host.Run();
+
+hostLogger.LogInformation(&quot;Stopped.&quot;);
+</code></pre>
+<p><code>CreateHostLogger</code> creates a logger with category <code>Host</code> backed by its own factory. It can be created before
+<code>Host.CreateApplicationBuilder</code> if you need to log failures during host builder creation. Passing
+<code>builder.Environment</code> to the startup helper is optional.</p>
+<p>The factory adds a category filter for <code>Microsoft</code> at <code>Warning</code> before invoking the callback. This rule
+does not set a minimum for other categories. The callback can register providers, set minimum levels, and
+add more filtering rules. To replace that category rule, add a later rule for the same category:</p>
+<pre><code class="lang-csharp">using var hostLogger = LogUtil.CreateHostLogger(logging =&gt;
+{
+    logging.AddFancyConsole();
+    logging.SetMinimumLevel(LogLevel.Debug);
+    logging.AddFilter(&quot;Microsoft&quot;, LogLevel.Error);
+});
+</code></pre>
+<p>Calling <code>CreateHostLogger()</code> without a callback registers no providers, so entries have no output
+destination. This factory does not inherit the application's host configuration, providers, or services.
+If you want settings from configuration, bind them explicitly in the callback. Registering providers on
+<code>builder.Logging</code> does not configure <code>hostLogger</code>, and configuring <code>hostLogger</code> does not configure the
+host's loggers.</p>
+<h2 id="use-a-factory-for-other-categories">Use a factory for other categories</h2>
+<p><code>CreateHostLoggerFactory</code> applies the same filter and callback but returns an <code>ILoggerFactory</code>, allowing
+you to choose categories yourself:</p>
+<pre><code class="lang-csharp">using var loggerFactory = LogUtil.CreateHostLoggerFactory(logging =&gt; logging.AddFancyConsole());
+var logger = loggerFactory.CreateLogger(&quot;Bootstrap&quot;);
+
+logger.LogInformation(&quot;Loading application settings...&quot;);
+</code></pre>
+<p>The caller owns this factory and must dispose it. <code>HostLogger</code> instead owns the factory supplied to its
+constructor: disposing the wrapper disposes that factory and its owned providers. Avoid passing a shared
+application factory to <code>new HostLogger(...)</code> unless this ownership is intentional, since disposal can
+affect every logger using that factory.</p>
+<p>Dispose the lifecycle logger after writing the final shutdown message. For a buffered file provider,
+factory disposal drains queued entries. If both the host and lifecycle factory use <code>AddFile</code>, configure
+distinct <code>LogName</code> values when they should write to separate files.</p>
+<p><code>HostLogger</code> forwards <code>Log</code>, <code>IsEnabled</code>, and <code>BeginScope</code> to its wrapped logger. It adds no further
+filtering or exception handling; failures from a custom wrapped logger or factory can propagate.</p>
+<h2 id="startup-information">Startup information</h2>
+<p>Use a type from your application assembly to obtain its name and version:</p>
+<pre><code class="lang-csharp">hostLogger.LogStartupInfo&lt;Program&gt;(builder.Environment);
+
+// The same helper works with any ILogger.
+LogUtil.LogStartupInfo&lt;Program&gt;(logger, builder.Environment);
+</code></pre>
+<p>The generic helper reads:</p>
+<table>
+<thead>
+<tr>
+<th>Value</th>
+<th>Source</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Application name</td>
+<td>Simple name of the assembly containing <code>T</code>.</td>
+</tr>
+<tr>
+<td>Version</td>
+<td>That assembly's <code>AssemblyName.Version</code>, including the components returned by <code>ToString()</code>.</td>
+</tr>
+<tr>
+<td>Machine name</td>
+<td><code>Environment.MachineName</code>.</td>
+</tr>
+<tr>
+<td>Environment</td>
+<td><code>IHostEnvironment.EnvironmentName</code>, when an environment was supplied.</td>
+</tr>
+</tbody>
+</table>
+<p>The name comes from the assembly rather than <code>IHostEnvironment.ApplicationName</code>. The version is the
+assembly version rather than the file, package, or informational version. Choose <code>T</code> from your executable
+assembly to describe the application; a type from a library describes that library instead.</p>
+<p>To supply your own values, use the explicit overload:</p>
+<pre><code class="lang-csharp">LogUtil.LogStartupInfo(
+    logger,
+    applicationName: &quot;OrderWorker&quot;,
+    version: &quot;v2.3.0&quot;,
+    machineName: &quot;worker-01&quot;,
+    environment: &quot;Production&quot;);
+</code></pre>
+<p>The current formatted message is:</p>
+<pre><code class="lang-text">Started OrderWorker v2.3.0 in Production configuration on worker-01
+</code></pre>
+<p>The provider may add its own timestamp, level, category, or layout around this message. The helper emits
+one <code>Information</code> entry only when <code>logger.IsEnabled(LogLevel.Information)</code> returns <code>true</code>. Calling it
+does not start a host or establish that startup succeeded; choose the call site to match the meaning of
+the message in your application.</p>
+<p>Formatting rules:</p>
+<ul>
+<li>A null or empty application name becomes <code>Application</code>.</li>
+<li>A null or empty version is omitted. Otherwise, all leading <code>v</code> and <code>V</code> characters are removed and one
+lowercase <code>v</code> is prepended.</li>
+<li>A null or empty environment omits <code>in ... configuration</code>.</li>
+<li>A null or empty machine name omits <code>on ...</code>.</li>
+<li>Whitespace-only strings are included; values are not otherwise trimmed.</li>
+</ul>
+<p>When all explicit values are null or empty, the message is <code>Started Application</code>.</p>
+<p>The structured template is <code>Started{AppName}{Version}{MachineName}{Configuration}</code>. Its values contain
+the display clauses, including their leading spaces. In the current implementation, <code>MachineName</code>
+receives the environment clause (<code> in Production configuration</code>) and <code>Configuration</code> receives the
+machine clause (<code> on worker-01</code>). Account for this ordering if you consume the structured fields directly.</p>
+<p>See the <a href="fancy-console.html">fancy console guide</a> and <a href="configuration.html">file logger configuration</a> for
+provider settings, or <a href="buffering.html">buffering</a> for file writer shutdown behavior.</p>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/Invex-Games/logging-extensions/blob/main/docs/logging-utilities.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Useful utilities for Microsoft.Extensions.Logging
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>
