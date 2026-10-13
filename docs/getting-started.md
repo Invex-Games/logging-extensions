@@ -1,8 +1,8 @@
 # Getting Started
 
-Invex Logging Extensions provides two logging providers and a set of helpers for `Microsoft.Extensions.Logging`. Each provider plugs into
-the standard logging pipeline alongside the built-in providers, and they can be used on their own or
-together:
+This page installs the packages, registers the providers with a host or a manual `LoggerFactory`, and
+shows what you get with no configuration. Each provider plugs into the standard logging pipeline
+alongside the built-in providers, and they can be used on their own or together:
 
 | Package | Provider alias | Use it for |
 |---------|----------------|------------|
@@ -107,7 +107,7 @@ using var loggerFactory = LoggerFactory.Create(logging => logging
 
 Call `AddFile` with one write mode per factory. Repeated registration of the same mode does not add
 another provider, but registering both buffered and direct modes adds two providers and duplicates
-file output. See [buffered versus direct writing](buffering.md).
+file output. See [Buffered vs. Direct Writing](buffering.md).
 
 ## What you get out of the box
 
@@ -130,7 +130,7 @@ and category, followed by the local time, level code, and message:
 | Exceptions  | `Full` (`Exception.ToString()`), indented and styled                     |
 | Output      | Everything to standard output                                            |
 
-See the [fancy console guide](fancy-console.md) for the other layouts and options.
+See [Fancy Console Logger](fancy-console.md) for the other layouts and options.
 
 ### File logger
 
@@ -155,14 +155,14 @@ Logs/
 
 Size limits are rollover and cleanup thresholds, not hard quotas. Buffered writes can contain several
 entries, and an entry or batch larger than the file limit is written in full. Active files do not count
-toward retention. See [configuration](configuration.md) for options and
-[rollover and retention](rollover-and-retention.md) for the exact rules.
+toward retention. See [File Logger Configuration](configuration.md) for options and
+[File Rollover and Retention](rollover-and-retention.md) for the exact rules.
 
 ## Logging before the host is built
 
 Use `LogUtil.CreateHostLogger` from `Invex.Extensions.Logging.Utils` to create a logger with category
 `Host` and its own disposable factory. Register providers in its callback; no provider is added by
-default. See [logging utilities](logging-utilities.md) for a complete example and startup information.
+default. See [Logging Utilities](logging-utilities.md) for a complete example and startup information.
 
 ## Filtering log levels
 
@@ -196,15 +196,21 @@ provider aliases `FancyConsole` and `File` to scope rules to each provider:
 
 Fancy console logger:
 
-- [Fancy console guide](fancy-console.md) — layouts, options, level styles, scopes, and exceptions.
+- [Fancy Console Logger](fancy-console.md) — layouts, options, level styles, scopes, and exceptions.
 
 File logger:
 
-- [Configuration](configuration.md) — every option, with defaults and examples.
-- [File rollover and retention](rollover-and-retention.md) — how files are named, rolled, and purged.
-- [Buffered vs. direct writing](buffering.md) — choosing the right write mode.
-- [Log output format](log-format.md) — the exact shape of each log line.
+- [File Logger Configuration](configuration.md) — every option, with defaults and examples.
+- [File Rollover and Retention](rollover-and-retention.md) — how files are named, rolled, and purged.
+- [Buffered vs. Direct Writing](buffering.md) — choosing the right write mode.
+- [File Log Output Format](log-format.md) — the exact shape of each log line.
 
 Utilities:
 
-- [Logging utilities](logging-utilities.md) — startup logging, configuration, and factory lifetime.
+- [Logging Utilities](logging-utilities.md) — startup logging, configuration, and factory lifetime.
+
+API reference:
+
+- <xref:Invex.Extensions.Logging.FancyConsole.FancyConsoleLoggerExtensions>
+- <xref:Invex.Extensions.Logging.File.FileLoggerExtension>
+- <xref:Invex.Extensions.Logging.Utils.LogUtil>
