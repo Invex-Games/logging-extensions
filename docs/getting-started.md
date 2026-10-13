@@ -10,7 +10,7 @@ together:
 | `Invex.Extensions.Logging.File` | `File` | Plain, parseable log lines in rolling files with retention limits. |
 | `Invex.Extensions.Logging.Utils` | None | A separate logger for host startup/shutdown, factory ownership, and startup information. |
 
-All three projects target `net10.0`, `net9.0`, `net8.0`, and `netstandard2.0`. The provider test suites
+All three projects target `net10.0` and `netstandard2.0`. The provider test suites
 also run on .NET Framework 4.8 using their `netstandard2.0` builds. Building this repository requires
 the SDK selected by `global.json` (.NET 10 or a later stable SDK), independently of the framework your app targets.
 
