@@ -5,13 +5,15 @@
       "src": [
         {
           "files": [
-            "src/Invex.Extensions.Logging.FancyConsole/bin/Release/net10.0/Invex.Extensions.Logging.FancyConsole.dll",
-            "src/Invex.Extensions.Logging.File/bin/Release/net10.0/Invex.Extensions.Logging.File.dll",
-            "src/Invex.Extensions.Logging.Utils/bin/Release/net10.0/Invex.Extensions.Logging.Utils.dll"
+            "src/**/*.csproj"
           ]
         }
       ],
-      "dest": "api"
+      "dest": "api",
+      "properties": {
+        "TargetFramework": "net10.0"
+      },
+      "filter": "docs/filterConfig.yml"
     }
   ],
   "build": {
@@ -19,14 +21,14 @@
       {
         "files": [
           "toc.yml",
-          "index.md",
-          "README.md"
+          "index.md"
         ]
       },
       {
         "files": [
-          "api/**/*.yml",
-          "api/**/*.md"
+          "api/toc.yml",
+          "api/**.yml",
+          "api/index.md"
         ]
       },
       {
@@ -45,15 +47,13 @@
       }
     ],
     "output": "_site",
-    "globalMetadataFiles": [],
-    "fileMetadataFiles": [],
     "globalMetadata": {
       "_appTitle": "Invex.Extensions.Logging",
       "_appName": "Invex.Extensions.Logging",
-      "_appFooter": "Useful utilities for Microsoft.Extensions.Logging",
+      "_appLogoPath": "images/icon.png",
+      "_appFooter": "Invex.Extensions.Logging · MIT License · Invex Games",
       "_enableSearch": true,
       "_disableContribution": false,
-      "_disableToc": false,
       "_gitContribute": {
         "repo": "https://github.com/Invex-Games/logging-extensions",
         "branch": "main"
@@ -63,10 +63,8 @@
       "default",
       "modern"
     ],
-    "postProcessors": [],
-    "keepFileLink": false,
-    "disableGitFeatures": false
+    "theme": [
+      "docfx-theme"
+    ]
   }
 }
-
-
