@@ -13,7 +13,7 @@ Useful utilities for [`Microsoft.Extensions.Logging`](https://learn.microsoft.co
 The FancyConsole and File packages are standard logging providers: they plug into ASP.NET Core, Generic Host, or manually
 created `ILoggerFactory`, bind options from the `Logging` configuration section, pick up configuration
 changes from sources that support reload, and leave level filtering to the standard logging rules. All
-three projects target `net10.0`, `net9.0`, `net8.0`, and `netstandard2.0`. The providers can be used
+three projects target `net10.0` and `netstandard2.0`. The providers can be used
 independently or together; Utils creates a separate factory with the providers you choose.
 
 ## Quick start

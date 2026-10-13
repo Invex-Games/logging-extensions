@@ -5,7 +5,7 @@
 scopes, styled or "pretty" exceptions, and standard-error routing, all configurable through the standard
 options pipeline with runtime reload.
 
-The library targets `net10.0`, `net9.0`, `net8.0`, and `netstandard2.0`.
+The library targets `net10.0` and `netstandard2.0`.
 
 ## Registration
 
