@@ -232,9 +232,12 @@ dotnet run --project _atom -- BuildDocs
 dotnet run --project _atom -- ServeDocs
 ```
 
-(`atom BuildDocs` and `atom ServeDocs` when the Atom tool is installed.) To run DocFX directly:
+(`atom BuildDocs` and `atom ServeDocs` when the Atom tool is installed.) DocFX reads the API from the
+compiled Release assemblies, because its source-based extraction omits methods declared in C# 14
+`extension` blocks such as `AddFancyConsole` and `AddFile`. To run DocFX directly, build first:
 
 ```shell
+dotnet build Invex.Extensions.Logging.slnx --configuration Release
 docfx docfx.json --warningsAsErrors
 ```
 
