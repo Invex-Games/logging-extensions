@@ -1,6 +1,7 @@
 # File Log Output Format
 
-Each file log entry has a bracketed prefix followed by the formatter's message and a platform newline:
+This page describes the exact shape of each line the file logger writes, for reading or parsing log
+files. Each file log entry has a bracketed prefix followed by the formatter's message and a platform newline:
 
 ```text
 [{timestamp} {level} {category}] {message}
@@ -67,7 +68,7 @@ Structured property names and values are not persisted separately.
   a configured file destination. Scope data is not printed; the line format stays the same. See
   [group routing](configuration.md#routing-groups-to-separate-files).
 - **No level filtering happens in the provider.** Use the standard `Logging:File:LogLevel` configuration to
-  filter (see [Getting started](getting-started.md#filtering-log-levels)).
+  filter (see [Getting Started](getting-started.md#filtering-log-levels)).
 
 ## Parsing tips
 
@@ -83,3 +84,8 @@ The bracketed prefix has a fixed shape, so a simple regex can split entries:
 > like a prefix, so this text format cannot guarantee lossless recovery of arbitrary multiline messages.
 > If precise structured parsing is required, use a provider with a structured output format.
 
+## See also
+
+- [File Logger Configuration](configuration.md) — where files are written and how they are named
+- [Buffered vs. Direct Writing](buffering.md) — when lines are written
+- <xref:Invex.Extensions.Logging.File.FileLoggerExtension>
