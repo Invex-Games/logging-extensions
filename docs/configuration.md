@@ -2,6 +2,7 @@
 
 The file logger is configured via the `FileLoggerConfiguration` options class. Options can be supplied from
 configuration (the `Logging:File` section), from code, or both — values set in code override bound values.
+Use this page to choose where files go, how they are named, and when they roll over.
 
 ## Options reference
 
@@ -20,7 +21,7 @@ Use a positive value for each size setting. Zero or negative values do not disab
 qualifying archive whenever retention is checked. To disable time-based rollover, use `Infinite`.
 
 The size settings are thresholds, not hard quotas. A single entry or buffered batch is never split, and
-retention excludes active files. See [rollover and retention](rollover-and-retention.md) for sizing details.
+retention excludes active files. See [File Rollover and Retention](rollover-and-retention.md) for sizing details.
 
 ## Configuring via appsettings.json
 
@@ -132,6 +133,11 @@ and `MaxTotalSizeBytes` settings.
 > and any other nonempty suffix still apply.
 
 ## Migrating existing level mappings
+
+> [!IMPORTANT]
+> `PerLevelLogName` values now append to `LogName` as suffixes instead of replacing it. Update existing
+> full-name mappings to suffixes; for example, use `"errors"` with `LogName = "my-app"` to write
+> `my-app_errors.log`.
 
 `PerLevelLogName` now contains suffixes rather than replacement file names. This intentionally changes
 the behavior of existing mappings. For example, `LogName = "app"` with an existing `Error = "app-errors"`
@@ -248,3 +254,11 @@ Fixed scalar defaults are exposed as public constants on `FileLoggerConfiguratio
 `LogName` defaults to `AppDomain.CurrentDomain.FriendlyName` and has no default constant.
 `PerGroupLogName` and `PerLevelLogName` each default to an empty dictionary and have no default constant.
 
+## See also
+
+- [File Rollover and Retention](rollover-and-retention.md) — file naming, rollover, and purging
+- [Buffered vs. Direct Writing](buffering.md) — write modes and error handling
+- [File Log Output Format](log-format.md) — the shape of each log line
+- <xref:Invex.Extensions.Logging.File.Configuration.FileLoggerConfiguration>
+- <xref:Invex.Extensions.Logging.File.Configuration.FileRolloverInterval>
+- <xref:Invex.Extensions.Logging.File.FileLoggerExtension>
