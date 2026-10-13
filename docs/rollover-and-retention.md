@@ -1,8 +1,9 @@
-# File Rollover & Retention
+# File Rollover and Retention
 
 Log files are rolled over (renamed and replaced with a fresh file) based on **size** and **time**, and old
 archives are purged when their combined size reaches a threshold for their resolved file name.
-Size and retention settings are thresholds rather than hard disk quotas.
+Size and retention settings are thresholds rather than hard disk quotas. Read this page when sizing
+log storage or predicting which files the provider will create and delete.
 
 ## File naming
 
@@ -131,3 +132,9 @@ Common setups:
 | Disk-constrained device          | `MaxTotalSizeBytes = 512 MiB`, `FileSizeLimitBytes = 10 MiB`     |
 | Short-lived CLI tool             | `RolloverInterval = Infinite`, small `MaxTotalSizeBytes`         |
 
+## See also
+
+- [File Logger Configuration](configuration.md) — the options that control rollover and retention
+- [Buffered vs. Direct Writing](buffering.md) — when writes, and therefore rollover checks, happen
+- <xref:Invex.Extensions.Logging.File.Configuration.FileLoggerConfiguration>
+- <xref:Invex.Extensions.Logging.File.Configuration.FileRolloverInterval>
