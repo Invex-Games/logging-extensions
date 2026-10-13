@@ -225,19 +225,21 @@ dotnet test Invex.Extensions.Logging.slnx
 ```
 
 The documentation site is built with [DocFX](https://dotnet.github.io/docfx/) from the pages in
-`docs/` and the XML doc comments in `src/`. Build or preview it through the Atom build:
+`docs/` and the XML doc comments in `src/`. DocFX reads the API from the compiled Release assemblies,
+because its source-based extraction omits methods declared in C# 14 `extension` blocks such as
+`AddFancyConsole` and `AddFile`, so build Release first, then build or preview the site through the
+Atom build:
 
 ```shell
+dotnet build Invex.Extensions.Logging.slnx --configuration Release
 dotnet run --project _atom -- BuildDocs
 dotnet run --project _atom -- ServeDocs
 ```
 
-(`atom BuildDocs` and `atom ServeDocs` when the Atom tool is installed.) DocFX reads the API from the
-compiled Release assemblies, because its source-based extraction omits methods declared in C# 14
-`extension` blocks such as `AddFancyConsole` and `AddFile`. To run DocFX directly, build first:
+(`atom BuildDocs` and `atom ServeDocs` when the Atom tool is installed.) To run DocFX directly after the
+Release build:
 
 ```shell
-dotnet build Invex.Extensions.Logging.slnx --configuration Release
 docfx docfx.json --warningsAsErrors
 ```
 

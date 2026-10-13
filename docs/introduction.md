@@ -55,8 +55,9 @@ built-in providers.
 
 - **Standard pipeline first.** Registration, configuration, reload, scopes, and filtering all use the
   `Microsoft.Extensions.Logging` mechanisms you already know.
-- **Logging never breaks the application.** Rendering and write failures are reported to debug or
-  console output instead of being thrown; the file writer retries and then drops the entry.
+- **Write failures stay contained.** File write failures are retried and then the entry is dropped and
+  reported to debug output instead of being thrown. Exceptions from your own message formatter or
+  `TimeProvider` are not caught and reach the caller.
 - **Plain, predictable output.** File lines have a fixed prefix, and console text is written
   literally; Spectre markup in messages is not interpreted.
 - **Thresholds, not guarantees.** Size and retention limits are checked when writing, and the
