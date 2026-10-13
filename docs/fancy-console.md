@@ -55,7 +55,16 @@ still applied in registration order, so later delegates can override earlier val
 
 ## Layouts
 
-Choose a layout with `Layout`. Level codes are `TRC`, `DBG`, `INF`, `WRN`, `ERR`, and `CRT`. In Standard,
+Choose a layout with `Layout`:
+
+| Layout | Output |
+|---|---|
+| `Standard` (default) | A date and category header, then time, level, and message, with a blank line between entries. |
+| `SingleLine` | Time, level, category, and message; message line breaks become spaces. Full and Pretty exceptions follow on separate lines. |
+| `Minimal` | Only the level and message. |
+| `Detailed` | Every available field (category, event, thread, scopes, and message), labeled on separate lines. |
+
+Level codes are `TRC`, `DBG`, `INF`, `WRN`, `ERR`, and `CRT`. In Standard,
 Minimal, and Detailed, CRLF and LF message line breaks are retained, with continuation lines indented
 to the message column. SingleLine replaces CRLF, CR, and LF message line breaks with spaces.
 
@@ -253,4 +262,14 @@ Spectre.Console wraps long lines at its console profile width, including when ou
 the width comes from the detected console size or Spectre's fallback. Disabling colors does not
 disable wrapping. `SingleLine` with `Summary` or `Hidden` reduces extra lines, but it does not guarantee
 one physical line per entry. Use a provider designed for structured output when a machine must parse
-individual entries, or the [file logger](getting-started.md) to avoid terminal wrapping.
+individual entries, or the [file logger](configuration.md) to avoid terminal wrapping.
+
+## See also
+
+- [Getting Started](getting-started.md) — registration and level filtering
+- [File Logger Configuration](configuration.md) — the companion file provider
+- [Logging Utilities](logging-utilities.md) — using FancyConsole for startup and shutdown messages
+- <xref:Invex.Extensions.Logging.FancyConsole.FancyConsoleLoggerExtensions>
+- <xref:Invex.Extensions.Logging.FancyConsole.Configuration.FancyConsoleLoggerConfiguration>
+- <xref:Invex.Extensions.Logging.FancyConsole.Configuration.FancyConsoleLayout>
+- <xref:Invex.Extensions.Logging.FancyConsole.Configuration.FancyConsoleExceptionFormat>

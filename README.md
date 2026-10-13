@@ -1,6 +1,14 @@
-# Invex Logging Extensions
+# Invex.Extensions.Logging
 
-Useful utilities for [`Microsoft.Extensions.Logging`](https://learn.microsoft.com/dotnet/core/extensions/logging).
+[![Build](https://github.com/Invex-Games/logging-extensions/actions/workflows/Build.yml/badge.svg)](https://github.com/Invex-Games/logging-extensions/actions/workflows/Build.yml)
+[![NuGet](https://img.shields.io/nuget/v/Invex.Extensions.Logging.FancyConsole.svg)](https://www.nuget.org/packages/Invex.Extensions.Logging.FancyConsole)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://github.com/Invex-Games/logging-extensions/blob/main/LICENSE.txt)
+[![.NET](https://img.shields.io/badge/.NET-8.0%20%7C%209.0%20%7C%2010.0%20%7C%20Standard%202.0-512BD4.svg)](https://dotnet.microsoft.com/)
+
+Useful utilities for [`Microsoft.Extensions.Logging`](https://learn.microsoft.com/dotnet/core/extensions/logging):
+a readable, styled console logger, a rolling file logger, and helpers for logging before the host
+starts. The providers plug into the standard logging pipeline, so they work with ASP.NET Core, the
+Generic Host, or a manually created `ILoggerFactory`.
 
 ## Packages
 
@@ -10,23 +18,37 @@ Useful utilities for [`Microsoft.Extensions.Logging`](https://learn.microsoft.co
 | [`Invex.Extensions.Logging.File`](https://www.nuget.org/packages/Invex.Extensions.Logging.File) | A dependency-light file logger with size- and time-based rollover, retention limits, routing by scoped group and log level, and buffered or synchronous writing. |
 | [`Invex.Extensions.Logging.Utils`](https://www.nuget.org/packages/Invex.Extensions.Logging.Utils) | Helpers for creating a logger before a host is built, owning its factory, and logging startup information. |
 
-The FancyConsole and File packages are standard logging providers: they plug into ASP.NET Core, Generic Host, or manually
-created `ILoggerFactory`, bind options from the `Logging` configuration section, pick up configuration
-changes from sources that support reload, and leave level filtering to the standard logging rules. All
-three projects target `net10.0` and `netstandard2.0`. The providers can be used
-independently or together; Utils creates a separate factory with the providers you choose.
+The providers can be used independently or together; Utils creates a separate factory with the
+providers you choose.
 
-## Quick start
+## Features
 
-Install one or both packages:
+- **Four console layouts.** `Standard`, `SingleLine`, `Minimal`, and `Detailed`, with per-level Spectre.Console styles.
+- **Readable exceptions.** Render exceptions in `Full`, `Pretty`, one-line `Summary`, or `Hidden` form.
+- **Standard-error routing.** Send entries at or above a chosen level to standard error.
+- **Rolling log files.** Roll over by size and elapsed time, and purge old archives per resolved file name.
+- **Routing by group and level.** Send scoped groups and selected levels to their own files with `BeginGroupScope` and suffix mappings.
+- **Buffered or direct writing.** Queue entries for a background writer, or write on the calling thread.
+- **Standard options pipeline.** Bind from `Logging:FancyConsole` and `Logging:File`, reload at runtime, and filter with the standard logging rules.
+- **Startup logging.** Log before the host is built and emit a consistent startup message with `LogUtil`.
+
+## Installation
 
 ```shell
 dotnet add package Invex.Extensions.Logging.FancyConsole
 dotnet add package Invex.Extensions.Logging.File
+dotnet add package Invex.Extensions.Logging.Utils
 ```
 
-Register them with your host. A common setup is readable console output while you watch the app, plus
-rolling files for later inspection:
+Install only the packages you need. All three target `net10.0` and
+`netstandard2.0`. FancyConsole depends on Spectre.Console; File depends on System.IO.Abstractions;
+both build on `Microsoft.Extensions.Logging.Configuration`. Utils depends on
+`Microsoft.Extensions.Logging` and `Microsoft.Extensions.Hosting.Abstractions`.
+
+## Quick start
+
+Register the providers with your host. A common setup is readable console output while you watch the
+app, plus rolling files for later inspection:
 
 ```csharp
 using Invex.Extensions.Logging.FancyConsole;
@@ -56,35 +78,12 @@ var logger = loggerFactory.CreateLogger<Program>();
 logger.LogInformation("Hello, world!");
 ```
 
-See [getting started](docs/getting-started.md) for defaults and level filtering.
+## Usage
 
-## Fancy console logger
+### Style console output
 
-`AddFancyConsole` writes styled, human-friendly output to the console. Pick from four layouts:
-
-| Layout | Output |
-|---|---|
-| `Standard` (default) | A date and category header, then time, level, and message, with a blank line between entries. |
-| `SingleLine` | Time, level, category, and message; message line breaks become spaces. Full and Pretty exceptions follow on separate lines. |
-| `Minimal` | Only the level and message. |
-| `Detailed` | Every available field (category, event, thread, scopes, and message), labeled on separate lines. |
-
-Standard:
-
-```text
-2026-06-11 +10:00 MyApp.Services.OrderService
-09:41:23.123  INF Order 42 submitted
-
-```
-
-SingleLine:
-
-```text
-09:41:23.123 INF MyApp.Services.OrderService: Order 42 submitted
-```
-
-Exceptions can be rendered in `Full`, Spectre.Console `Pretty`, one-line `Summary`, or `Hidden` form, and
-entries at or above a chosen level can be routed to standard error. Configure in code:
+Pick a layout, styles, and an exception format in code or under `Logging:FancyConsole`. Values set by
+the delegate are applied after values bound from configuration:
 
 ```csharp
 using Invex.Extensions.Logging.FancyConsole;
@@ -94,7 +93,6 @@ using Microsoft.Extensions.Logging;
 builder.Logging.AddFancyConsole(options =>
 {
     options.Layout = FancyConsoleLayout.SingleLine;
-    options.IncludeScopes = true;
     options.UseShortCategoryName = true;
     options.LevelStyles[LogLevel.Error] = "bold red";
     options.ExceptionFormat = FancyConsoleExceptionFormat.Pretty;
@@ -102,133 +100,54 @@ builder.Logging.AddFancyConsole(options =>
 });
 ```
 
-Or under `Logging:FancyConsole` (provider alias `FancyConsole`). Values configured by the delegate are
-applied after values bound from configuration:
-
-```json
-{
-  "Logging": {
-    "FancyConsole": {
-      "Layout": "SingleLine",
-      "IncludeScopes": true,
-      "LevelStyles": {
-        "Error": "bold red"
-      },
-      "ExceptionFormat": "Pretty",
-      "LogToStandardErrorThreshold": "Error"
-    }
-  }
-}
+```text
+09:41:23.123 INF OrderService: Order 42 submitted
 ```
 
-| Option | Default | Description |
-|---|---:|---|
-| `Layout` | `Standard` | `Standard`, `SingleLine`, `Minimal`, or `Detailed`. |
-| `TimestampFormat` | `null` | .NET date/time format string; `null` or empty uses the layout default. |
-| `UseUtcTimestamp` | `false` | Show timestamps in UTC instead of local time. |
-| `IncludeScopes` | `false` | Append active scopes after the category in Standard and SingleLine; Detailed always shows them, and Minimal omits them. |
-| `UseShortCategoryName` | `false` | Shorten categories to the text after their last `.`. |
-| `UseColors` | `true` | Apply styles when the console supports them; `NO_COLOR` is honored. |
-| `LevelStyles` | empty | Per-level Spectre.Console styles, such as `"bold red"` or `"black on yellow"`. |
-| `ExceptionFormat` | `Full` | `Full`, `Pretty`, `Summary`, or `Hidden`. |
-| `ExceptionTextStyle` | `"red1"` | Style for `Full` and `Summary` exception text. |
-| `LogToStandardErrorThreshold` | `None` | Entries at or above this level go to standard error; `None` writes everything to standard output. |
+See [Fancy Console Logger](https://github.com/Invex-Games/logging-extensions/blob/main/docs/fancy-console.md)
+for every layout, option, style, and exception format.
 
-Each entry is written as a single unit, so concurrent FancyConsole entries do not interleave, and rendering failures
-are never thrown into the application. See the [fancy console guide](docs/fancy-console.md) for every
-layout, style, and exception option.
+### Write rolling log files
 
-## File logger
-
-`AddFile` writes plain, parseable log lines to rolling files:
+`AddFile` writes plain, parseable lines to `Logs/{AppDomain.CurrentDomain.FriendlyName}.log`. Before a
+write, it rolls the file over when it is at least 24 hours old or the write would bring it to at least
+100 MiB:
 
 ```text
 [2026-06-11 09:41:23.123 +10:00 INF MyApp.Services.OrderService] Order 42 submitted
 ```
 
-File output contains the formatted message. Attached exceptions and event IDs are not appended
-automatically; include any required details in the message. Messages can span multiple lines. See
-[log output format](docs/log-format.md) for examples and parsing guidance.
-
-By default it writes to a `Logs` directory relative to the current working directory. The active file is
-named after `AppDomain.CurrentDomain.FriendlyName`, and rolls over before a write when the existing file
-is at least 24 hours old or the write would bring it to at least 100 MiB. Retention checks a 10 GiB archive
-threshold per resolved file name and removes at most one oldest archive when a file is created or rolled.
-These thresholds are not hard disk quotas; see the [rollover guide](docs/rollover-and-retention.md).
-
-> [!IMPORTANT]
-> Buffered writing is the default. Dispose the host or `ILoggerFactory` during graceful shutdown so
-> queued entries are flushed, even when disposal immediately follows the last log call; no delay is needed.
-> Entries still in memory can be lost if the process crashes or is killed.
-
-Configure in code:
-
 ```csharp
 using Invex.Extensions.Logging.File;
 using Invex.Extensions.Logging.File.Configuration;
-using Microsoft.Extensions.Logging;
 
 builder.Logging.AddFile(options =>
 {
-    options.LogDirectory = "Logs";
     options.LogName = "my-app";
     options.FileSizeLimitBytes = 50L * 1024 * 1024;
     options.RolloverInterval = FileRolloverInterval.Hour;
-    options.MaxTotalSizeBytes = 1L * 1024 * 1024 * 1024;
-    options.PerGroupLogName["Orders"] = "orders";
-    options.PerLevelLogName[LogLevel.Error] = "errors";
 });
 ```
 
-Or under `Logging:File` (provider alias `File`). Values configured by the delegate are applied after
-values bound from configuration:
-
-```json
-{
-  "Logging": {
-    "File": {
-      "LogDirectory": "Logs",
-      "LogName": "my-app",
-      "FileSizeLimitBytes": 104857600,
-      "RolloverInterval": "Day",
-      "MaxTotalSizeBytes": 10737418240,
-      "PerGroupLogName": {
-        "Orders": "orders"
-      },
-      "PerLevelLogName": {
-        "Error": "errors",
-        "Critical": "errors"
-      }
-    }
-  }
-}
-```
-
-| Option | Default | Description |
-|---|---:|---|
-| `LogDirectory` | `"Logs"` | Absolute directory, or a directory relative to the current working directory. Created when needed. |
-| `LogName` | `AppDomain.CurrentDomain.FriendlyName` | Active base name without `.log`, initialized to the application domain friendly name. |
-| `PerGroupLogName` | empty | Suffixes for selected scoped groups, appended to the base name before any level suffix. A mapped `null` or empty string adds nothing. |
-| `PerLevelLogName` | empty | Suffixes for selected levels, appended after the base name and any group suffix. A mapped `null` or empty string adds nothing. |
-| `FileSizeLimitBytes` | 100 MiB | Rolls an existing file before a write that would make it reach this size; an oversized entry or batch is still written in full. |
-| `RolloverInterval` | `Day` | Elapsed interval from file creation: `Infinite`, `Year` (365 days), `Month` (30 days), `Day`, `Hour`, or `Minute`. |
-| `MaxTotalSizeBytes` | 10 GiB | Archive cleanup threshold per resolved base name. On creation or rollover, removes at most one oldest archive if the total meets the threshold; excludes active files. |
-
 > [!IMPORTANT]
-> `PerLevelLogName` values now append to `LogName` as suffixes instead of replacing it. Update existing
-> full-name mappings to suffixes; for example, use `"errors"` with `LogName = "my-app"` to write
-> `my-app_errors.log`. See [migration guidance](docs/configuration.md#migrating-existing-level-mappings).
+> Buffered writing is the default. Dispose the host or `ILoggerFactory` during graceful shutdown so
+> queued entries are flushed; entries still in memory can be lost if the process crashes or is killed.
 
-`LogName` now defaults directly to the application friendly name, and `SetLogNameSuffix("worker")`
-produces `{AppDomain.CurrentDomain.FriendlyName}_worker.log`. `DefaultLogName` has been removed;
-see [log name migration guidance](docs/configuration.md#migrating-log-names).
+See [File Logger Configuration](https://github.com/Invex-Games/logging-extensions/blob/main/docs/configuration.md),
+[File Rollover and Retention](https://github.com/Invex-Games/logging-extensions/blob/main/docs/rollover-and-retention.md),
+and [Buffered vs. Direct Writing](https://github.com/Invex-Games/logging-extensions/blob/main/docs/buffering.md).
 
-### Routing by group
+### Route entries by group and level
 
-Use `BeginGroupScope` to set a group for log calls within a scope:
+Map groups and levels to file name suffixes, then set the group with a scope:
 
 ```csharp
-using Invex.Extensions.Logging.File;
+builder.Logging.AddFile(options =>
+{
+    options.LogName = "my-app";
+    options.PerGroupLogName["Orders"] = "orders";
+    options.PerLevelLogName[LogLevel.Error] = "errors";
+});
 
 using (logger.BeginGroupScope("Orders"))
 {
@@ -237,38 +156,18 @@ using (logger.BeginGroupScope("Orders"))
 }
 ```
 
-File names start with `LogName`, followed by the mapped group suffix and then the mapped level suffix,
-each separated by an underscore. Missing mappings and null or empty mapped suffixes add no separator or
-text. Nested groups override outer groups until disposed, and scopes flow across `await` and logger
-categories. Dictionary and formatted scopes such as `logger.BeginScope("{Group}", "Orders")` also work.
-Scope values affect routing without appearing in the file's log lines. See
-[group routing](docs/configuration.md#routing-groups-to-separate-files) for the complete rules.
+> [!IMPORTANT]
+> `PerLevelLogName` values append to `LogName` as suffixes instead of replacing it, `LogName` defaults
+> directly to the application friendly name, and `DefaultLogName` has been removed. See the
+> [migration guidance](https://github.com/Invex-Games/logging-extensions/blob/main/docs/configuration.md#migrating-existing-level-mappings).
 
-### Rollover, retention, and write modes
+See [routing groups to separate files](https://github.com/Invex-Games/logging-extensions/blob/main/docs/configuration.md#routing-groups-to-separate-files)
+for the complete rules.
 
-When rollover occurs, the active `{name}.log` is renamed to `{name}_{yyMMdd-HHmmss}.log`; collisions
-receive `_1`, `_2`, and later suffixes. Time rollover uses elapsed durations, not calendar boundaries, and
-checks occur only when an entry is written. Retention is evaluated independently for each base name and
-never deletes the active file. Case-only path aliases follow the destination filesystem's behavior for
-buffered routing, archive naming, and retention. See [file rollover and retention](docs/rollover-and-retention.md).
+### Log before the host starts
 
-Buffered mode queues entries for a dedicated background thread that writes batches of up to 10 entries.
-Use direct mode to attempt each write on the calling thread before the log call returns:
-
-```csharp
-builder.Logging.AddFile(buffered: false);
-```
-
-Both modes make an initial write attempt plus up to five retries, report failures to console/debug
-output, and drop entries that still cannot be written. A successful write flushes the stream to the
-operating system without guaranteeing physical disk durability. See [buffered versus direct writing](docs/buffering.md) and the
-[log format guide](docs/log-format.md).
-
-## Logging before the host starts
-
-`Invex.Extensions.Logging.Utils` lets you create a separate logger for startup and shutdown messages.
-`CreateHostLogger` uses the category `Host`, adds a `Microsoft` category filter at `Warning`, and runs
-your configuration callback. Register the providers you need in that callback:
+`LogUtil.CreateHostLogger` creates a logger with category `Host` and its own factory, filtered to
+`Warning` for `Microsoft` categories. Register the providers you need in the callback:
 
 ```csharp
 using Invex.Extensions.Logging.FancyConsole;
@@ -280,58 +179,73 @@ startupLogger.LogStartupInfo<Program>();
 startupLogger.LogInformation("Configuring services...");
 ```
 
-Disposing the returned `HostLogger` disposes its factory and factory-owned providers. It has its own configuration;
-the application's later host configuration does not automatically apply to it. See
-[logging utilities](docs/logging-utilities.md) for configuration, factory ownership, and startup fields.
+See [Logging Utilities](https://github.com/Invex-Games/logging-extensions/blob/main/docs/logging-utilities.md)
+for factory ownership and the startup message fields.
 
-## Filtering
+### Filter levels per provider
 
 Neither provider filters levels itself. Use the standard
 [log filtering rules](https://learn.microsoft.com/dotnet/core/extensions/logging#configure-logging),
-scoped to a provider alias when needed:
+scoped to the `FancyConsole` or `File` provider alias when needed:
 
 ```json
 {
   "Logging": {
-    "LogLevel": {
-      "Default": "Information"
-    },
-    "FancyConsole": {
-      "LogLevel": {
-        "Microsoft": "Warning"
-      }
-    },
-    "File": {
-      "LogLevel": {
-        "Default": "Warning",
-        "MyApp.Services": "Information"
-      }
-    }
+    "LogLevel": { "Default": "Information" },
+    "File": { "LogLevel": { "Default": "Warning" } }
   }
 }
 ```
 
+See [Getting Started](https://github.com/Invex-Games/logging-extensions/blob/main/docs/getting-started.md#filtering-log-levels).
+
 ## Documentation
 
-- [Getting started](docs/getting-started.md)
-- [Logging utilities](docs/logging-utilities.md)
-- Fancy console logger: [guide](docs/fancy-console.md)
-- File logger: [configuration](docs/configuration.md), [rollover and retention](docs/rollover-and-retention.md),
-  [buffered versus direct writing](docs/buffering.md), and [log output format](docs/log-format.md)
-- [API reference](api/index.md)
+Full documentation: [https://invex-games.github.io/logging-extensions/](https://invex-games.github.io/logging-extensions/)
 
-To build the documentation locally, use the SDK selected by `global.json` and run from the repository root:
+| Guide | Contents |
+|---|---|
+| [Introduction](https://github.com/Invex-Games/logging-extensions/blob/main/docs/introduction.md) | What the packages are for, key concepts, and design principles |
+| [Getting Started](https://github.com/Invex-Games/logging-extensions/blob/main/docs/getting-started.md) | Installation, registration, defaults, and level filtering |
+| [Fancy Console Logger](https://github.com/Invex-Games/logging-extensions/blob/main/docs/fancy-console.md) | Layouts, options, level styles, scopes, and exceptions |
+| [File Logger Configuration](https://github.com/Invex-Games/logging-extensions/blob/main/docs/configuration.md) | Every file option, group and level routing, and migration notes |
+| [File Rollover and Retention](https://github.com/Invex-Games/logging-extensions/blob/main/docs/rollover-and-retention.md) | File naming, size and time rollover, and archive purging |
+| [Buffered vs. Direct Writing](https://github.com/Invex-Games/logging-extensions/blob/main/docs/buffering.md) | Write modes, shutdown, and error handling |
+| [File Log Output Format](https://github.com/Invex-Games/logging-extensions/blob/main/docs/log-format.md) | The shape of each log line and parsing tips |
+| [Logging Utilities](https://github.com/Invex-Games/logging-extensions/blob/main/docs/logging-utilities.md) | Startup logging, factory ownership, and startup information |
+| [API Reference](https://invex-games.github.io/logging-extensions/api/index.html) | Generated reference for every public type |
+
+## Development
+
+Use the .NET SDK selected by `global.json` and run from the repository root:
+
+```shell
+dotnet build Invex.Extensions.Logging.slnx
+dotnet test Invex.Extensions.Logging.slnx
+```
+
+The documentation site is built with [DocFX](https://dotnet.github.io/docfx/) from the pages in
+`docs/` and the XML doc comments in `src/`. DocFX reads the API from the compiled Release assemblies,
+because its source-based extraction omits methods declared in C# 14 `extension` blocks such as
+`AddFancyConsole` and `AddFile`, so build Release first, then build or preview the site through the
+Atom build:
 
 ```shell
 dotnet build Invex.Extensions.Logging.slnx --configuration Release
+dotnet run --project _atom -- BuildDocs
+dotnet run --project _atom -- ServeDocs
+```
+
+(`atom BuildDocs` and `atom ServeDocs` when the Atom tool is installed.) To run DocFX directly after the
+Release build:
+
+```shell
 docfx docfx.json --warningsAsErrors
 ```
 
-DocFX reads the compiled libraries and their XML comments. Build first to include the latest API and
-documentation; add `--serve` to preview the generated site in `_site/`.
-
-The Atom `BuildDocs` and `ServeDocs` targets also require the Release assemblies to be built first.
+The site is generated in `_site/`; add `--serve` to preview it locally. Files under `api/` with a
+`.yml` extension are generated; edit the source XML comments or the Markdown pages instead.
 
 ## License
 
-Licensed under the terms of [LICENSE.txt](LICENSE.txt).
+Licensed under the [MIT License](https://github.com/Invex-Games/logging-extensions/blob/main/LICENSE.txt).
