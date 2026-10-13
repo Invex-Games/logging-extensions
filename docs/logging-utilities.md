@@ -148,5 +148,10 @@ the display clauses, including their leading spaces. In the current implementati
 receives the environment clause (` in Production configuration`) and `Configuration` receives the
 machine clause (` on worker-01`). Account for this ordering if you consume the structured fields directly.
 
-See the [fancy console guide](fancy-console.md) and [file logger configuration](configuration.md) for
-provider settings, or [buffering](buffering.md) for file writer shutdown behavior.
+## See also
+
+- [Fancy Console Logger](fancy-console.md) — provider settings for console output
+- [File Logger Configuration](configuration.md) — provider settings for file output
+- [Buffered vs. Direct Writing](buffering.md) — file writer shutdown behavior
+- <xref:Invex.Extensions.Logging.Utils.LogUtil>
+- <xref:Invex.Extensions.Logging.Utils.HostLogger>

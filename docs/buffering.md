@@ -1,6 +1,7 @@
 # Buffered vs. Direct Writing
 
-`AddFile` accepts a `buffered` flag that selects between two write strategies:
+`AddFile` accepts a `buffered` flag that selects between two write strategies. Use this page to choose
+one, and to understand shutdown and failure behavior:
 
 ```csharp
 builder.Logging.AddFile();                 // buffered (default)
@@ -23,7 +24,7 @@ does not affect routing. Group and level mappings are resolved from the current 
 batch; a configuration reload can therefore change the destination of queued entries.
 Message text and timestamps remain those captured by the original log call.
 
-**Characteristics:**
+### Characteristics
 
 - ✅ File I/O runs on the writer thread; application threads perform formatting, scope capture, and queueing.
 - ✅ Batching reduces the number of file opens/writes under load.
@@ -32,8 +33,9 @@ Message text and timestamps remain those captured by the original log call.
 - ⚠️ The in-memory queue is unbounded; if the disk cannot keep up with sustained extreme log volume, memory
   usage grows.
 
-**Shutdown:** disposing the host or logger factory
-closes the queue and blocks until the background thread has drained all accepted entries and exited.
+### Shutdown
+
+Disposing the host or logger factory closes the queue and blocks until the background thread has drained all accepted entries and exited.
 Disposal can immediately follow the last log call; no delay is needed to let the writer catch up.
 The same retry-and-drop policy described below applies while draining, and entries logged after disposal
 are dropped. Entries still queued when the process crashes or is killed cannot be flushed.
@@ -57,7 +59,7 @@ the operating system; it does not request a durable storage flush. A successful 
 not guarantee survival through power loss or storage failure, and exhausted write retries can still
 drop the entry.
 
-**Characteristics:**
+### Characteristics
 
 - ✅ Successful writes finish before the log call returns, so entries do not remain in an application queue.
 - ✅ No background thread, no in-memory queue.
@@ -93,3 +95,9 @@ after part of an append has succeeded can produce duplicate text; delivery is no
 These protections cover the provider's writer and scope capture. A custom formatter is invoked before
 them, and an exception from that formatter can propagate to the logging caller.
 
+## See also
+
+- [Getting Started](getting-started.md) — registering the provider and disposing it on shutdown
+- [File Logger Configuration](configuration.md) — options and runtime configuration changes
+- [File Rollover and Retention](rollover-and-retention.md) — what happens on each write
+- <xref:Invex.Extensions.Logging.File.FileLoggerExtension>
