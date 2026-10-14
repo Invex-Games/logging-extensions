@@ -121,10 +121,10 @@ LogUtil.LogStartupInfo(
     environment: "Production");
 ```
 
-The current formatted message is:
+The formatted message is:
 
 ```text
-Started OrderWorker v2.3.0 in Production configuration on worker-01
+Started OrderWorker v2.3.0 on worker-01 in Production configuration
 ```
 
 The provider may add its own timestamp, level, category, or layout around this message. The helper emits
@@ -143,10 +143,9 @@ Formatting rules:
 
 When all explicit values are null or empty, the message is `Started Application`.
 
-The structured template is `Started{AppName}{Version}{MachineName}{Configuration}`. Its values contain
-the display clauses, including their leading spaces. In the current implementation, `MachineName`
-receives the environment clause (` in Production configuration`) and `Configuration` receives the
-machine clause (` on worker-01`). Account for this ordering if you consume the structured fields directly.
+The structured template is `Started{AppName}{Version}{MachineName}{Environment}`. Its values contain
+the display clauses, including their leading spaces: `MachineName` receives the machine clause
+(` on worker-01`) and `Environment` receives the environment clause (` in Production configuration`).
 
 ## See also
 
