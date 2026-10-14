@@ -6,7 +6,8 @@
     <PackageIcon>icon.png</PackageIcon>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageDescription>Useful utilities for Microsoft.Extensions.Logging</PackageDescription>
+    <PackageDescription>A styled console logger, a rolling file logger, and pre-host logging helpers for Microsoft.Extensions.Logging</PackageDescription>
+    <PackageProjectUrl>https://invex-games.github.io/logging-extensions/</PackageProjectUrl>
     <EnablePackageValidation>true</EnablePackageValidation>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
 
@@ -14,7 +15,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <NoWarn>$(NoWarn);CA1873;CS1591;NU5104;RCS1001;RCS1003;RCS1123;</NoWarn>
+    <NoWarn>$(NoWarn);CA1873;NU5104;RCS1001;RCS1003;RCS1123;</NoWarn>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
 
