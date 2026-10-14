@@ -30,8 +30,8 @@ and `toc.yml`.
 - Global usings live in each project's `_usings.cs` — add shared usings there, not per-file.
   The library's `_usings.cs` also declares `InternalsVisibleTo` for the test project.
 - `GenerateDocumentationFile` is on and `CS1591` is enforced for the shipped `src/` projects, so a
-  missing XML comment on public surface fails the build. Tests, the sample, and `_atom` suppress it in
-  their own `.csproj`. The convention is still to fully XML-document **all** types and members, public
+  missing XML comment on public surface fails the build. The FancyConsole and File test projects, the sample, and
+  `_atom` suppress it in their own `.csproj`. The convention is still to fully XML-document **all** types and members, public
   and internal — match the existing style.
 - Framework-specific code uses `#if NET8_0_OR_GREATER` guards (mostly nullability differences on
   the older targets); preserve both branches when editing.
