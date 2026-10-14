@@ -3,7 +3,7 @@
 [![Build](https://github.com/Invex-Games/logging-extensions/actions/workflows/Build.yml/badge.svg)](https://github.com/Invex-Games/logging-extensions/actions/workflows/Build.yml)
 [![NuGet](https://img.shields.io/nuget/v/Invex.Extensions.Logging.FancyConsole.svg)](https://www.nuget.org/packages/Invex.Extensions.Logging.FancyConsole)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://github.com/Invex-Games/logging-extensions/blob/main/LICENSE.txt)
-[![.NET](https://img.shields.io/badge/.NET-8.0%20%7C%209.0%20%7C%2010.0%20%7C%20Standard%202.0-512BD4.svg)](https://dotnet.microsoft.com/)
+[![.NET](https://img.shields.io/badge/.NET-10.0%20%7C%20Standard%202.0-512BD4.svg)](https://dotnet.microsoft.com/)
 
 Useful utilities for [`Microsoft.Extensions.Logging`](https://learn.microsoft.com/dotnet/core/extensions/logging):
 a readable, styled console logger, a rolling file logger, and helpers for logging before the host
