@@ -2,6 +2,7 @@
 
   <PropertyGroup>
     <TargetFrameworks>net10.0;netstandard2.0</TargetFrameworks>
+    <PackageDescription>A colorful, readable console logger for Microsoft.Extensions.Logging built on Spectre.Console, with multiple layouts, per-level styles, scopes, pretty exceptions and standard-error routing</PackageDescription>
   </PropertyGroup>
 
   <!--  Packages-->

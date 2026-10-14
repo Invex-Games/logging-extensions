@@ -29,9 +29,10 @@ and `toc.yml`.
 - C# `LangVersion` 14, `ImplicitUsings` and `Nullable` enabled, `TreatWarningsAsErrors` on.
 - Global usings live in each project's `_usings.cs` — add shared usings there, not per-file.
   The library's `_usings.cs` also declares `InternalsVisibleTo` for the test project.
-- `GenerateDocumentationFile` is on. `CS1591` is in the repo-wide `NoWarn`, but the convention is
-  still to fully XML-document **all** types and members, public and internal — match the existing
-  style.
+- `GenerateDocumentationFile` is on and `CS1591` is enforced for the shipped `src/` projects, so a
+  missing XML comment on public surface fails the build. The FancyConsole and File test projects, the sample, and
+  `_atom` suppress it in their own `.csproj`. The convention is still to fully XML-document **all** types and members, public
+  and internal — match the existing style.
 - Framework-specific code uses `#if NET8_0_OR_GREATER` guards (mostly nullability differences on
   the older targets); preserve both branches when editing.
 
@@ -221,7 +222,7 @@ Windows-only `net48` job (`TestFxProjects`) — keep all target frameworks green
   | `semver-none` / `semver-skip` | No bump |
 
 - When adding user-facing features, update the relevant `docs/` page and `README.md`. The README
-  is the DocFX site home page and is packed into the NuGet package.
+  is packed into the NuGet package; `index.md` is the DocFX site home page.
 
 ## Testing & the Verify workflow
 
@@ -256,6 +257,23 @@ Windows-only `net48` job (`TestFxProjects`) — keep all target frameworks green
 4. Update `PublicApiTests.VerifyPublicApiSurface.verified.txt` (see the Verify workflow above).
 5. Document it in `docs/configuration.md` (and `docs/rollover-and-retention.md` if it affects
    rollover/retention), plus the README options example if user-facing.
+
+## Documentation
+
+Docs follow the shared Invex documentation standard used by every Invex library:
+
+- **README.md** is also the NuGet readme. Keep the fixed section order (title, badges, pitch, Packages, Features,
+  Installation, Quick start, Usage, Documentation, Development, License) and use absolute links only
+  (`https://github.com/Invex-Games/logging-extensions/blob/main/...` or the docs site), so they work on nuget.org.
+- **DocFX site** (`docfx.json`, `toc.yml`, `index.md`, `docs/`, `api/index.md`), published to
+  https://invex-games.github.io/logging-extensions/. `docs/introduction.md` and `docs/getting-started.md` come first; every page
+  opens with one to three sentences on what it covers and ends with a "See also" or "Next steps" list. Link API
+  types with `<xref:Namespace.Type>`, not file paths.
+- **`api/index.md`** is the only hand-written file under `api/`; everything else there is generated. Put per-type
+  detail in XML docs, not in hand-written API pages.
+- **XML docs are enforced.** `CS1591` is not suppressed for shipped projects, so every public type and member needs
+  `<summary>`, plus `<param>`, `<typeparam>`, `<returns>` and `<exception>` where they apply, `<remarks>` for
+  non-obvious behaviour, and `<see cref>`/`<paramref>`/`<see langword>` for references.
 
 ## Defer to the docs
 
