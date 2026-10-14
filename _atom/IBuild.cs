@@ -44,8 +44,6 @@ internal interface IBuild : IWorkflowBuildDefinition,
 
     static readonly string[] TestFrameworkNames =
     [
-        WorkflowLabels.Dotnet.Framework.Net_8_0,
-        WorkflowLabels.Dotnet.Framework.Net_9_0,
         WorkflowLabels.Dotnet.Framework.Net_10_0,
     ];
 
@@ -266,8 +264,6 @@ internal interface IBuild : IWorkflowBuildDefinition,
                     Options =
                     [
                         BuildOptions.Target.SuppressArtifactPublishing,
-                        BuildOptions.Steps.SetupDotnet.Dotnet80X(),
-                        BuildOptions.Steps.SetupDotnet.Dotnet90X(),
                         BuildOptions.Github.RunsOn.SetByMatrix,
                     ],
                 },
@@ -337,8 +333,6 @@ internal interface IBuild : IWorkflowBuildDefinition,
                     ],
                     Options =
                     [
-                        BuildOptions.Steps.SetupDotnet.Dotnet80X(),
-                        BuildOptions.Steps.SetupDotnet.Dotnet90X(),
                         BuildOptions.Github.RunsOn.SetByMatrix,
                     ],
                 },
@@ -456,6 +450,16 @@ internal interface IBuild : IWorkflowBuildDefinition,
                     },
                     TargetBranch = "main",
                     OpenPullRequestsLimit = 10,
+                    Ignore =
+                    [
+                        // Verify 33 adds a maintenance-fee SponsorCheck that fails test builds (SC021).
+                        new()
+                        {
+                            DependencyName = "Verify.NUnit",
+                            UpdateTypes = [SemverUpdateType.VersionUpdateSemverMajor],
+                            Versions = null,
+                        },
+                    ],
                 },
             ],
         }),

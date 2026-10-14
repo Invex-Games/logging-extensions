@@ -40,7 +40,7 @@ dotnet add package Invex.Extensions.Logging.File
 dotnet add package Invex.Extensions.Logging.Utils
 ```
 
-Install only the packages you need. All three target `net10.0`, `net9.0`, `net8.0`, and
+Install only the packages you need. All three target `net10.0` and
 `netstandard2.0`. FancyConsole depends on Spectre.Console; File depends on System.IO.Abstractions;
 both build on `Microsoft.Extensions.Logging.Configuration`. Utils depends on
 `Microsoft.Extensions.Logging` and `Microsoft.Extensions.Hosting.Abstractions`.
