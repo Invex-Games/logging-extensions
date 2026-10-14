@@ -105,11 +105,11 @@ public static class LogUtil
     ///     The environment name, or <see langword="null" />/empty to omit the <c>in ... configuration</c> clause.
     /// </param>
     /// <remarks>
-    ///     The current message order is <c>Started {application} v{version} in {environment} configuration on {machine}</c>.
+    ///     The message order is <c>Started {application} v{version} on {machine} in {environment} configuration</c>.
     ///     Optional clauses include their own leading space, and whitespace-only values are retained. The template is
-    ///     <c>Started{AppName}{Version}{MachineName}{Configuration}</c>: <c>MachineName</c> currently receives the
-    ///     environment clause, and <c>Configuration</c> receives the machine clause. Structured values include these
-    ///     formatted clauses rather than the raw inputs. Logging failures from the supplied logger are not caught.
+    ///     <c>Started{AppName}{Version}{MachineName}{Environment}</c>: <c>MachineName</c> receives the machine clause,
+    ///     and <c>Environment</c> receives the environment clause. Structured values include these formatted clauses
+    ///     rather than the raw inputs. Logging failures from the supplied logger are not caught.
     /// </remarks>
     public static void LogStartupInfo(
         ILogger logger,
