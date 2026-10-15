@@ -23,10 +23,10 @@ and `toc.yml`.
 
 ## Build & language specifics
 
-- **.NET 10 SDK or a later stable SDK** is required (see `global.json`, which permits major-version roll-forward). The libraries multi-target down to
+- **.NET 11 SDK** (currently RC2) is required (see `global.json`). The libraries multi-target down to
   `netstandard2.0` (via `Polyfill`, `Microsoft.Bcl.TimeProvider`, and `System.Threading.Channels`);
   tests also run on `net48`.
-- C# `LangVersion` 14, `ImplicitUsings` and `Nullable` enabled, `TreatWarningsAsErrors` on.
+- C# `LangVersion` 15, `ImplicitUsings` and `Nullable` enabled, `TreatWarningsAsErrors` on.
 - Global usings live in each project's `_usings.cs` — add shared usings there, not per-file.
   The library's `_usings.cs` also declares `InternalsVisibleTo` for the test project.
 - `GenerateDocumentationFile` is on and `CS1591` is enforced for the shipped `src/` projects, so a
