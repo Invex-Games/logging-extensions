@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Introduction | Invex.Extensions.Logging </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Introduction | Invex.Extensions.Logging ">
+      
+      
+      <link rel="icon" href="../favicon.ico">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/Invex-Games/logging-extensions/blob/main/docs/introduction.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/icon.png" alt="Invex.Extensions.Logging">
+            Invex.Extensions.Logging
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="introduction">Introduction</h1>
+
+<p>Invex.Extensions.Logging is a set of three packages that extend <code>Microsoft.Extensions.Logging</code>: two
+logging providers (a styled console logger and a rolling file logger) and a small utilities package
+for logging outside the host's lifetime. Read this page to decide which packages you need and to learn
+the concepts the rest of the documentation uses.</p>
+<h2 id="the-packages">The packages</h2>
+<table>
+<thead>
+<tr>
+<th>Package</th>
+<th>Provider alias</th>
+<th>Use it for</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Invex.Extensions.Logging.FancyConsole</code></td>
+<td><code>FancyConsole</code></td>
+<td>Human-friendly console output while you watch an app run.</td>
+</tr>
+<tr>
+<td><code>Invex.Extensions.Logging.File</code></td>
+<td><code>File</code></td>
+<td>Plain-text log files that roll over and are purged automatically.</td>
+</tr>
+<tr>
+<td><code>Invex.Extensions.Logging.Utils</code></td>
+<td>None</td>
+<td>A standalone logger for startup and shutdown, plus a startup message helper.</td>
+</tr>
+</tbody>
+</table>
+<p>The packages are independent. Use either provider on its own, both together, or alongside the
+built-in providers.</p>
+<h2 id="when-to-use-it">When to use it</h2>
+<ul>
+<li><strong>You read logs as a person.</strong> FancyConsole favors readability: layouts, colors, scopes, and
+pretty exceptions.</li>
+<li><strong>You want local log files without a logging framework.</strong> The File provider needs no sinks or
+pipelines; register it and it writes rolling files.</li>
+<li><strong>You split logs by concern.</strong> Route a scoped group (such as <code>Orders</code>) or a level (such as
+<code>Error</code>) to its own file.</li>
+<li><strong>You need to log before the host exists.</strong> Utils gives you a logger for host builder failures and
+shutdown messages.</li>
+</ul>
+<h2 id="when-not-to-use-it">When not to use it</h2>
+<ul>
+<li><strong>Structured or machine-first output.</strong> Neither provider writes JSON or keeps structured
+properties. Use a provider with a structured format when a machine must parse each entry exactly.</li>
+<li><strong>Hard disk quotas.</strong> File size and retention settings are thresholds checked on write, not quotas.</li>
+<li><strong>Guaranteed durability.</strong> Buffered entries can be lost if the process crashes, and even direct
+writes hand bytes to the operating system without requesting a durable storage flush.</li>
+<li><strong>Remote log shipping.</strong> Files are written to a local directory only.</li>
+</ul>
+<h2 id="key-concepts-at-a-glance">Key concepts at a glance</h2>
+<table>
+<thead>
+<tr>
+<th>Concept</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Provider alias</td>
+<td><code>FancyConsole</code> and <code>File</code> name the configuration sections (<code>Logging:FancyConsole</code>, <code>Logging:File</code>) and scope filter rules to one provider.</td>
+</tr>
+<tr>
+<td>Options binding</td>
+<td>Options bind from configuration, then code delegates passed to <code>AddFancyConsole</code> or <code>AddFile</code> override them. Reloadable sources apply changes to later entries.</td>
+</tr>
+<tr>
+<td>Level filtering</td>
+<td>Done by the standard logging rules; the providers never filter levels themselves.</td>
+</tr>
+<tr>
+<td>Layout</td>
+<td>How FancyConsole renders an entry: <code>Standard</code>, <code>SingleLine</code>, <code>Minimal</code>, or <code>Detailed</code>.</td>
+</tr>
+<tr>
+<td>Resolved file name</td>
+<td><code>LogName</code> plus any mapped group suffix and level suffix, e.g. <code>my-app_orders_errors.log</code>.</td>
+</tr>
+<tr>
+<td>Group</td>
+<td>A scope property named <code>Group</code>, usually set with <code>BeginGroupScope</code>, that selects a file suffix.</td>
+</tr>
+<tr>
+<td>Rollover</td>
+<td>Renaming the active file to a timestamped archive when it reaches the size or age threshold.</td>
+</tr>
+<tr>
+<td>Retention</td>
+<td>Deleting the oldest archive of a resolved file name when its archives reach <code>MaxTotalSizeBytes</code>.</td>
+</tr>
+<tr>
+<td>Write mode</td>
+<td>Buffered (background thread, the default) or direct (on the calling thread).</td>
+</tr>
+<tr>
+<td>Host logger</td>
+<td>A <code>HostLogger</code> that owns its own factory, independent of the application host.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="design-principles">Design principles</h2>
+<ul>
+<li><strong>Standard pipeline first.</strong> Registration, configuration, reload, scopes, and filtering all use the
+<code>Microsoft.Extensions.Logging</code> mechanisms you already know.</li>
+<li><strong>Write failures stay contained.</strong> File write failures are retried and then the entry is dropped and
+reported to debug output instead of being thrown. Exceptions from your own message formatter or
+<code>TimeProvider</code> are not caught and reach the caller.</li>
+<li><strong>Plain, predictable output.</strong> File lines have a fixed prefix, and console text is written
+literally; Spectre markup in messages is not interpreted.</li>
+<li><strong>Thresholds, not guarantees.</strong> Size and retention limits are checked when writing, and the
+documentation states where they can be exceeded.</li>
+</ul>
+<h2 id="see-also">See also</h2>
+<ul>
+<li><a href="getting-started.html">Getting Started</a></li>
+<li><a href="fancy-console.html">Fancy Console Logger</a></li>
+<li><a href="configuration.html">File Logger Configuration</a></li>
+<li><a href="logging-utilities.html">Logging Utilities</a></li>
+<li><a class="xref" href="../api/Invex.Extensions.Logging.FancyConsole.FancyConsoleLoggerExtensions.html">FancyConsoleLoggerExtensions</a></li>
+<li><a class="xref" href="../api/Invex.Extensions.Logging.File.FileLoggerExtension.html">FileLoggerExtension</a></li>
+<li><a class="xref" href="../api/Invex.Extensions.Logging.Utils.LogUtil.html">LogUtil</a></li>
+</ul>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/Invex-Games/logging-extensions/blob/main/docs/introduction.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Invex.Extensions.Logging · MIT License · Invex Games
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

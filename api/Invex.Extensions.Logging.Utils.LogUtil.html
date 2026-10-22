@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class LogUtil | Invex.Extensions.Logging </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class LogUtil | Invex.Extensions.Logging ">
+      
+      <meta name="description" content="Creates standalone loggers for host lifecycle messages and writes application startup information.">
+      <link rel="icon" href="../favicon.ico">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/icon.png" alt="Invex.Extensions.Logging">
+            Invex.Extensions.Logging
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="Invex.Extensions.Logging.Utils.LogUtil">
+
+
+
+  <h1 id="Invex_Extensions_Logging_Utils_LogUtil" data-uid="Invex.Extensions.Logging.Utils.LogUtil" class="text-break">
+Class LogUtil  
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><span class="xref">Invex</span>.<span class="xref">Extensions</span>.<span class="xref">Logging</span>.<a class="xref" href="Invex.Extensions.Logging.Utils.html">Utils</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Invex.Extensions.Logging.Utils.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Creates standalone loggers for host lifecycle messages and writes application startup information.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static class LogUtil</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><span class="xref">object</span></div>
+      <div><span class="xref">LogUtil</span></div>
+    </dd>
+  </dl>
+
+
+
+
+
+
+
+  <h2 id="Invex_Extensions_Logging_Utils_LogUtil_remarks">Remarks</h2>
+  <div class="markdown level0 remarks"><p>The factories created here are independent of any application's host and dependency injection container.
+Register logging providers in the configuration callback and dispose the returned logger or factory when
+it is no longer needed.</p>
+</div>
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="Invex_Extensions_Logging_Utils_LogUtil_CreateHostLogger_" data-uid="Invex.Extensions.Logging.Utils.LogUtil.CreateHostLogger*"></a>
+
+  <h3 id="Invex_Extensions_Logging_Utils_LogUtil_CreateHostLogger_System_Action_Microsoft_Extensions_Logging_ILoggingBuilder__" data-uid="Invex.Extensions.Logging.Utils.LogUtil.CreateHostLogger(System.Action{Microsoft.Extensions.Logging.ILoggingBuilder})">
+  CreateHostLogger(Action&lt;ILoggingBuilder&gt;?)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a logger with the category <code>Host</code> and an owned, standalone logger factory.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static HostLogger CreateHostLogger(Action&lt;ILoggingBuilder&gt;? configure = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>configure</code> <span class="xref">Action</span>&lt;<span class="xref">ILoggingBuilder</span>&gt;</dt>
+    <dd><p>An optional callback that registers providers and configures logging after the default
+<code>Microsoft</code> category filter has been added. No providers are registered automatically.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Invex.Extensions.Logging.Utils.HostLogger.html">HostLogger</a></dt>
+    <dd><p>A logger that disposes its factory and the factory-owned providers when disposed.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Invex_Extensions_Logging_Utils_LogUtil_CreateHostLogger_System_Action_Microsoft_Extensions_Logging_ILoggingBuilder___remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Use this logger before building a host or after stopping one. It does not inherit the host's providers,
+configuration, or services. The default category filter permits <code>Microsoft</code> entries at
+<span class="xref">Microsoft.Extensions.Logging.LogLevel.Warning</span> and above; the callback can add further filtering rules.</p>
+</div>
+
+
+
+
+  <a id="Invex_Extensions_Logging_Utils_LogUtil_CreateHostLoggerFactory_" data-uid="Invex.Extensions.Logging.Utils.LogUtil.CreateHostLoggerFactory*"></a>
+
+  <h3 id="Invex_Extensions_Logging_Utils_LogUtil_CreateHostLoggerFactory_System_Action_Microsoft_Extensions_Logging_ILoggingBuilder__" data-uid="Invex.Extensions.Logging.Utils.LogUtil.CreateHostLoggerFactory(System.Action{Microsoft.Extensions.Logging.ILoggingBuilder})">
+  CreateHostLoggerFactory(Action&lt;ILoggingBuilder&gt;?)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a standalone logger factory with a <code>Microsoft</code> category filter at
+<span class="xref">Microsoft.Extensions.Logging.LogLevel.Warning</span>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static ILoggerFactory CreateHostLoggerFactory(Action&lt;ILoggingBuilder&gt;? configure = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>configure</code> <span class="xref">Action</span>&lt;<span class="xref">ILoggingBuilder</span>&gt;</dt>
+    <dd><p>An optional callback that registers providers and configures logging after the default filter is added.
+No providers are registered automatically.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ILoggerFactory</span></dt>
+    <dd><p>A standalone factory that the caller must dispose when it is no longer needed.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="Invex_Extensions_Logging_Utils_LogUtil_CreateHostLoggerFactory_System_Action_Microsoft_Extensions_Logging_ILoggingBuilder___remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>The factory does not automatically load host configuration or use a host's services. Use the callback
+to register providers, bind configuration if required, and add filtering rules. Disposing the factory
+disposes providers that it owns, including providers created by its dependency injection container.</p>
+</div>
+
+
+
+
+  <a id="Invex_Extensions_Logging_Utils_LogUtil_LogStartupInfo_" data-uid="Invex.Extensions.Logging.Utils.LogUtil.LogStartupInfo*"></a>
+
+  <h3 id="Invex_Extensions_Logging_Utils_LogUtil_LogStartupInfo_Microsoft_Extensions_Logging_ILogger_System_String_System_String_System_String_System_String_" data-uid="Invex.Extensions.Logging.Utils.LogUtil.LogStartupInfo(Microsoft.Extensions.Logging.ILogger,System.String,System.String,System.String,System.String)">
+  LogStartupInfo(ILogger, string?, string?, string?, string?)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Writes an information-level startup message with explicit application, version, machine, and environment
+values, if that level is enabled.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static void LogStartupInfo(ILogger logger, string? applicationName, string? version, string? machineName, string? environment)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>logger</code> <span class="xref">ILogger</span></dt>
+    <dd><p>The logger that receives the startup message.</p>
+</dd>
+    <dt><code>applicationName</code> <span class="xref">string</span></dt>
+    <dd><p>The application name, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>/empty to display <code>Application</code>.</p>
+</dd>
+    <dt><code>version</code> <span class="xref">string</span></dt>
+    <dd><p>The version, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>/empty to omit it. Leading <code>v</code> and <code>V</code> characters are removed
+before a single <code>v</code> prefix is added.</p>
+</dd>
+    <dt><code>machineName</code> <span class="xref">string</span></dt>
+    <dd><p>The machine name, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>/empty to omit the <code>on</code> clause.</p>
+</dd>
+    <dt><code>environment</code> <span class="xref">string</span></dt>
+    <dd><p>The environment name, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>/empty to omit the <code>in ... configuration</code> clause.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section" id="Invex_Extensions_Logging_Utils_LogUtil_LogStartupInfo_Microsoft_Extensions_Logging_ILogger_System_String_System_String_System_String_System_String__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>The message order is <code>Started {application} v{version} on {machine} in {environment} configuration</code>.
+Optional clauses include their own leading space, and whitespace-only values are retained. The template is
+<code>Started{AppName}{Version}{MachineName}{Environment}</code>: <code>MachineName</code> receives the machine clause,
+and <code>Environment</code> receives the environment clause. Structured values include these formatted clauses
+rather than the raw inputs. Logging failures from the supplied logger are not caught.</p>
+</div>
+
+
+
+
+  <a id="Invex_Extensions_Logging_Utils_LogUtil_LogStartupInfo_" data-uid="Invex.Extensions.Logging.Utils.LogUtil.LogStartupInfo*"></a>
+
+  <h3 id="Invex_Extensions_Logging_Utils_LogUtil_LogStartupInfo__1_Microsoft_Extensions_Logging_ILogger_Microsoft_Extensions_Hosting_IHostEnvironment_" data-uid="Invex.Extensions.Logging.Utils.LogUtil.LogStartupInfo``1(Microsoft.Extensions.Logging.ILogger,Microsoft.Extensions.Hosting.IHostEnvironment)">
+  LogStartupInfo&lt;T&gt;(ILogger, IHostEnvironment?)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Writes an information-level startup message using the assembly containing <code class="typeparamref">T</code>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static void LogStartupInfo&lt;T&gt;(ILogger logger, IHostEnvironment? environment = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>logger</code> <span class="xref">ILogger</span></dt>
+    <dd><p>The logger that receives the startup message.</p>
+</dd>
+    <dt><code>environment</code> <span class="xref">IHostEnvironment</span></dt>
+    <dd><p>An optional host environment whose <span class="xref">Microsoft.Extensions.Hosting.IHostEnvironment.EnvironmentName</span> is included in the
+message. Its <span class="xref">Microsoft.Extensions.Hosting.IHostEnvironment.ApplicationName</span> does not supply the application name.</p>
+</dd>
+  </dl>
+
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>A type whose assembly supplies the application name and assembly version.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="Invex_Extensions_Logging_Utils_LogUtil_LogStartupInfo__1_Microsoft_Extensions_Logging_ILogger_Microsoft_Extensions_Hosting_IHostEnvironment__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Uses the assembly's simple name and <code>AssemblyName.Version</code>, rather than its file or informational
+version, and <span class="xref">System.Environment.MachineName</span>. The explicit-value overload determines formatting
+and skips the message when <span class="xref">Microsoft.Extensions.Logging.LogLevel.Information</span> is disabled. Calling this method does
+not start a host or verify that it started successfully.</p>
+</div>
+
+
+
+
+
+</article>
+
+        <div class="contribution d-print-none">
+        </div>
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Invex.Extensions.Logging · MIT License · Invex Games
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>
