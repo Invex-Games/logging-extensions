@@ -8,13 +8,13 @@
   <!--  Packages-->
   <ItemGroup>
     <PackageReference Include="JetBrains.Annotations" Version="2026.2.0" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Configuration" Version="10.0.13" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Configuration" Version="10.0.14" />
     <PackageReference Include="Spectre.Console" Version="0.57.2" />
   </ItemGroup>
 
   <!--  .NET Framework Packages-->
   <ItemGroup Condition="'$(TargetFramework)' == 'net48' or '$(TargetFramework)' == 'netstandard2.0'">
-    <PackageReference Include="Microsoft.Bcl.TimeProvider" Version="10.0.13" />
+    <PackageReference Include="Microsoft.Bcl.TimeProvider" Version="10.0.14" />
     <PackageReference Include="Polyfill" Version="11.4.5">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -27,7 +27,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.Extensions.Logging" Version="10.0.13" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="10.0.14" />
     <PackageReference Include="Roslynator.Analyzers" Version="5.0.1">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
