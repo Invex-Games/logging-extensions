@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class FileLoggerConfiguration | Invex.Extensions.Logging </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class FileLoggerConfiguration | Invex.Extensions.Logging ">
+      
+      <meta name="description" content="Configuration options for the file logger. Bound from the Logging:File configuration section when registered via , and can also be set programmatically via the  overload.">
+      <link rel="icon" href="../favicon.ico">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/icon.png" alt="Invex.Extensions.Logging">
+            Invex.Extensions.Logging
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="Invex.Extensions.Logging.File.Configuration.FileLoggerConfiguration">
+
+
+
+  <h1 id="Invex_Extensions_Logging_File_Configuration_FileLoggerConfiguration" data-uid="Invex.Extensions.Logging.File.Configuration.FileLoggerConfiguration" class="text-break">
+Class FileLoggerConfiguration  
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><span class="xref">Invex</span>.<span class="xref">Extensions</span>.<span class="xref">Logging</span>.<a class="xref" href="Invex.Extensions.Logging.File.html">File</a>.<a class="xref" href="Invex.Extensions.Logging.File.Configuration.html">Configuration</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>Invex.Extensions.Logging.File.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Configuration options for the file logger. Bound from the <code>Logging:File</code> configuration section
+when registered via
+<a class="xref" href="Invex.Extensions.Logging.File.FileLoggerExtension.html#Invex_Extensions_Logging_File_FileLoggerExtension_AddFile_Microsoft_Extensions_Logging_ILoggingBuilder_System_Boolean_">AddFile(ILoggingBuilder, bool)</a>,
+and can also be set programmatically via the
+<a class="xref" href="Invex.Extensions.Logging.File.FileLoggerExtension.html#Invex_Extensions_Logging_File_FileLoggerExtension_AddFile_Microsoft_Extensions_Logging_ILoggingBuilder_System_Action_Invex_Extensions_Logging_File_Configuration_FileLoggerConfiguration__System_Boolean_">AddFile(ILoggingBuilder, Action&lt;FileLoggerConfiguration&gt;, bool)</a>
+overload.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public sealed class FileLoggerConfiguration</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><span class="xref">object</span></div>
+      <div><span class="xref">FileLoggerConfiguration</span></div>
+    </dd>
+  </dl>
+
+
+
+
+
+
+
+  <h2 id="Invex_Extensions_Logging_File_Configuration_FileLoggerConfiguration_remarks">Remarks</h2>
+  <div class="markdown level0 remarks"><p>Reloadable configuration sources update these options through the options monitor. Writers use
+the current options for each entry or buffered batch, so already queued entries can use new routes.</p>
+</div>
+
+
+  <h2 class="section" id="constructors">Constructors
+</h2>
+
+
+  <a id="Invex_Extensions_Logging_File_Configuration_FileLoggerConfiguration__ctor_" data-uid="Invex.Extensions.Logging.File.Configuration.FileLoggerConfiguration.#ctor*"></a>
+
+  <h3 id="Invex_Extensions_Logging_File_Configuration_FileLoggerConfiguration__ctor" data-uid="Invex.Extensions.Logging.File.Configuration.FileLoggerConfiguration.#ctor">
+  FileLoggerConfiguration()
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public FileLoggerConfiguration()</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <h2 class="section" id="fields">Fields
+</h2>
+
+
+
+  <h3 id="Invex_Extensions_Logging_File_Configuration_FileLoggerConfiguration_DefaultFileSizeLimitBytes" data-uid="Invex.Extensions.Logging.File.Configuration.FileLoggerConfiguration.DefaultFileSizeLimitBytes">
+  DefaultFileSizeLimitBytes
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>The default value of <a class="xref" href="Invex.Extensions.Logging.File.Configuration.FileLoggerConfiguration.html#Invex_Extensions_Logging_File_Configuration_FileLoggerConfiguration_FileSizeLimitBytes">FileSizeLimitBytes</a>: 100 MiB.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const long DefaultFileSizeLimitBytes = 104857600</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">long</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="Invex_Extensions_Logging_File_Configuration_FileLoggerConfiguration_DefaultLogDirectory" data-uid="Invex.Extensions.Logging.File.Configuration.FileLoggerConfiguration.DefaultLogDirectory">
+  DefaultLogDirectory
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>The default value of <a class="xref" href="Invex.Extensions.Logging.File.Configuration.FileLoggerConfiguration.html#Invex_Extensions_Logging_File_Configuration_FileLoggerConfiguration_LogDirectory">LogDirectory</a>: <code>&quot;Logs&quot;</code>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const string DefaultLogDirectory = &quot;Logs&quot;</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="Invex_Extensions_Logging_File_Configuration_FileLoggerConfiguration_DefaultMaxTotalSizeBytes" data-uid="Invex.Extensions.Logging.File.Configuration.FileLoggerConfiguration.DefaultMaxTotalSizeBytes">
+  DefaultMaxTotalSizeBytes
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>The default value of <a class="xref" href="Invex.Extensions.Logging.File.Configuration.FileLoggerConfiguration.html#Invex_Extensions_Logging_File_Configuration_FileLoggerConfiguration_MaxTotalSizeBytes">MaxTotalSizeBytes</a>: 10 GiB.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const long DefaultMaxTotalSizeBytes = 10737418240</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">long</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+  <h3 id="Invex_Extensions_Logging_File_Configuration_FileLoggerConfiguration_DefaultRollingInterval" data-uid="Invex.Extensions.Logging.File.Configuration.FileLoggerConfiguration.DefaultRollingInterval">
+  DefaultRollingInterval
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>The default value of <a class="xref" href="Invex.Extensions.Logging.File.Configuration.FileLoggerConfiguration.html#Invex_Extensions_Logging_File_Configuration_FileLoggerConfiguration_RolloverInterval">RolloverInterval</a>: <a class="xref" href="Invex.Extensions.Logging.File.Configuration.FileRolloverInterval.html#Invex_Extensions_Logging_File_Configuration_FileRolloverInterval_Day">Day</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const FileRolloverInterval DefaultRollingInterval = Day</code></pre>
+  </div>
+
+
+
+
+  <h4 class="section">Field Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Invex.Extensions.Logging.File.Configuration.FileRolloverInterval.html">FileRolloverInterval</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="Invex_Extensions_Logging_File_Configuration_FileLoggerConfiguration_FileSizeLimitBytes_" data-uid="Invex.Extensions.Logging.File.Configuration.FileLoggerConfiguration.FileSizeLimitBytes*"></a>
+
+  <h3 id="Invex_Extensions_Logging_File_Configuration_FileLoggerConfiguration_FileSizeLimitBytes" data-uid="Invex.Extensions.Logging.File.Configuration.FileLoggerConfiguration.FileSizeLimitBytes">
+  FileSizeLimitBytes
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets the size-based rollover threshold, in bytes. An existing active file is rolled over
+before its size plus the pending UTF-8 entry or batch size would meet or exceed this value.
+Defaults to <a class="xref" href="Invex.Extensions.Logging.File.Configuration.FileLoggerConfiguration.html#Invex_Extensions_Logging_File_Configuration_FileLoggerConfiguration_DefaultFileSizeLimitBytes">DefaultFileSizeLimitBytes</a> (100 MiB).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public long FileSizeLimitBytes { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">long</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="Invex_Extensions_Logging_File_Configuration_FileLoggerConfiguration_FileSizeLimitBytes_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Entries and batches are not split, so a new active file can exceed this threshold. Zero or negative
+values cause every write to an existing active file to roll over; they do not disable rollover.</p>
+</div>
+
+
+
+
+  <a id="Invex_Extensions_Logging_File_Configuration_FileLoggerConfiguration_LogDirectory_" data-uid="Invex.Extensions.Logging.File.Configuration.FileLoggerConfiguration.LogDirectory*"></a>
+
+  <h3 id="Invex_Extensions_Logging_File_Configuration_FileLoggerConfiguration_LogDirectory" data-uid="Invex.Extensions.Logging.File.Configuration.FileLoggerConfiguration.LogDirectory">
+  LogDirectory
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets the directory where log files are written. May be an absolute path, or a path
+relative to the application's current working directory. The directory is created automatically
+if it does not exist. Defaults to <a class="xref" href="Invex.Extensions.Logging.File.Configuration.FileLoggerConfiguration.html#Invex_Extensions_Logging_File_Configuration_FileLoggerConfiguration_DefaultLogDirectory">DefaultLogDirectory</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string LogDirectory { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Invex_Extensions_Logging_File_Configuration_FileLoggerConfiguration_LogName_" data-uid="Invex.Extensions.Logging.File.Configuration.FileLoggerConfiguration.LogName*"></a>
+
+  <h3 id="Invex_Extensions_Logging_File_Configuration_FileLoggerConfiguration_LogName" data-uid="Invex.Extensions.Logging.File.Configuration.FileLoggerConfiguration.LogName">
+  LogName
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets the base file name (without extension) of the log file. The active log file is named
+<code>{LogName}.log</code> before any configured group and level suffixes are appended. Rolled-over files
+append <code>_{timestamp}</code> to the complete name before the extension.
+Defaults to <span class="xref">System.AppDomain.CurrentDomain</span>.<span class="xref">System.AppDomain.FriendlyName</span>
+when the configuration instance is created. An empty string is used literally.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string LogName { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="Invex_Extensions_Logging_File_Configuration_FileLoggerConfiguration_LogName_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Names and mapped suffixes are used verbatim. Use file name components without an extension
+or directory separators, and set the destination directory through <a class="xref" href="Invex.Extensions.Logging.File.Configuration.FileLoggerConfiguration.html#Invex_Extensions_Logging_File_Configuration_FileLoggerConfiguration_LogDirectory">LogDirectory</a>.</p>
+</div>
+
+
+
+
+  <a id="Invex_Extensions_Logging_File_Configuration_FileLoggerConfiguration_MaxTotalSizeBytes_" data-uid="Invex.Extensions.Logging.File.Configuration.FileLoggerConfiguration.MaxTotalSizeBytes*"></a>
+
+  <h3 id="Invex_Extensions_Logging_File_Configuration_FileLoggerConfiguration_MaxTotalSizeBytes" data-uid="Invex.Extensions.Logging.File.Configuration.FileLoggerConfiguration.MaxTotalSizeBytes">
+  MaxTotalSizeBytes
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets the retention threshold, in bytes, for archives of each resolved base name, including
+group and level suffixes. On rollover or initial file creation, if qualifying archives meet or exceed
+this value, the oldest archive by creation time is deleted. Defaults to
+<a class="xref" href="Invex.Extensions.Logging.File.Configuration.FileLoggerConfiguration.html#Invex_Extensions_Logging_File_Configuration_FileLoggerConfiguration_DefaultMaxTotalSizeBytes">DefaultMaxTotalSizeBytes</a> (10 GiB).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public long MaxTotalSizeBytes { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">long</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="Invex_Extensions_Logging_File_Configuration_FileLoggerConfiguration_MaxTotalSizeBytes_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>At most one archive is deleted per check. Active destinations are excluded, and the active file's
+size is not counted. This is not a hard disk quota. Zero or negative values delete the oldest
+qualifying archive whenever a retention check finds one; they do not disable retention.</p>
+</div>
+
+
+
+
+  <a id="Invex_Extensions_Logging_File_Configuration_FileLoggerConfiguration_PerGroupLogName_" data-uid="Invex.Extensions.Logging.File.Configuration.FileLoggerConfiguration.PerGroupLogName*"></a>
+
+  <h3 id="Invex_Extensions_Logging_File_Configuration_FileLoggerConfiguration_PerGroupLogName" data-uid="Invex.Extensions.Logging.File.Configuration.FileLoggerConfiguration.PerGroupLogName">
+  PerGroupLogName
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets file name suffixes for groups supplied by a logging scope's <code>Group</code> property.
+A matching nonempty suffix is appended to <a class="xref" href="Invex.Extensions.Logging.File.Configuration.FileLoggerConfiguration.html#Invex_Extensions_Logging_File_Configuration_FileLoggerConfiguration_LogName">LogName</a>, separated by an underscore,
+before any <a class="xref" href="Invex.Extensions.Logging.File.Configuration.FileLoggerConfiguration.html#Invex_Extensions_Logging_File_Configuration_FileLoggerConfiguration_PerLevelLogName">PerLevelLogName</a> suffix. Missing or
+unmapped groups and mapped null or empty values add no group suffix or separator. Empty by default,
+with case-sensitive group matching; a replacement dictionary's comparer is respected.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Dictionary&lt;string, string?&gt; PerGroupLogName { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Dictionary</span>&lt;<span class="xref">string</span>, <span class="xref">string</span>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="Invex_Extensions_Logging_File_Configuration_FileLoggerConfiguration_PerGroupLogName_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>The innermost nonempty string <code>Group</code> value wins. An unmapped inner group suppresses an
+outer group's mapping. Null, empty, and non-string scope values leave the outer group effective.
+The group is captured when logging; its mapping is resolved when the entry is written.</p>
+</div>
+
+
+
+
+  <a id="Invex_Extensions_Logging_File_Configuration_FileLoggerConfiguration_PerLevelLogName_" data-uid="Invex.Extensions.Logging.File.Configuration.FileLoggerConfiguration.PerLevelLogName*"></a>
+
+  <h3 id="Invex_Extensions_Logging_File_Configuration_FileLoggerConfiguration_PerLevelLogName" data-uid="Invex.Extensions.Logging.File.Configuration.FileLoggerConfiguration.PerLevelLogName">
+  PerLevelLogName
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets per-<span class="xref">Microsoft.Extensions.Logging.LogLevel</span> file name suffixes. A matching nonempty suffix is appended
+to <a class="xref" href="Invex.Extensions.Logging.File.Configuration.FileLoggerConfiguration.html#Invex_Extensions_Logging_File_Configuration_FileLoggerConfiguration_LogName">LogName</a>, separated by an underscore.
+When a group also matches <a class="xref" href="Invex.Extensions.Logging.File.Configuration.FileLoggerConfiguration.html#Invex_Extensions_Logging_File_Configuration_FileLoggerConfiguration_PerGroupLogName">PerGroupLogName</a>, its suffix precedes the level suffix:
+<code>{LogName}<em>{groupSuffix}</em>{levelSuffix}.log</code>. Missing levels and mapped null or empty values
+add no level suffix or separator. Empty by default.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Dictionary&lt;LogLevel, string?&gt; PerLevelLogName { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Dictionary</span>&lt;<span class="xref">LogLevel</span>, <span class="xref">string</span>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="Invex_Extensions_Logging_File_Configuration_FileLoggerConfiguration_RolloverInterval_" data-uid="Invex.Extensions.Logging.File.Configuration.FileLoggerConfiguration.RolloverInterval*"></a>
+
+  <h3 id="Invex_Extensions_Logging_File_Configuration_FileLoggerConfiguration_RolloverInterval" data-uid="Invex.Extensions.Logging.File.Configuration.FileLoggerConfiguration.RolloverInterval">
+  RolloverInterval
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets the time interval after which the active log file is rolled over, based on the file's
+creation time. Use <a class="xref" href="Invex.Extensions.Logging.File.Configuration.FileRolloverInterval.html#Invex_Extensions_Logging_File_Configuration_FileRolloverInterval_Infinite">Infinite</a> to disable time-based rollover.
+Defaults to <a class="xref" href="Invex.Extensions.Logging.File.Configuration.FileLoggerConfiguration.html#Invex_Extensions_Logging_File_Configuration_FileLoggerConfiguration_DefaultRollingInterval">DefaultRollingInterval</a> (<a class="xref" href="Invex.Extensions.Logging.File.Configuration.FileRolloverInterval.html#Invex_Extensions_Logging_File_Configuration_FileRolloverInterval_Day">Day</a>).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public FileRolloverInterval RolloverInterval { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="Invex.Extensions.Logging.File.Configuration.FileRolloverInterval.html">FileRolloverInterval</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="Invex_Extensions_Logging_File_Configuration_FileLoggerConfiguration_RolloverInterval_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Checked only before writes. Intervals measure elapsed time rather than calendar boundaries;
+a month is 30 days and a year is 365 days. New files receive the writer's current UTC creation time.</p>
+</div>
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="Invex_Extensions_Logging_File_Configuration_FileLoggerConfiguration_SetLogNameSuffix_" data-uid="Invex.Extensions.Logging.File.Configuration.FileLoggerConfiguration.SetLogNameSuffix*"></a>
+
+  <h3 id="Invex_Extensions_Logging_File_Configuration_FileLoggerConfiguration_SetLogNameSuffix_System_String_" data-uid="Invex.Extensions.Logging.File.Configuration.FileLoggerConfiguration.SetLogNameSuffix(System.String)">
+  SetLogNameSuffix(string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Replaces <a class="xref" href="Invex.Extensions.Logging.File.Configuration.FileLoggerConfiguration.html#Invex_Extensions_Logging_File_Configuration_FileLoggerConfiguration_LogName">LogName</a> with the current application's friendly name followed by
+an underscore and the supplied suffix.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void SetLogNameSuffix(string suffix)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>suffix</code> <span class="xref">string</span></dt>
+    <dd><p>The suffix appended to the application's friendly name. An empty string leaves a trailing underscore.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section" id="Invex_Extensions_Logging_File_Configuration_FileLoggerConfiguration_SetLogNameSuffix_System_String__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Uses <span class="xref">System.AppDomain.CurrentDomain</span>.<span class="xref">System.AppDomain.FriendlyName</span> rather than
+the current <a class="xref" href="Invex.Extensions.Logging.File.Configuration.FileLoggerConfiguration.html#Invex_Extensions_Logging_File_Configuration_FileLoggerConfiguration_LogName">LogName</a>. For an application named <code>MyApp</code>,
+<code>SetLogNameSuffix(&quot;worker&quot;)</code> produces <code>MyApp_worker.log</code> before group and level
+suffixes are applied.</p>
+</div>
+
+
+
+
+
+</article>
+
+        <div class="contribution d-print-none">
+        </div>
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Invex.Extensions.Logging · MIT License · Invex Games
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>
