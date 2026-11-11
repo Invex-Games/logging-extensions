@@ -30,6 +30,11 @@ jobs:
         with:
           dotnet-version: 10.0.x
 
+      - name: Setup .NET 11.0.x
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: 11.0.x
+
       - name: SetupBuildInfo
         id: SetupBuildInfo
         run: dotnet run --project _atom/_atom.csproj -- SetupBuildInfo --skip --headless
@@ -47,6 +52,11 @@ jobs:
         uses: actions/setup-dotnet@v5
         with:
           dotnet-version: 10.0.x
+
+      - name: Setup .NET 11.0.x
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: 11.0.x
 
       - name: PackProjects
         id: PackProjects
@@ -74,7 +84,7 @@ jobs:
     runs-on: ${{ matrix.job-runs-on }}
     strategy:
       matrix:
-        test-framework: [ net10.0 ]
+        test-framework: [ net10.0, net11.0 ]
         job-runs-on: [ ubuntu-latest, windows-latest ]
     steps:
 
@@ -87,6 +97,11 @@ jobs:
         uses: actions/setup-dotnet@v5
         with:
           dotnet-version: 10.0.x
+
+      - name: Setup .NET 11.0.x
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: 11.0.x
 
       - name: TestProjects
         id: TestProjects
@@ -128,6 +143,11 @@ jobs:
         with:
           dotnet-version: 10.0.x
 
+      - name: Setup .NET 11.0.x
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: 11.0.x
+
       - name: TestFxProjects
         id: TestFxProjects
         run: dotnet run --project _atom/_atom.csproj -- TestFxProjects --skip --headless
@@ -165,6 +185,11 @@ jobs:
         with:
           dotnet-version: 10.0.x
 
+      - name: Setup .NET 11.0.x
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: 11.0.x
+
       - name: Retrieve Invex.Extensions.Logging.FancyConsole
         uses: actions/download-artifact@v8
         with:
@@ -188,6 +213,7 @@ jobs:
         run: dotnet run --project _atom/_atom.csproj -- PushToNuget --skip --headless
         env:
           build-id: ${{ needs.SetupBuildInfo.outputs.build-id }}
+          build-version: ${{ needs.SetupBuildInfo.outputs.build-version }}
           nuget-push-api-key: ${{ secrets.NUGET_PUSH_API_KEY }}
 
   PushToRelease:
@@ -207,6 +233,11 @@ jobs:
         uses: actions/setup-dotnet@v5
         with:
           dotnet-version: 10.0.x
+
+      - name: Setup .NET 11.0.x
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: 11.0.x
 
       - name: Retrieve Invex.Extensions.Logging.FancyConsole
         uses: actions/download-artifact@v8
@@ -248,6 +279,11 @@ jobs:
         with:
           dotnet-version: 10.0.x
 
+      - name: Setup .NET 11.0.x
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: 11.0.x
+
       - name: BuildDocs
         id: BuildDocs
         run: dotnet run --project _atom/_atom.csproj -- BuildDocs --skip --headless
@@ -275,6 +311,11 @@ jobs:
         uses: actions/setup-dotnet@v5
         with:
           dotnet-version: 10.0.x
+
+      - name: Setup .NET 11.0.x
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: 11.0.x
 
       - name: Retrieve GeneratedDocs
         uses: actions/download-artifact@v8
