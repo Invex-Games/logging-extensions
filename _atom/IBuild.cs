@@ -45,6 +45,7 @@ internal interface IBuild : IWorkflowBuildDefinition,
     static readonly string[] TestFrameworkNames =
     [
         WorkflowLabels.Dotnet.Framework.Net_10_0,
+        "net11.0",
     ];
 
     static readonly string[] TestPlatforms =
@@ -129,6 +130,9 @@ internal interface IBuild : IWorkflowBuildDefinition,
             .RequiresParam(nameof(NugetFeed))
             .RequiresParam(nameof(NugetApiKey))
             .ConsumesVariable(nameof(SetupBuildInfo), nameof(BuildId))
+            // PushProject picks packages by BuildVersion, and a release run's detached tag checkout
+            // can recompute a different one, so take it from SetupBuildInfo.
+            .ConsumesVariable(nameof(SetupBuildInfo), nameof(BuildVersion))
             .ConsumesArtifacts(nameof(PackProjects), ProjectsToPack)
             .DependsOn(nameof(TestProjects))
             .DependsOn(nameof(TestFxProjects))

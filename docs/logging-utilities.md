@@ -1,7 +1,7 @@
 # Logging Utilities
 
 `Invex.Extensions.Logging.Utils` provides a standalone logger for messages written before a host is built
-or after it stops, plus helpers for a consistent startup message. It targets `net10.0` and
+or after it stops, plus helpers for a consistent startup message. It targets `net10.0`, `net11.0` and
 `netstandard2.0`.
 
 The two public types are `LogUtil` and `HostLogger`. They use the standard `Microsoft.Extensions.Logging`
