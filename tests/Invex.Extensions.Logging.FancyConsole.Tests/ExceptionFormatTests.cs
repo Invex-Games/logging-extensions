@@ -124,7 +124,7 @@ public class ExceptionFormatTests : TestBase
         lines[exceptionLine]
             .ShouldBe($"{new string(' ', indent)}InvalidOperationException: Boom");
 
-        lines.ShouldContain(l => l.StartsWith(new(' ', indent + 1), StringComparison.Ordinal) &&
+        lines.ShouldContain(l => l.StartsWith(new string(' ', indent + 1), StringComparison.Ordinal) &&
                                  l.Trim() == "ArgumentException: Inner");
 
         lines.ShouldContain(l => l.StartsWith(new string(' ', indent + 2) + "at ", StringComparison.Ordinal));
