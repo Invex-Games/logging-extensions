@@ -9,12 +9,12 @@ Keep changes focused and defer to the linked docs for detail.
 
 | Project | Role | Target frameworks |
 |---------|------|-------------------|
-| `Invex.Extensions.Logging.File` | The library: `FileLoggerExtension.AddFile`, `FileLoggerConfiguration`, `FileRolloverInterval`, plus internal providers/writers | `net10.0;netstandard2.0` |
-| `Invex.Extensions.Logging.File.Tests` | NUnit test suite, including a public API surface snapshot test | `net10.0;net48` |
-| `Invex.Extensions.Logging.FancyConsole` | Spectre.Console console provider: `AddFancyConsole`, `FancyConsoleLoggerConfiguration`, `FancyConsoleLayout`, `FancyConsoleExceptionFormat` | `net10.0;netstandard2.0` |
-| `Invex.Extensions.Logging.FancyConsole.Tests` | NUnit tests for layouts, styles, exceptions, provider behavior, and public API | `net10.0;net48` |
-| `Invex.Extensions.Logging.Utils` | Standalone host loggers, factory ownership, and startup information: `LogUtil` and `HostLogger` | `net10.0;netstandard2.0` |
-| `Invex.Extensions.Logging.Utils.Tests` | NUnit tests for startup information, factory filtering and ownership, wrapper delegation, and public API | `net10.0;net48` |
+| `Invex.Extensions.Logging.File` | The library: `FileLoggerExtension.AddFile`, `FileLoggerConfiguration`, `FileRolloverInterval`, plus internal providers/writers | `net10.0;net11.0;netstandard2.0` |
+| `Invex.Extensions.Logging.File.Tests` | NUnit test suite, including a public API surface snapshot test | `net10.0;net11.0;net48` |
+| `Invex.Extensions.Logging.FancyConsole` | Spectre.Console console provider: `AddFancyConsole`, `FancyConsoleLoggerConfiguration`, `FancyConsoleLayout`, `FancyConsoleExceptionFormat` | `net10.0;net11.0;netstandard2.0` |
+| `Invex.Extensions.Logging.FancyConsole.Tests` | NUnit tests for layouts, styles, exceptions, provider behavior, and public API | `net10.0;net11.0;net48` |
+| `Invex.Extensions.Logging.Utils` | Standalone host loggers, factory ownership, and startup information: `LogUtil` and `HostLogger` | `net10.0;net11.0;netstandard2.0` |
+| `Invex.Extensions.Logging.Utils.Tests` | NUnit tests for startup information, factory filtering and ownership, wrapper delegation, and public API | `net10.0;net11.0;net48` |
 | `_atom` | Atom build definition (`IBuild.cs`) that generates the GitHub Actions workflows | `net10.0` |
 
 Sources live under `src/`, tests under `tests/`, the Atom build definition under `_atom/`, and the
@@ -23,10 +23,10 @@ and `toc.yml`.
 
 ## Build & language specifics
 
-- **.NET 10 SDK or a later stable SDK** is required (see `global.json`, which permits major-version roll-forward). The libraries multi-target down to
+- **.NET 11 SDK** is required (see `global.json`), plus the .NET 10 runtime (or SDK) for the `net10.0` tests and build project. The libraries multi-target down to
   `netstandard2.0` (via `Polyfill`, `Microsoft.Bcl.TimeProvider`, and `System.Threading.Channels`);
   tests also run on `net48`.
-- C# `LangVersion` 14, `ImplicitUsings` and `Nullable` enabled, `TreatWarningsAsErrors` on.
+- C# `LangVersion` 15, `ImplicitUsings` and `Nullable` enabled, `TreatWarningsAsErrors` on.
 - Global usings live in each project's `_usings.cs` — add shared usings there, not per-file.
   The library's `_usings.cs` also declares `InternalsVisibleTo` for the test project.
 - `GenerateDocumentationFile` is on and `CS1591` is enforced for the shipped `src/` projects, so a
@@ -192,7 +192,7 @@ files alongside your `_atom/` changes; never hand-edit the generated YAML.
 A drift between `_atom/IBuild.cs` and the committed YAML should be treated as a missing
 `atom gen` run.
 
-Note that CI tests run on `net10.0` × Ubuntu/Windows, plus a
+Note that CI tests run on `net10.0` and `net11.0` × Ubuntu/Windows, plus a
 Windows-only `net48` job (`TestFxProjects`) — keep all target frameworks green.
 
 ## Checklist: making a change
