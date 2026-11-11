@@ -23,7 +23,7 @@ and `toc.yml`.
 
 ## Build & language specifics
 
-- **.NET 11 SDK** (currently RC2) is required (see `global.json`). The libraries multi-target down to
+- **.NET 11 SDK** is required (see `global.json`). The libraries multi-target down to
   `netstandard2.0` (via `Polyfill`, `Microsoft.Bcl.TimeProvider`, and `System.Threading.Channels`);
   tests also run on `net48`.
 - C# `LangVersion` 15, `ImplicitUsings` and `Nullable` enabled, `TreatWarningsAsErrors` on.
