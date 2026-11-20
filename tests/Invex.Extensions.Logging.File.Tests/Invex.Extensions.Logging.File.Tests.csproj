@@ -15,14 +15,14 @@
     <PackageReference Include="NUnit3TestAdapter" Version="6.3.1" />
     <PackageReference Include="Shouldly" Version="4.3.0" />
     <PackageReference Include="Spectre.Console.Testing" Version="0.57.2" />
-    <PackageReference Include="System.IO.Abstractions" Version="23.0.0" />
-    <PackageReference Include="TestableIO.System.IO.Abstractions.TestingHelpers" Version="23.0.0" />
+    <PackageReference Include="System.IO.Abstractions" Version="23.0.1" />
+    <PackageReference Include="TestableIO.System.IO.Abstractions.TestingHelpers" Version="23.0.1" />
     <PackageReference Include="Verify.NUnit" Version="32.0.1" />
   </ItemGroup>
 
   <!--  .NET Core Packages-->
   <ItemGroup Condition="'$(TargetFramework)' != 'net48'">
-    <PackageReference Include="coverlet.collector" Version="10.1.0">
+    <PackageReference Include="coverlet.collector" Version="10.1.1">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
@@ -30,7 +30,7 @@
 
   <!--  .NET Framework Packages-->
   <ItemGroup Condition="'$(TargetFramework)' == 'net48'">
-    <PackageReference Include="coverlet.collector" Version="10.1.0">
+    <PackageReference Include="coverlet.collector" Version="10.1.1">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
